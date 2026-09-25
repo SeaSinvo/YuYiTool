@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- PWD b站SeaSinvo -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4KCC-β0.1</title>
+    <!-- Favicon (Base64 Logo) -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAsTAAALEwEAmpwYAAAFyGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDggNzkuMTY0MDM2LCAyMDE5LzA4LzEzLTAxOjA2OjU3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjEuMCAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDI2LTA4LTIwVDEwOjQ5OjEyKzA4OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDI2LTA4LTIwVDEwOjQ5OjEyKzA4OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyNi0wOC0yMFQxMDo0OToxMiswODowMCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpjYjMwM2RmMy03ZjYxLTUyNDEtOWM4Zi00MGFjMzc4NDdjYjciIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDplNTRiODJkMi03YmY5LWFjNDktYmMzOC03YjllOWMxNDkyMWYiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDoyMDRhNjgyMS00YzFkLTUxNDItODM1MC01YTY2Nzg2NDg1ZjciIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDoyMDRhNjgyMS00YzFkLTUxNDItODM1MC01YTY2Nzg2NDg1ZjciIHN0RXZ0OndoZW49IjIwMjYtMDgtMjBUMTA6NDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4wIChXaW5kb3dzKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6Y2IzMDNkZjMtN2Y2MS01MjQxLTljOGYtNDBhYzM3ODQ3Y2I3IiBzdEV2dDp3aGVuPSIyMDI2LTA4LTIwVDEwOjQ5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgMjEuMCAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+jnJ4jgAAAKBJREFUSIntlt0KwCAIhXPs/V+5XTgiMj2nIhisc7V+9FMzmuSc005dW70fwD8AN9whIvpRGlpndGhXG4EMin2s4DJFAOi9TmUGoPLsGe8RgLSHWu0iWMY+gAmfTK4DIDsnmU5lAbXxulrA6NnCJPBN9px6w0ZSLzPVtyF7M6qZNrVxsCUaurR2c9f8D++BJ++dSOuHTFb/pZ4frwP4PuAB22FaLm9hKEgAAAAASUVORK5CYII=" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
+    </script>
+    <style>
+        /* ----- reset & base ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0b0d14;
+            color: #e8edf5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 720px;
+            height: 90vh;
+            max-height: 800px;
+            background: rgba(22, 26, 40, 0.92);
+            backdrop-filter: blur(14px);
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ----- 页面容器（滑动） ----- */
+        .pages-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            border-radius: 40px;
+            background: rgba(22, 26, 40, 0.6);
+        }
+        .page {
+            position: absolute;
+            inset: 0;
+            padding: 24px 28px 20px 28px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+            opacity: 0;
+            transform: translateX(30px) scale(0.98);
+            pointer-events: none;
+            overflow-y: auto;
+        }
+        .page.active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            pointer-events: auto;
+        }
+        .page.exit-left {
+            opacity: 0;
+            transform: translateX(-40px) scale(0.96);
+            pointer-events: none;
+        }
+        .page.exit-right {
+            opacity: 0;
+            transform: translateX(40px) scale(0.96);
+            pointer-events: none;
+        }
+
+        /* ----- 滚动条美化 ----- */
+        .page::-webkit-scrollbar {
+            width: 4px;
+        }
+        .page::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .page::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        /* ----- 页面标题 ----- */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+        .page-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f0f3fa;
+            letter-spacing: 0.3px;
+        }
+        .page-header .sub {
+            font-size: 13px;
+            color: #6a7aa0;
+            font-weight: 500;
+        }
+
+        /* ----- 首页品牌标题（仅在首页显示） ----- */
+        .brand-home {
+            text-align: center;
+            padding: 6px 0 16px 0;
+            flex-shrink: 0;
+        }
+        .brand-home .brand-title {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #7aa2ff, #4cd9a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .brand-home .brand-version {
+            font-size: 13px;
+            color: #4a5675;
+            margin-top: 2px;
+            letter-spacing: 1px;
+        }
+
+        .page-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .page-footer {
+            flex-shrink: 0;
+            padding-top: 18px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            margin-top: auto;
+        }
+        .btn {
+            padding: 10px 30px;
+            border: none;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background: #7aa2ff;
+            color: #0b0d14;
+        }
+        .btn-primary:hover {
+            background: #8bb3ff;
+            transform: scale(1.02);
+        }
+        .btn-primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-success {
+            background: #4cd9a0;
+            color: #0b0d14;
+        }
+        .btn-success:hover {
+            background: #5fe8b0;
+            transform: scale(1.02);
+        }
+        .btn-danger {
+            background: #ff6b6b;
+            color: #0b0d14;
+        }
+        .btn-danger:hover {
+            background: #ff7b7b;
+            transform: scale(1.02);
+        }
+
+        /* ----- 页面1：导入 ----- */
+        .drop-zone {
+            border: 2px dashed rgba(140, 175, 255, 0.2);
+            border-radius: 24px;
+            padding: 40px 20px 36px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.02);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            position: relative;
+        }
+        .drop-zone:hover {
+            border-color: rgba(140, 175, 255, 0.5);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .drop-zone.dragover {
+            border-color: #7aa2ff;
+            background: rgba(100, 150, 255, 0.08);
+            transform: scale(1.01);
+        }
+        .drop-zone .icon-big {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.7;
+        }
+        .drop-zone .primary-text {
+            font-size: 17px;
+            font-weight: 500;
+            color: #d0dbf0;
+        }
+        .drop-zone .primary-text strong {
+            color: #9bbaff;
+        }
+        .drop-zone .secondary-text {
+            font-size: 14px;
+            color: #5f6f92;
+            margin-top: 8px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .drop-zone .ext-badge {
+            background: rgba(100, 140, 255, 0.1);
+            padding: 2px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #8bb3ff;
+        }
+        #fileInput {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-status {
+            margin-top: 14px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .file-status.show {
+            display: flex;
+        }
+        .file-status .fname {
+            flex: 1;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #d0dbf0;
+        }
+        .file-status .fsize {
+            font-size: 13px;
+            color: #5f6f92;
+        }
+        .file-status .clear-btn {
+            background: none;
+            border: none;
+            color: #6a7aa0;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .file-status .clear-btn:hover {
+            color: #ff7b89;
+        }
+
+        /* ----- 表单 ----- */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #b0c4e8;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: #e8edf5;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+            font-family: inherit;
+            width: 100%;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #7aa2ff;
+        }
+        .form-group input::placeholder {
+            color: #4a5675;
+        }
+        .form-group select option {
+            background: #1a1e2e;
+            color: #e8edf5;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        /* ----- 加载/完成/错误页 ----- */
+        .center-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 20px;
+        }
+        .spinner {
+            width: 52px;
+            height: 52px;
+            border: 4px solid rgba(255, 255, 255, 0.06);
+            border-top: 4px solid #8ab4ff;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .center-content .big-icon {
+            font-size: 56px;
+        }
+        .center-content .title-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f0f3fa;
+        }
+        .center-content .desc-text {
+            font-size: 15px;
+            color: #6a7aa0;
+            max-width: 400px;
+        }
+
+        /* ----- 错误覆盖层 ----- */
+        .error-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(11, 13, 20, 0.92);
+            backdrop-filter: blur(10px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            border-radius: 0;
+            padding: 40px;
+            text-align: center;
+        }
+        .error-overlay.active {
+            display: flex;
+        }
+        .error-overlay .err-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+        }
+        .error-overlay .err-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #f0f3fa;
+            margin-bottom: 8px;
+        }
+        .error-overlay .err-desc {
+            font-size: 15px;
+            color: #6a7aa0;
+            max-width: 400px;
+            margin-bottom: 24px;
+        }
+
+        /* ----- 底部开发者信息（仅首页显示） ----- */
+        .footer-credit {
+            position: absolute;
+            bottom: 16px;
+            left: 20px;
+            font-size: 11px;
+            line-height: 1.6;
+            color: #4a5675;
+            z-index: 50;
+            cursor: pointer;
+            transition: color 0.2s;
+            user-select: none;
+            background: rgba(11, 13, 20, 0.6);
+            padding: 6px 14px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            white-space: pre-line;
+            text-align: left;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+        .footer-credit:hover {
+            color: #8ab4ff;
+        }
+        .footer-credit.hidden {
+            display: none;
+        }
+
+        /* ----- 响应式 ----- */
+        @media (max-width: 500px) {
+            .page {
+                padding: 16px 16px 16px 16px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .app-container {
+                max-height: none;
+                height: 96vh;
+                border-radius: 28px;
+            }
+            .pages-wrapper {
+                border-radius: 28px;
+            }
+            .drop-zone {
+                padding: 28px 16px;
+            }
+            .drop-zone .icon-big {
+                font-size: 36px;
+            }
+            .brand-home .brand-title {
+                font-size: 22px;
+            }
+            .brand-home {
+                padding: 4px 0 12px 0;
+            }
+            .page-header h2 {
+                font-size: 17px;
+            }
+            .btn {
+                padding: 8px 20px;
+                font-size: 13px;
+            }
+            .error-overlay {
+                padding: 24px;
+            }
+            .footer-credit {
+                bottom: 10px;
+                left: 12px;
+                font-size: 10px;
+                padding: 4px 10px;
+                line-height: 1.5;
+            }
+        }
+        @media (max-width: 380px) {
+            .page-header .sub {
+                display: none;
+            }
+            .brand-home .brand-title {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- PWD b站SeaSinvo -->
+
+    <div class="app-container" id="app">
+        <div class="pages-wrapper" id="pagesWrapper">
+
+            <!-- ===== 页面1：导入（首页，显示品牌标题） ===== -->
+            <div class="page active" id="pageImport">
+                <div class="brand-home">
+                    <div class="brand-title">4K Chart Converter</div>
+                </div>
+                <div class="page-header">
+                    <h2>📂 导入谱面</h2>
+                </div>
+                <div class="page-body">
+                    <div class="drop-zone" id="dropZone">
+                        <input type="file" id="fileInput" accept=".mcz,.pez,.zip" />
+                        <div class="icon-big">🎵</div>
+                        <div class="primary-text">拖拽到此处，或 <strong>点击浏览</strong></div>
+                        <div class="secondary-text">
+                            <span class="ext-badge">.mcz</span>
+                            <span class="ext-badge">.pez</span>
+                            <span class="ext-badge">.zip</span>
+                        </div>
+                    </div>
+                    <div class="file-status" id="fileStatus">
+                        <span class="fname" id="fname">filename</span>
+                        <span class="fsize" id="fsize">0 KB</span>
+                        <button class="clear-btn" id="clearFileBtn">✕</button>
+                    </div>
+                    <!-- PWD b站SeaSinvo -->
+                </div>
+                <div class="page-footer">
+                    <button class="btn btn-primary" id="importNextBtn" disabled>解析并继续 →</button>
+                </div>
+            </div>
+
+            <!-- ===== 页面2：选择源格式（仅 ZIP 导入时） ===== -->
+            <div class="page" id="pageSelectFormat">
+                <div class="page-header">
+                    <h2>📂 选择源格式</h2>
+                </div>
+                <div class="page-body">
+                    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:24px;">
+                        <div style="text-align:center;color:#6a7aa0;font-size:15px;">
+                            该 ZIP 文件无法自动识别谱面格式，请手动选择：
+                        </div>
+                        <div class="form-group">
+                            <label>源格式</label>
+                            <select id="sourceFormatSelect">
+                                <option value="">— 请选择 —</option>
+                                <option value="pez">pez (Phigros)</option>
+                                <option value="mcz">mcz (Malody)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-footer">
+                    <button class="btn btn-primary" id="formatConfirm" disabled>确认并继续 →</button>
+                </div>
+            </div>
+
+            <!-- ===== 页面3：元数据编辑 ===== -->
+            <div class="page" id="pageMeta">
+                <div class="page-header">
+                    <h2>📝 元数据</h2>
+                    <span class="sub" id="metaFileType">MCZ 转换</span>
+                </div>
+                <div class="page-body">
+                    <div class="form-group">
+                        <label>曲名 (Name)</label>
+                        <input type="text" id="editTitle" placeholder="曲名" />
+                    </div>
+                    <div class="form-group">
+                        <label>等级 (Level)</label>
+                        <input type="text" id="editLevel" placeholder="如 4K Lv.9" />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>作曲 (Composer)</label>
+                            <input type="text" id="editComposer" placeholder="作曲者" />
+                        </div>
+                        <div class="form-group">
+                            <label>谱师 (Charter)</label>
+                            <input type="text" id="editCharter" placeholder="谱面作者" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>画师 (Illustrator)</label>
+                        <input type="text" id="editIllustrator" placeholder="画师" />
+                        <div style="font-size:12px;color:#4a5675;margin-top:2px;">默认 UK (Unknown)</div>
+                    </div>
+                    <div class="form-group">
+                        <label>输出格式</label>
+                        <select id="editFormat">
+                            <option value="">— 请选择 —</option>
+                            <option value="pez">pez (Phigros)</option>
+                            <option value="mcz">mcz (Malody)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="page-footer">
+                    <button class="btn btn-primary" id="metaNext">设置参数 →</button>
+                </div>
+            </div>
+
+            <!-- ===== 页面4：转换设置 ===== -->
+            <div class="page" id="pageSettings">
+                <div class="page-header">
+                    <h2>⚙️ 转换设置</h2>
+                </div>
+                <div class="page-body" id="settingsBody">
+                    <!-- MCZ→PEZ 时显示参数，其他情况只显示确认按钮 -->
+                    <div id="settingsParams">
+                        <div class="form-group">
+                            <label>转义X轴极值 (N)</label>
+                            <input type="number" id="editAxis" value="405" min="1" step="1" />
+                        </div>
+                        <div class="form-group">
+                            <label>流速 (Speed)</label>
+                            <input type="number" id="editSpeed" value="10" min="0.1" step="0.1" />
+                        </div>
+                    </div>
+                    <div id="settingsConfirmOnly" style="display:none;flex:1;display:none;flex-direction:column;justify-content:center;align-items:center;gap:12px;text-align:center;">
+                        <div style="color:#6a7aa0;font-size:15px;">确认开始转换</div>
+                    </div>
+                    <div style="flex:1;min-height:20px;"></div>
+                </div>
+                <div class="page-footer">
+                    <button class="btn btn-success" id="settingsConfirm">🚀 开始转换</button>
+                </div>
+            </div>
+
+            <!-- ===== 页面5：转换中 ===== -->
+            <div class="page" id="pageLoading">
+                <div class="center-content">
+                    <div class="spinner"></div>
+                    <div class="title-text" id="loadingText">正在转换谱面...</div>
+                    <div class="desc-text" id="loadingDesc">请稍候</div>
+                </div>
+            </div>
+
+            <!-- ===== 页面6：完成 ===== -->
+            <div class="page" id="pageDone">
+                <div class="center-content">
+                    <div class="big-icon">✅</div>
+                    <div class="title-text">转换完成！</div>
+                    <div class="desc-text" id="doneDesc">文件已开始下载，请确认保存后点击下方按钮刷新。</div>
+                    <button class="btn btn-success" id="doneRefreshBtn" style="margin-top:8px;">确认下载完成 · 刷新</button>
+                </div>
+            </div>
+
+            <!-- 错误覆盖层 -->
+            <div class="error-overlay" id="errorOverlay">
+                <div class="err-icon">⚠️</div>
+                <div class="err-title" id="errorTitle">转换失败</div>
+                <div class="err-desc" id="errorDesc">该谱面不是标准 4K 谱面</div>
+                <button class="btn btn-danger" id="errorBtn">确认 · 刷新</button>
+            </div>
+
+        </div><!-- /pages-wrapper -->
+
+        <!-- 底部开发者信息（仅首页显示） -->
+        <div class="footer-credit" id="creditInfo" title="前往作者主页">本工具使用DeepSeek编写 作者:b站SeaSinvo
+严禁进行低创制作</div>
+    </div>
+
+    <script>
+        // PWD b站SeaSinvo
+        (function() {
+            'use strict';
+
+            // ----- DOM refs -----
+            const pages = {
+                import: document.getElementById('pageImport'),
+                selectFormat: document.getElementById('pageSelectFormat'),
+                meta: document.getElementById('pageMeta'),
+                settings: document.getElementById('pageSettings'),
+                loading: document.getElementById('pageLoading'),
+                done: document.getElementById('pageDone'),
+            };
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const fileStatus = document.getElementById('fileStatus');
+            const fname = document.getElementById('fname');
+            const fsize = document.getElementById('fsize');
+            const clearFileBtn = document.getElementById('clearFileBtn');
+            const importNextBtn = document.getElementById('importNextBtn');
+
+            const sourceFormatSelect = document.getElementById('sourceFormatSelect');
+            const formatConfirm = document.getElementById('formatConfirm');
+
+            const editTitle = document.getElementById('editTitle');
+            const editLevel = document.getElementById('editLevel');
+            const editComposer = document.getElementById('editComposer');
+            const editCharter = document.getElementById('editCharter');
+            const editIllustrator = document.getElementById('editIllustrator');
+            const editFormat = document.getElementById('editFormat');
+            const metaNext = document.getElementById('metaNext');
+            const metaFileType = document.getElementById('metaFileType');
+
+            const editAxis = document.getElementById('editAxis');
+            const editSpeed = document.getElementById('editSpeed');
+            const settingsParams = document.getElementById('settingsParams');
+            const settingsConfirmOnly = document.getElementById('settingsConfirmOnly');
+            const settingsConfirm = document.getElementById('settingsConfirm');
+
+            const loadingText = document.getElementById('loadingText');
+            const loadingDesc = document.getElementById('loadingDesc');
+            const doneDesc = document.getElementById('doneDesc');
+            const doneRefreshBtn = document.getElementById('doneRefreshBtn');
+
+            const errorOverlay = document.getElementById('errorOverlay');
+            const errorTitle = document.getElementById('errorTitle');
+            const errorDesc = document.getElementById('errorDesc');
+            const errorBtn = document.getElementById('errorBtn');
+
+            const creditInfo = document.getElementById('creditInfo');
+
+            // ----- 底部链接 -----
+            creditInfo.addEventListener('click', () => {
+                window.open('https://space.bilibili.com/3546837967440731', '_blank');
+            });
+            creditInfo.title = '前往作者主页';
+
+            // ----- 状态 -----
+            let currentFile = null;
+            let fileData = null;
+            let parsedData = null;
+            let sourceType = ''; // 'mcz' or 'pez'
+            let targetType = ''; // 'mcz' or 'pez'
+            let zipFileData = null; // 用于 zip 导入
+
+            // ----- 工具 -----
+            function getExt(name) { const i = name.lastIndexOf('.'); return i > 0 ? name.slice(i + 1).toLowerCase() : ''; }
+
+            function formatSize(b) { if (b === 0) return '0 B'; const u = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math
+                    .log(b) / Math.log(1024)); return (b / Math.pow(1024, i)).toFixed(i > 0 ? 1 : 0) + ' ' + u[i]; }
+
+            function sanitizeFileName(name) {
+                return name.replace(/[^a-zA-Z0-9\u4e00-\u9fa5\-_. ]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+            }
+
+            function showPage(name) {
+                // 控制底部版权信息
+                if (name === 'import') {
+                    creditInfo.classList.remove('hidden');
+                } else {
+                    creditInfo.classList.add('hidden');
+                }
+                Object.values(pages).forEach(p => {
+                    p.classList.remove('active', 'exit-left', 'exit-right');
+                });
+                pages[name].classList.add('active');
+                pages[name].scrollTop = 0;
+            }
+
+            function switchTo(pageName, direction) {
+                const order = ['import', 'selectFormat', 'meta', 'settings', 'loading', 'done'];
+                const currentIdx = order.findIndex(p => pages[p].classList.contains('active'));
+                const targetIdx = order.indexOf(pageName);
+                if (currentIdx === -1 || targetIdx === -1) { showPage(pageName); return; }
+
+                const currentPage = pages[order[currentIdx]];
+                const targetPage = pages[pageName];
+
+                if (direction === 'left') {
+                    currentPage.classList.remove('active');
+                    currentPage.classList.add('exit-left');
+                } else if (direction === 'right') {
+                    currentPage.classList.remove('active');
+                    currentPage.classList.add('exit-right');
+                } else {
+                    currentPage.classList.remove('active');
+                }
+
+                // 控制底部版权
+                if (pageName === 'import') {
+                    creditInfo.classList.remove('hidden');
+                } else {
+                    creditInfo.classList.add('hidden');
+                }
+
+                setTimeout(() => {
+                    targetPage.classList.remove('exit-left', 'exit-right');
+                    targetPage.classList.add('active');
+                    targetPage.scrollTop = 0;
+                    currentPage.classList.remove('exit-left', 'exit-right');
+                }, 80);
+            }
+
+            // 更新右上角文案
+            function updateMetaHeader() {
+                const s = sourceType.toUpperCase();
+                metaFileType.textContent = s + ' 转换';
+            }
+
+            // 设置页面显示控制
+            function updateSettingsPage() {
+                const isMczToPez = (sourceType === 'mcz' && targetType === 'pez');
+                if (isMczToPez) {
+                    settingsParams.style.display = 'block';
+                    settingsConfirmOnly.style.display = 'none';
+                } else {
+                    settingsParams.style.display = 'none';
+                    settingsConfirmOnly.style.display = 'flex';
+                }
+            }
+
+            // ----- 错误弹窗 -----
+            function showError(message) {
+                errorTitle.textContent = '转换失败';
+                errorDesc.textContent = message || '该谱面不是标准 4K 谱面';
+                errorOverlay.classList.add('active');
+            }
+
+            errorBtn.addEventListener('click', () => {
+                location.reload();
+            });
+
+            // ----- 文件状态 -----
+            function updateFileStatus(file) {
+                if (file) {
+                    fileStatus.classList.add('show');
+                    fname.textContent = file.name;
+                    fsize.textContent = formatSize(file.size);
+                    importNextBtn.disabled = false;
+                } else {
+                    fileStatus.classList.remove('show');
+                    importNextBtn.disabled = true;
+                }
+            }
+
+            function clearFile() {
+                currentFile = null;
+                fileData = null;
+                parsedData = null;
+                zipFileData = null;
+                sourceType = '';
+                targetType = '';
+                fileInput.value = '';
+                updateFileStatus(null);
+                editFormat.value = '';
+                sourceFormatSelect.value = '';
+                formatConfirm.disabled = true;
+                errorOverlay.classList.remove('active');
+            }
+
+            // ----- 核心解析：MCZ -----
+            async function parseMCZ(zip) {
+                const entries = Object.keys(zip.files).filter(p => {
+                    const e = zip.files[p];
+                    if (e.dir) return false;
+                    const name = p.split('/').pop();
+                    return name && name.length > 0;
+                });
+
+                let mcEntry = null;
+                for (const p of entries) {
+                    const name = p.split('/').pop();
+                    if (name.endsWith('.mc')) { mcEntry = zip.files[p]; break; }
+                }
+                if (!mcEntry) throw new Error('未找到 .mc 谱面文件');
+
+                const mcContent = await mcEntry.async('string');
+                const mcJson = JSON.parse(mcContent);
+                const meta = mcJson.meta || {};
+                const song = meta.song || {};
+                const time = mcJson.time || [];
+                const bpm = time.length > 0 ? time[0].bpm : 180;
+                const notesRaw = mcJson.note || [];
+
+                let audioName = '';
+                let bgName = meta.background || '';
+                for (const n of notesRaw) { if (n.sound) { audioName = n.sound; break; } }
+
+                const noteData = [];
+                for (const n of notesRaw) {
+                    if (n.sound) continue;
+                    if (n.column === undefined) continue;
+                    const start = n.beat || [0, 0, 1];
+                    const end = n.endbeat || start;
+                    const col = n.column;
+                    const isHold = (n.endbeat !== undefined) && (n.endbeat.join(',') !== n.beat.join(','));
+                    const type = isHold ? 2 : 1;
+                    noteData.push({ start, end, column: col, type });
+                }
+
+                let audioEntry = null,
+                    imageEntry = null;
+                for (const p of entries) {
+                    const name = p.split('/').pop();
+                    if (audioName && name === audioName) audioEntry = zip.files[p];
+                    if (bgName && name === bgName) imageEntry = zip.files[p];
+                }
+
+                let duration = 0;
+                let audioData = null;
+                if (audioEntry) {
+                    audioData = await audioEntry.async('arraybuffer');
+                    try {
+                        const ctx = new(window.AudioContext || window.webkitAudioContext)();
+                        const buf = await ctx.decodeAudioData(audioData.slice(0));
+                        duration = buf.duration;
+                    } catch (e) { duration = 0; }
+                }
+                let imageData = null;
+                if (imageEntry) { imageData = await imageEntry.async('arraybuffer'); }
+
+                return {
+                    type: 'mcz',
+                    title: song.title || 'Untitled',
+                    level: meta.version || '4K Lv.9',
+                    composer: song.artist || 'Unknown',
+                    charter: meta.creator || 'Unknown',
+                    illustrator: 'UK',
+                    audio: audioName,
+                    background: bgName,
+                    duration: duration,
+                    bpm: bpm,
+                    notes: noteData,
+                    audioData: audioData,
+                    imageData: imageData,
+                    audioName: audioName,
+                    imageName: bgName,
+                    mcJson: mcJson,
+                };
+            }
+
+            // ----- 核心解析：PEZ（含 X 轴滤波与容错） -----
+            async function parsePEZ(zip) {
+                const entries = Object.keys(zip.files).filter(p => {
+                    const e = zip.files[p];
+                    if (e.dir) return false;
+                    const name = p.split('/').pop();
+                    return name && name.length > 0;
+                });
+
+                let infoYml = null;
+                let infoTxt = null;
+                let chartJson = null;
+                let audioData = null,
+                    imageData = null;
+                let audioName = '',
+                    imageName = '';
+
+                for (const p of entries) {
+                    const name = p.split('/').pop();
+                    const entry = zip.files[p];
+                    if (name === 'info.yml') {
+                        const content = await entry.async('string');
+                        infoYml = parseYml(content);
+                    } else if (name === 'info.txt') {
+                        infoTxt = await entry.async('string');
+                    }
+                }
+
+                let chartFileName = '';
+                if (infoYml && infoYml.chart) chartFileName = infoYml.chart;
+                else if (infoTxt) {
+                    const lines = infoTxt.split('\n');
+                    for (const line of lines) {
+                        if (line.startsWith('Chart:')) { chartFileName = line.replace('Chart:', '').trim(); break; }
+                    }
+                }
+
+                let chartEntry = null;
+                if (chartFileName) {
+                    for (const p of entries) {
+                        const name = p.split('/').pop();
+                        if (name === chartFileName) { chartEntry = zip.files[p]; break; }
+                    }
+                }
+                if (!chartEntry) {
+                    for (const p of entries) {
+                        const name = p.split('/').pop();
+                        if (!name.endsWith('.json') || name === 'extra.json') continue;
+                        const entry = zip.files[p];
+                        const content = await entry.async('string');
+                        if (content.includes('"BPMList"') && content.includes('"META"') && content.includes(
+                            '"judgeLineList"')) {
+                            chartEntry = entry;
+                            chartFileName = name;
+                            break;
+                        }
+                    }
+                }
+                if (!chartEntry) throw new Error('未找到有效的谱面 JSON 文件');
+
+                const chartContent = await chartEntry.async('string');
+                chartJson = JSON.parse(chartContent);
+
+                const meta = chartJson.META || {};
+                const bpmList = chartJson.BPMList || [];
+                const bpm = bpmList.length > 0 ? bpmList[0].bpm : 120;
+
+                let title = '',
+                    level = '',
+                    composer = '',
+                    charter = '',
+                    illustrator = 'UK',
+                    audioFile = '',
+                    bgFile = '';
+                if (infoYml) {
+                    title = infoYml.name || title;
+                    level = infoYml.level || infoYml.difficulty || level;
+                    composer = infoYml.composer || composer;
+                    charter = infoYml.charter || charter;
+                    illustrator = infoYml.illustrator || illustrator;
+                    audioFile = infoYml.music || audioFile;
+                    bgFile = infoYml.illustration || bgFile;
+                }
+                if (infoTxt) {
+                    const lines = infoTxt.split('\n');
+                    for (const line of lines) {
+                        if (line.startsWith('Name:')) title = line.replace('Name:', '').trim() || title;
+                        if (line.startsWith('Level:')) level = line.replace('Level:', '').trim() || level;
+                        if (line.startsWith('Composer:')) composer = line.replace('Composer:', '').trim() || composer;
+                        if (line.startsWith('Charter:')) charter = line.replace('Charter:', '').trim() || charter;
+                        if (line.startsWith('Illustrator:')) illustrator = line.replace('Illustrator:', '').trim() ||
+                        illustrator;
+                        if (line.startsWith('Song:')) audioFile = line.replace('Song:', '').trim() || audioFile;
+                        if (line.startsWith('Picture:')) bgFile = line.replace('Picture:', '').trim() || bgFile;
+                    }
+                }
+                if (meta.name) title = meta.name || title;
+                if (meta.level) level = meta.level || level;
+                if (meta.composer) composer = meta.composer || composer;
+                if (meta.charter) charter = meta.charter || charter;
+                if (meta.illustration) illustrator = meta.illustration || illustrator;
+                if (meta.song) audioFile = meta.song || audioFile;
+                if (meta.background) bgFile = meta.background || bgFile;
+                const duration = meta.duration || 0;
+
+                for (const p of entries) {
+                    const name = p.split('/').pop();
+                    const entry = zip.files[p];
+                    if (audioFile && name === audioFile) { audioData = await entry.async('arraybuffer');
+                        audioName = name; }
+                    if (bgFile && name === bgFile) { imageData = await entry.async('arraybuffer');
+                        imageName = name; }
+                }
+
+                // ========== X 轴滤波与容错处理 ==========
+                // 1. 收集所有有效音符 (type 1/2) 并提取 positionX（排除 0）
+                const judgeLines = chartJson.judgeLineList || [];
+                const rawNotes = [];
+                for (const line of judgeLines) {
+                    const notes = line.notes || [];
+                    for (const n of notes) {
+                        if (n.type !== 1 && n.type !== 2) continue;
+                        const posX = n.positionX || 0;
+                        if (posX === 0) continue; // 直接排除 X=0
+                        rawNotes.push({
+                            start: n.startTime || [0, 0, 1],
+                            end: n.endTime || n.startTime || [0, 0, 1],
+                            positionX: posX,
+                            type: n.type
+                        });
+                    }
+                }
+
+                if (rawNotes.length === 0) {
+                    showError('未找到有效音符（type=1 或 2）');
+                    return null;
+                }
+
+                // 2. 统计 X 值出现频率
+                const freq = {};
+                for (const n of rawNotes) {
+                    const x = n.positionX;
+                    freq[x] = (freq[x] || 0) + 1;
+                }
+
+                // 3. 按频率降序取前 4 个作为标准列
+                const sortedX = Object.keys(freq).map(Number).sort((a, b) => freq[b] - freq[a]);
+                if (sortedX.length < 4) {
+                    showError('该谱面 X 轴分布异常，无法转换为 4K 谱面');
+                    return null;
+                }
+                const baseXList = sortedX.slice(0, 4); // 高频4列（未排序）
+                // 对标准列升序排序，用于列索引映射
+                const sortedBase = baseXList.slice().sort((a, b) => a - b);
+
+                // 4. 将每个音符归并到最近的标准列（容差 ±40）
+                const TOLERANCE = 40;
+                const assignedNotes = [];
+                for (const n of rawNotes) {
+                    let bestBase = null;
+                    let bestDiff = Infinity;
+                    for (const base of baseXList) {
+                        const diff = Math.abs(n.positionX - base);
+                        if (diff < bestDiff) {
+                            bestDiff = diff;
+                            bestBase = base;
+                        }
+                    }
+                    if (bestDiff <= TOLERANCE) {
+                        assignedNotes.push({
+                            start: n.start,
+                            end: n.end,
+                            positionX: bestBase,
+                            type: n.type
+                        });
+                    }
+                    // 否则丢弃
+                }
+
+                if (assignedNotes.length === 0) {
+                    showError('容错归并后无可用的音符');
+                    return null;
+                }
+
+                // 5. 冲突检测：同列同时间（含 hold 区间）不允许重叠
+                const columnGroups = {};
+                for (const n of assignedNotes) {
+                    const col = sortedBase.indexOf(n.positionX);
+                    if (col === -1) continue; // 安全fallback
+                    if (!columnGroups[col]) columnGroups[col] = [];
+                    columnGroups[col].push({
+                        start: n.start,
+                        end: n.end,
+                        type: n.type,
+                        posX: n.positionX
+                    });
+                }
+
+                const finalNotes = [];
+                for (const col of Object.keys(columnGroups)) {
+                    const notes = columnGroups[col];
+                    notes.sort((a, b) => {
+                        const sa = a.start[0] + a.start[1] / (a.start[2] || 1);
+                        const sb = b.start[0] + b.start[1] / (b.start[2] || 1);
+                        return sa - sb;
+                    });
+                    const occupied = [];
+                    for (const n of notes) {
+                        const startTime = n.start[0] + n.start[1] / (n.start[2] || 1);
+                        const endTime = n.end[0] + n.end[1] / (n.end[2] || 1);
+                        let conflict = false;
+                        for (const occ of occupied) {
+                            if (startTime < occ.end && endTime > occ.start) {
+                                conflict = true;
+                                break;
+                            }
+                        }
+                        if (!conflict) {
+                            occupied.push({ start: startTime, end: endTime });
+                            finalNotes.push({
+                                start: n.start,
+                                end: n.end,
+                                column: parseInt(col, 10),
+                                type: n.type
+                            });
+                        }
+                    }
+                }
+
+                if (finalNotes.length === 0) {
+                    showError('冲突检测后无可用的音符');
+                    return null;
+                }
+
+                return {
+                    type: 'pez',
+                    title: title || 'Untitled',
+                    level: level || '4K Lv.9',
+                    composer: composer || 'Unknown',
+                    charter: charter || 'Unknown',
+                    illustrator: illustrator || 'UK',
+                    audio: audioName || audioFile,
+                    background: imageName || bgFile,
+                    duration: duration,
+                    bpm: bpm,
+                    notes: finalNotes,
+                    audioData: audioData,
+                    imageData: imageData,
+                    audioName: audioName,
+                    imageName: imageName,
+                    chartJson: chartJson,
+                };
+            }
+
+            // ----- 简易 YAML 解析 -----
+            function parseYml(str) {
+                const obj = {};
+                const lines = str.split('\n');
+                for (const line of lines) {
+                    if (line.trim() === '' || line.startsWith('#')) continue;
+                    const idx = line.indexOf(':');
+                    if (idx === -1) continue;
+                    const key = line.slice(0, idx).trim();
+                    let val = line.slice(idx + 1).trim();
+                    if (val.startsWith('-')) {
+                        const arr = [];
+                        let i = lines.indexOf(line);
+                        while (i < lines.length && lines[i].trim().startsWith('-')) {
+                            arr.push(lines[i].trim().slice(1).trim());
+                            i++;
+                        }
+                        obj[key] = arr;
+                        continue;
+                    }
+                    if (val === '|' || val === '|-') {
+                        obj[key] = '';
+                        continue;
+                    }
+                    obj[key] = val;
+                }
+                return obj;
+            }
+
+            // ----- 生成 Tmp-F 和 Tmp-T -----
+            function generateTmp(data) {
+                const fLines = [
+                    `title: ${data.title}`,
+                    `level: ${data.level}`,
+                    `composer: ${data.composer}`,
+                    `charter: ${data.charter}`,
+                    `illustrator: ${data.illustrator || 'UK'}`,
+                    `audio: ${data.audio}`,
+                    `background: ${data.background}`,
+                    `duration: ${data.duration}`,
+                    `bpm: ${data.bpm}`
+                ];
+                const tmpF = fLines.join('\n');
+
+                const tmpT = data.notes.map(n => {
+                    const s = n.start.join(',');
+                    const e = n.end.join(',');
+                    return `${s}-${e}-${n.column}-${n.type}`;
+                }).join('\n');
+
+                return { tmpF, tmpT };
+            }
+
+            // ----- 从 Tmp 数据构建 notes 数组 -----
+            function parseTmpT(tmpT) {
+                const lines = tmpT.trim().split('\n').filter(l => l.trim());
+                return lines.map(line => {
+                    const parts = line.split('-');
+                    if (parts.length !== 4) return null;
+                    const start = parts[0].split(',').map(Number);
+                    const end = parts[1].split(',').map(Number);
+                    const column = parseInt(parts[2], 10);
+                    const type = parseInt(parts[3], 10);
+                    if (isNaN(column) || isNaN(type)) return null;
+                    return { start, end, column, type };
+                }).filter(n => n !== null);
+            }
+
+            function parseTmpF(tmpF) {
+                const lines = tmpF.trim().split('\n').filter(l => l.trim());
+                const data = {};
+                for (const line of lines) {
+                    const idx = line.indexOf(':');
+                    if (idx === -1) continue;
+                    const key = line.slice(0, idx).trim();
+                    const val = line.slice(idx + 1).trim();
+                    data[key] = val;
+                }
+                return data;
+            }
+
+            // ----- 转换 MCZ → PEZ -----
+            async function convertMCZtoPEZ(tmpF, tmpT, axis, speed) {
+                const meta = parseTmpF(tmpF);
+                const notes = parseTmpT(tmpT);
+
+                const axisN = parseInt(axis, 10) || 405;
+                const posMap = { 0: -axisN, 1: -axisN / 3, 2: axisN / 3, 3: axisN };
+                const speedVal = parseFloat(speed) || 10;
+
+                const notesArray = notes.map(n => {
+                    const posX = posMap[n.column] || 0;
+                    return {
+                        above: 1,
+                        alpha: 255,
+                        endTime: n.end,
+                        isFake: 0,
+                        positionX: posX,
+                        size: 1,
+                        speed: 1,
+                        startTime: n.start,
+                        type: n.type,
+                        visibleTime: 999999,
+                        yOffset: 0
+                    };
+                });
+
+                const bpm = parseFloat(meta.bpm) || 120;
+
+                const chartJson = {
+                    BPMList: [{ startTime: [0, 0, 1], bpm: bpm }],
+                    META: {
+                        RPEVersion: 160,
+                        background: meta.background || '',
+                        charter: meta.charter || '',
+                        composer: meta.composer || '',
+                        duration: parseFloat(meta.duration) || 0,
+                        id: meta.title || 'Untitled',
+                        illustration: meta.illustrator || 'UK',
+                        level: meta.level || '4K Lv.9',
+                        name: meta.title || 'Untitled',
+                        offset: 0,
+                        song: meta.audio || ''
+                    },
+                    chartTime: 0,
+                    judgeLineGroup: ["Default"],
+                    judgeLineList: [{
+                        Group: 0,
+                        Name: "main",
+                        Texture: "line.png",
+                        alphaControl: [{ alpha: 1, easing: 1, x: 0 }, { alpha: 1, easing: 1, x: 9999999 }],
+                        anchor: [0.5, 0.5],
+                        bpmfactor: 1,
+                        eventLayers: [{
+                            alphaEvents: [{ bezier: 0, bezierPoints: [0, 0, 0, 0], easingLeft: 0,
+                                    easingRight: 1, easingType: 1, end: 255, endTime: [1, 0, 1],
+                                    linkgroup: 0, start: 255, startTime: [0, 0, 1]
+                                }],
+                            moveXEvents: [{ bezier: 0, bezierPoints: [0, 0, 0, 0], easingLeft: 0,
+                                    easingRight: 1, easingType: 1, end: 0, endTime: [1, 0, 1],
+                                    linkgroup: 0, start: 0, startTime: [0, 0, 1]
+                                }],
+                            moveYEvents: [{ bezier: 0, bezierPoints: [0, 0, 0, 0], easingLeft: 0,
+                                    easingRight: 1, easingType: 1, end: -300, endTime: [1, 0, 1],
+                                    linkgroup: 0, start: -300, startTime: [0, 0, 1]
+                                }],
+                            rotateEvents: [{ bezier: 0, bezierPoints: [0, 0, 0, 0], easingLeft: 0,
+                                    easingRight: 1, easingType: 1, end: 0, endTime: [1, 0, 1],
+                                    linkgroup: 0, start: 0, startTime: [0, 0, 1]
+                                }],
+                            speedEvents: [{ end: speedVal, endTime: [1, 0, 1], linkgroup: 0,
+                                start: speedVal, startTime: [0, 0, 1]
+                            }]
+                        }],
+                        extended: { inclineEvents: [{ bezier: 0, bezierPoints: [0, 0, 0, 0],
+                                easingLeft: 0, easingRight: 1, easingType: 1, end: 0,
+                                endTime: [1, 0, 1], linkgroup: 0, start: 0, startTime: [0, 0, 1]
+                            }] },
+                        father: -1,
+                        isCover: 0,
+                        isGif: false,
+                        notes: notesArray,
+                        numOfNotes: notesArray.length,
+                        posControl: [{ easing: 1, pos: 1, x: 0 }, { easing: 1, pos: 1, x: 9999999 }],
+                        sizeControl: [{ easing: 1, size: 1, x: 0 }, { easing: 1, size: 1, x: 9999999 }],
+                        skewControl: [{ easing: 1, skew: 0, x: 0 }, { easing: 1, skew: 0, x: 9999999 }],
+                        yControl: [{ easing: 1, x: 0, y: 1 }, { easing: 1, x: 9999999, y: 1 }],
+                        zOrder: 0
+                    }],
+                    multiLineString: "",
+                    multiScale: 1
+                };
+
+                const infoLines = [
+                    '#',
+                    `Name: ${meta.title || 'Untitled'}`,
+                    `Path: ${meta.title || 'Untitled'}`,
+                    `Song: ${meta.audio || ''}`,
+                    `Picture: ${meta.background || ''}`,
+                    `Chart: chart.json`,
+                    `Level: ${meta.level || '4K Lv.9'}`,
+                    `Composer: ${meta.composer || ''}`,
+                    `Charter: ${meta.charter || ''}`,
+                    `Length: ${(parseFloat(meta.duration) || 0).toFixed(3)}`
+                ];
+                const infoText = infoLines.join('\n');
+                const chartText = JSON.stringify(chartJson, null, 3);
+                const toolText = '本工具使用DeepSeek编写 作者:b站SeaSinvo\n严禁进行低创制作';
+
+                const zip = new JSZip();
+                zip.file('info.txt', infoText);
+                zip.file('chart.json', chartText);
+                zip.file('Tool.txt', toolText);
+                if (parsedData.audioData && parsedData.audioName) zip.file(parsedData.audioName, parsedData.audioData);
+                if (parsedData.imageData && parsedData.imageName) zip.file(parsedData.imageName, parsedData.imageData);
+
+                const blob = await zip.generateAsync({ type: 'blob' });
+                const downloadName = sanitizeFileName(meta.title || 'Untitled') + '.pez';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = downloadName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                return downloadName;
+            }
+
+            // ----- 转换 PEZ → MCZ -----
+            async function convertPEZtoMCZ(tmpF, tmpT) {
+                const meta = parseTmpF(tmpF);
+                const notes = parseTmpT(tmpT);
+
+                const mcJson = {
+                    meta: {
+                        $ver: 0,
+                        creator: meta.charter || '',
+                        background: meta.background || '',
+                        version: meta.level || '4K Lv.9',
+                        id: 0,
+                        mode: 0,
+                        time: Math.floor(Date.now() / 1000),
+                        song: { title: meta.title || 'Untitled', artist: meta.composer || '', id: 0 },
+                        mode_ext: { column: 4, bar_begin: 0 }
+                    },
+                    time: [{ beat: [0, 0, 1], bpm: parseFloat(meta.bpm) || 120 }],
+                    effect: [],
+                    note: [],
+                    extra: { test: { divide: 4, speed: 100, save: 0, lock: 0, edit_mode: 0 } }
+                };
+
+                for (const n of notes) {
+                    const note = { beat: n.start, column: n.column };
+                    if (n.type === 2) note.endbeat = n.end;
+                    mcJson.note.push(note);
+                }
+                mcJson.note.push({ beat: [0, 0, 1], sound: meta.audio || '', vol: 100, offset: 0, type: 1 });
+
+                const mcText = JSON.stringify(mcJson, null, 2);
+                const mcName = meta.audio ? meta.audio.replace(/\.[^.]+$/, '') + '.mc' : 'song.mc';
+                const toolText = '本工具使用DeepSeek编写 作者:b站SeaSinvo\n严禁进行低创制作';
+
+                const zip = new JSZip();
+                zip.file(mcName, mcText);
+                zip.file('Tool.txt', toolText);
+                if (parsedData.audioData && parsedData.audioName) zip.file(parsedData.audioName, parsedData.audioData);
+                if (parsedData.imageData && parsedData.imageName) zip.file(parsedData.imageName, parsedData.imageData);
+
+                const blob = await zip.generateAsync({ type: 'blob' });
+                const downloadName = sanitizeFileName(meta.title || 'Untitled') + '.mcz';
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = downloadName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                return downloadName;
+            }
+
+            // ----- 通用转换入口 -----
+            async function performConversion() {
+                if (!parsedData) { alert('请先导入谱面'); return; }
+
+                // 生成 Tmp
+                const { tmpF, tmpT } = generateTmp(parsedData);
+
+                // 显示加载页（先清理之前的状态）
+                showPage('loading');
+                loadingText.textContent = '正在转换...';
+                loadingDesc.textContent = '请稍候';
+
+                try {
+                    let result;
+                    if (sourceType === 'mcz' && targetType === 'pez') {
+                        const axis = parseInt(editAxis.value, 10) || 405;
+                        const speed = parseFloat(editSpeed.value) || 10;
+                        result = await convertMCZtoPEZ(tmpF, tmpT, axis, speed);
+                    } else if (sourceType === 'pez' && targetType === 'mcz') {
+                        result = await convertPEZtoMCZ(tmpF, tmpT);
+                    } else if (sourceType === targetType) {
+                        // 同格式转换：重新打包
+                        const toolText = '本工具使用DeepSeek编写 作者:b站SeaSinvo\n严禁进行低创制作';
+                        const zip = new JSZip();
+                        if (sourceType === 'mcz') {
+                            const mcName = parsedData.audio ? parsedData.audio.replace(/\.[^.]+$/, '') + '.mc' : 'song.mc';
+                            const mcJson = parsedData.mcJson || {};
+                            zip.file(mcName, JSON.stringify(mcJson, null, 2));
+                            zip.file('Tool.txt', toolText);
+                            if (parsedData.audioData && parsedData.audioName) zip.file(parsedData.audioName, parsedData
+                                .audioData);
+                            if (parsedData.imageData && parsedData.imageName) zip.file(parsedData.imageName, parsedData
+                                .imageData);
+                        } else {
+                            // PEZ 同格式
+                            const chartName = 'chart.json';
+                            zip.file(chartName, JSON.stringify(parsedData.chartJson || {}, null, 3));
+                            const infoLines = [
+                                '#',
+                                `Name: ${parsedData.title}`,
+                                `Path: ${parsedData.title}`,
+                                `Song: ${parsedData.audio}`,
+                                `Picture: ${parsedData.background}`,
+                                `Chart: chart.json`,
+                                `Level: ${parsedData.level}`,
+                                `Composer: ${parsedData.composer}`,
+                                `Charter: ${parsedData.charter}`,
+                                `Length: ${(parsedData.duration || 0).toFixed(3)}`
+                            ];
+                            zip.file('info.txt', infoLines.join('\n'));
+                            zip.file('Tool.txt', toolText);
+                            if (parsedData.audioData && parsedData.audioName) zip.file(parsedData.audioName, parsedData
+                                .audioData);
+                            if (parsedData.imageData && parsedData.imageName) zip.file(parsedData.imageName, parsedData
+                                .imageData);
+                        }
+                        const blob = await zip.generateAsync({ type: 'blob' });
+                        const ext = sourceType === 'mcz' ? 'mcz' : 'pez';
+                        const downloadName = sanitizeFileName(parsedData.title || 'Untitled') + '.' + ext;
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = downloadName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(link.href);
+                        result = downloadName;
+                    } else {
+                        throw new Error('不支持的转换组合');
+                    }
+
+                    // 清理所有页面状态，直接显示完成页（避免重叠）
+                    showPage('done');
+                    doneDesc.textContent = `已下载 ${result}，请确认文件保存后点击下方按钮。`;
+
+                } catch (err) {
+                    // 出错时清理加载页，显示错误覆盖层
+                    showError(err.message || '转换失败，请重试');
+                }
+            }
+
+            // ----- 主流程：导入并解析 -----
+            async function handleFile(file) {
+                try {
+                    const ext = getExt(file.name);
+                    if (!['mcz', 'pez', 'zip'].includes(ext)) {
+                        alert('请导入 .mcz、.pez 或 .zip 文件');
+                        return;
+                    }
+                    currentFile = file;
+                    updateFileStatus(file);
+                    const ab = await file.arrayBuffer();
+
+                    if (ext === 'zip') {
+                        zipFileData = ab;
+                        switchTo('selectFormat', 'left');
+                        return;
+                    }
+
+                    const zip = await JSZip.loadAsync(ab);
+                    let data;
+                    if (ext === 'mcz') {
+                        data = await parseMCZ(zip);
+                        sourceType = 'mcz';
+                    } else {
+                        data = await parsePEZ(zip);
+                        if (!data) return; // parsePEZ 内部已调用 showError
+                        sourceType = 'pez';
+                    }
+                    if (!data) return;
+                    parsedData = data;
+                    fileData = ab;
+
+                    editTitle.value = data.title || '';
+                    editLevel.value = data.level || '';
+                    editComposer.value = data.composer || '';
+                    editCharter.value = data.charter || '';
+                    editIllustrator.value = data.illustrator || 'UK';
+                    editFormat.value = '';
+                    updateMetaHeader();
+                    switchTo('meta', 'left');
+
+                } catch (err) {
+                    alert('解析失败: ' + err.message);
+                    console.error(err);
+                }
+            }
+
+            // ----- 事件绑定 -----
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault();
+                dropZone.classList.add('dragover'); });
+            dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('dragover'); });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    const file = e.dataTransfer.files[0];
+                    const ext = getExt(file.name);
+                    if (['mcz', 'pez', 'zip'].includes(ext)) {
+                        clearFile();
+                        handleFile(file);
+                    } else {
+                        alert('仅支持 .mcz、.pez 或 .zip 文件');
+                    }
+                }
+            });
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const ext = getExt(file.name);
+                    if (['mcz', 'pez', 'zip'].includes(ext)) {
+                        clearFile();
+                        handleFile(file);
+                    } else {
+                        alert('仅支持 .mcz、.pez 或 .zip 文件');
+                        fileInput.value = '';
+                    }
+                }
+            });
+            dropZone.addEventListener('click', (e) => { if (e.target.tagName !== 'INPUT') fileInput.click(); });
+            clearFileBtn.addEventListener('click', (e) => { e.stopPropagation();
+                clearFile(); });
+
+            // 导入页 → 解析
+            importNextBtn.addEventListener('click', () => {
+                if (!currentFile) return;
+                if (!parsedData) {
+                    handleFile(currentFile);
+                } else {
+                    switchTo('meta', 'left');
+                }
+            });
+
+            // 源格式选择
+            sourceFormatSelect.addEventListener('change', () => {
+                formatConfirm.disabled = !sourceFormatSelect.value;
+            });
+
+            formatConfirm.addEventListener('click', async () => {
+                const fmt = sourceFormatSelect.value;
+                if (!fmt) return;
+                try {
+                    const zip = await JSZip.loadAsync(zipFileData);
+                    let data;
+                    if (fmt === 'mcz') {
+                        data = await parseMCZ(zip);
+                        sourceType = 'mcz';
+                    } else {
+                        data = await parsePEZ(zip);
+                        if (!data) return;
+                        sourceType = 'pez';
+                    }
+                    if (!data) return;
+                    parsedData = data;
+                    editTitle.value = data.title || '';
+                    editLevel.value = data.level || '';
+                    editComposer.value = data.composer || '';
+                    editCharter.value = data.charter || '';
+                    editIllustrator.value = data.illustrator || 'UK';
+                    editFormat.value = '';
+                    updateMetaHeader();
+                    switchTo('meta', 'left');
+                } catch (err) {
+                    alert('解析失败: ' + err.message);
+                    console.error(err);
+                }
+            });
+
+            // 元数据
+            metaNext.addEventListener('click', () => {
+                const fmt = editFormat.value;
+                if (!fmt) { alert('请选择输出格式'); return; }
+                targetType = fmt;
+                updateMetaHeader();
+                updateSettingsPage();
+                switchTo('settings', 'left');
+            });
+
+            // 设置
+            settingsConfirm.addEventListener('click', performConversion);
+
+            // 完成
+            doneRefreshBtn.addEventListener('click', () => {
+                location.reload();
+            });
+
+            // 初始化
+            showPage('import');
+            console.log('4KCC-β0.1 已加载 (最终发布版)');
+        })();
+        // PWD b站SeaSinvo
+    </script>
+</body>
+</html>
