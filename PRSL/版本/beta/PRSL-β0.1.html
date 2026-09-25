@@ -1,0 +1,2833 @@
+<!-- PWD b站SeaSinvo -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>PRSL-β0.1</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAACXBIWXMAAAsTAAALEwEAmpwYAAAHiWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDggNzkuMTY0MDM2LCAyMDE5LzA4LzEzLTAxOjA2OjU3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdEV2dD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlRXZlbnQjIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjEuMCAoV2luZG93cykiIHhtcDpDcmVhdGVEYXRlPSIyMDI2LTA4LTIwVDEwOjQ5OjEyKzA4OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDI2LTA5LTE5VDA1OjMyOjA4KzA4OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAyNi0wOS0xOVQwNTozMjowOCswODowMCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDowODVkZjhlMi01YzllLWM4NGEtODEwNy1iZmM2YzJlZDkxMzgiIHhtcE1NOkRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDoxZGUxZTU1MC00OWExLTc3NDEtYjM0OC0yOWYwZDZhNDZiN2UiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDoyMDRhNjgyMS00YzFkLTUxNDItODM1MC01YTY2Nzg2NDg1ZjciIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIj4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY3JlYXRlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDoyMDRhNjgyMS00YzFkLTUxNDItODM1MC01YTY2Nzg2NDg1ZjciIHN0RXZ0OndoZW49IjIwMjYtMDgtMjBUMTA6NDk6MTIrMDg6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCAyMS4wIChXaW5kb3dzKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6Y2IzMDNkZjMtN2Y2MS01MjQxLTljOGYtNDBhYzM3ODQ3Y2I3IiBzdEV2dDp3aGVuPSIyMDI2LTA4LTIwVDEwOjQ5OjEyKzA4OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgMjEuMCAoV2luZG93cykiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjA4NWRmOGUyLTVjOWUtYzg0YS04MTA3LWJmYzZjMmVkOTEzOCIgc3RFdnQ6d2hlbj0iMjAyNi0wOS0xOVQwNTozMjowOCswODowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjAgKFdpbmRvd3MpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8cGhvdG9zaG9wOlRleHRMYXllcnM+IDxyZGY6QmFnPiA8cmRmOmxpIHBob3Rvc2hvcDpMYXllck5hbWU9IlIiIHBob3Rvc2hvcDpMYXllclRleHQ9IlIiLz4gPHJkZjpsaSBwaG90b3Nob3A6TGF5ZXJOYW1lPSJTTCIgcGhvdG9zaG9wOkxheWVyVGV4dD0iU0wiLz4gPHJkZjpsaSBwaG90b3Nob3A6TGF5ZXJOYW1lPSJQIiBwaG90b3Nob3A6TGF5ZXJUZXh0PSJQIi8+IDwvcmRmOkJhZz4gPC9waG90b3Nob3A6VGV4dExheWVycz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6ZL+L4AAAAq0lEQVRIid1WQQoAIQhcl/7/5dlDIC5lmSVFcwnE1HGyIgBPJN7Q6FckSHkhoraflCo7A2jvylusDLoVaEhlTi06EVUdSqOsxsSAQzh4WFvkHpdrjukM2sIcw6BRZnUG2WJiwNEdZ+nHwDL6owifA9NVYUeOIJWoiKw1ypd+ag60lNKuJujWa7n4ABwzaBJDYuxj4H4jJTZpsOSvxw248kVbIi8jnEH9L7UQH6HfTkQRHcXbAAAAAElFTkSuQmCC">
+<style>
+:root{
+  --bg:#eef2f9;--panel:#ffffff;--panel-2:#f5f8fd;
+  --fg:#1a2233;--fg-2:#3d4a5f;--muted:#7a879c;--muted-2:#9aa6b8;
+  --border:rgba(20,35,60,.08);--border-2:rgba(20,35,60,.14);
+  --accent:#5b9cf5;--accent-d:#3d7de0;--accent-l:#a3c6f9;--accent-soft:rgba(91,156,245,.10);
+  --ok:#3ac47d;--err:#ef5350;--warn:#f5a623;
+  --shadow-sm:0 2px 6px rgba(40,70,120,.06);
+  --shadow-lg:0 24px 60px -22px rgba(40,70,120,.35),0 2px 10px rgba(40,70,120,.08);
+  --ease:cubic-bezier(.22,.9,.28,1);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{
+  background:
+    radial-gradient(55% 42% at 12% 6%, #dce8fa 0%, transparent 68%),
+    radial-gradient(48% 38% at 88% 10%, #e6ddfb 0%, transparent 70%),
+    radial-gradient(60% 48% at 50% 102%, #d8e9f8 0%, transparent 72%),
+    linear-gradient(180deg, #f2f6fc 0%, #e7eef9 100%);
+  color:var(--fg);
+  font:15.5px/1.6 system-ui,-apple-system,"Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  display:flex;justify-content:center;align-items:center;overflow:hidden;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+#app{width:100%;max-width:800px;height:100vh;height:100dvh;padding:clamp(10px,2.2vw,22px);display:flex;flex-direction:column;overflow:hidden}
+
+.page{
+  display:none;flex-direction:column;width:100%;height:100%;min-height:0;
+  padding:clamp(16px,2.4vw,26px);border-radius:22px;
+  border:1px solid rgba(255,255,255,.7);
+  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.86));
+  box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.9);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  overflow:hidden;position:relative;
+}
+.page.active{display:flex;animation:pageIn .32s var(--ease)}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+
+.titleRow{display:flex;align-items:center;gap:10px;margin:0 0 7px}
+.title{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:700;letter-spacing:.2px;color:var(--fg);margin:0;flex:1;min-width:0}
+.title::before{content:'';flex:0 0 auto;width:4px;height:19px;border-radius:3px;background:linear-gradient(180deg,var(--accent),#7cb5f8);box-shadow:0 0 12px rgba(91,156,245,.5)}
+.stepIndicator{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:.4px;color:var(--accent-d);background:var(--accent-soft);padding:4px 11px;border-radius:99px;font-variant-numeric:tabular-nums}
+.stepIndicator::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(91,156,245,.8)}
+.desc{color:var(--muted);font-size:13.5px;line-height:1.7;margin:0 0 14px;padding-left:15px;white-space:pre-line}
+
+.qmark{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:13px;font-weight:700;line-height:1;color:var(--accent-d);background:var(--accent-soft);border:1px solid rgba(91,156,245,.3);cursor:pointer;user-select:none;transition:background .16s,transform .12s,color .16s}
+.qmark:hover{background:rgba(91,156,245,.18);transform:scale(1.06)}
+.qmark:active{transform:scale(.95)}
+
+button{
+  font-family:inherit;font-size:15.5px;font-weight:600;letter-spacing:.2px;color:#fff;
+  border:0;border-radius:12px;padding:12px 22px;min-height:44px;
+  cursor:pointer;user-select:none;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#7cb2fb 0%,#4d8ff0 100%);
+  box-shadow:0 10px 22px -10px rgba(77,143,240,.85),0 1px 0 rgba(255,255,255,.5) inset;
+  transition:transform .16s var(--ease),box-shadow .16s,filter .16s,opacity .16s;
+}
+button::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 55%);opacity:0;transition:opacity .16s}
+button:hover:not(:disabled){filter:brightness(1.03);transform:translateY(-1px);box-shadow:0 14px 26px -12px rgba(77,143,240,.95),0 1px 0 rgba(255,255,255,.5) inset}
+button:hover:not(:disabled)::after{opacity:1}
+button:active:not(:disabled){transform:translateY(0) scale(.975);box-shadow:0 4px 10px -6px rgba(77,143,240,.7),0 1px 0 rgba(255,255,255,.4) inset}
+button:focus-visible{outline:2px solid rgba(91,156,245,.6);outline-offset:2px}
+button:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.4);transform:none;box-shadow:none}
+button.ghost{background:#fff;color:var(--fg);border:1px solid var(--border-2);box-shadow:var(--shadow-sm)}
+button.ghost::after{display:none}
+button.ghost:hover:not(:disabled){background:var(--panel-2);border-color:rgba(91,156,245,.45);color:var(--accent-d);transform:translateY(-1px);box-shadow:0 6px 14px -6px rgba(40,70,120,.18)}
+button.dangerBtn{background:linear-gradient(180deg,#ff7b7b 0%,#e24a4a 100%);box-shadow:0 10px 22px -10px rgba(226,74,74,.85),0 1px 0 rgba(255,255,255,.4) inset}
+button.dangerBtn:hover:not(:disabled){box-shadow:0 14px 26px -12px rgba(226,74,74,.95),0 1px 0 rgba(255,255,255,.4) inset}
+
+.btnRow{display:flex;gap:14px;justify-content:center;align-items:center;flex:1;flex-wrap:wrap;align-content:center}
+.bottomBar{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding-top:14px;margin-top:12px;border-top:1px solid var(--border);flex:0 0 auto}
+.bottomBar.spread{justify-content:space-between}
+.flexCol{display:flex;flex-direction:column;flex:1;min-height:0}
+.listWrap{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;margin-top:2px}
+
+.versionText{flex:1;text-align:center;font-size:12.5px;color:var(--muted-2);user-select:none;cursor:default;font-variant-numeric:tabular-nums;letter-spacing:.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.versionText.clickable{cursor:pointer;color:var(--warn);text-decoration:underline;text-decoration-style:dotted;text-underline-offset:4px}
+.versionText.clickable:hover{color:#d98f0a;text-decoration-style:solid}
+
+.searchRow{position:relative;margin-bottom:10px;flex:0 0 auto}
+.searchRow input{width:100%;background:var(--panel-2);border:1px solid var(--border-2);border-radius:11px;padding:11px 14px 11px 38px;font-size:14px;font-family:inherit;color:var(--fg);outline:none;transition:border-color .16s,background .16s,box-shadow .16s}
+.searchRow input::placeholder{color:var(--muted-2)}
+.searchRow input:focus{border-color:rgba(91,156,245,.6);background:#fff;box-shadow:0 0 0 3px rgba(91,156,245,.14)}
+.searchRow::before{content:'';position:absolute;left:13px;top:50%;width:14px;height:14px;transform:translateY(-50%);background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237a879c' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='M11 11l3.5 3.5'/%3E%3C/svg%3E") center/contain no-repeat;pointer-events:none}
+
+.scrollArea{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:8px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(91,156,245,.55) transparent}
+.scrollArea::-webkit-scrollbar{width:10px;height:10px}
+.scrollArea::-webkit-scrollbar-track{background:transparent;margin:4px 0}
+.scrollArea::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(91,156,245,.7),rgba(125,90,220,.65));border-radius:99px;border:3px solid transparent;background-clip:content-box}
+.scrollArea::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(91,156,245,.95),rgba(125,90,220,.9));background-clip:content-box}
+
+.group{margin-bottom:2px}
+.groupTitle{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:11px;font-weight:600;font-size:15px;color:var(--fg-2);cursor:pointer;user-select:none;transition:background .16s,color .16s}
+.groupTitle:hover{background:var(--accent-soft);color:var(--fg)}
+.groupTitle .tri{flex:0 0 auto;width:22px;height:22px;border-radius:7px;border:0;position:relative;background:rgba(91,156,245,.14);transition:transform .24s var(--ease), background .18s}
+.groupTitle .tri::after{content:'';position:absolute;left:8px;top:7px;border-left:6px solid var(--accent);border-top:4px solid transparent;border-bottom:4px solid transparent}
+.groupTitle:hover .tri{background:rgba(91,156,245,.24)}
+.group.open > .groupTitle .tri{transform:rotate(90deg);background:rgba(91,156,245,.28)}
+.groupTitle .groupLabel{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.groupTitle .groupAll{flex:0 0 auto;font-size:11.5px;font-weight:600;letter-spacing:.3px;color:var(--accent-d);background:rgba(91,156,245,.12);border:1px solid rgba(91,156,245,.22);padding:3px 9px;border-radius:99px;cursor:pointer;user-select:none;transition:background .14s,color .14s}
+.groupTitle .groupAll:hover{background:rgba(91,156,245,.22)}
+.groupBody{display:none;padding-left:12px;margin-left:11px;border-left:1px solid rgba(20,35,60,.08)}
+.group.open > .groupBody{display:block;animation:slideDown .22s var(--ease)}
+@keyframes slideDown{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+.item{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;font-size:14.5px;color:var(--fg-2);cursor:pointer;user-select:none;transition:background .14s,color .14s;min-height:40px}
+.item:hover{background:var(--accent-soft);color:var(--fg)}
+.item input[type=checkbox]{appearance:none;-webkit-appearance:none;width:19px;height:19px;flex:0 0 auto;margin:0;border:1.5px solid rgba(20,35,60,.24);border-radius:6px;background:#fff;cursor:pointer;position:relative;transition:background .16s,border-color .16s,box-shadow .16s}
+.item input[type=checkbox]:hover{border-color:rgba(91,156,245,.75)}
+.item input[type=checkbox]:checked{background:linear-gradient(180deg,#6aa6f9,#4d8ff0);border-color:transparent;box-shadow:0 3px 10px -3px rgba(77,143,240,.7)}
+.item input[type=checkbox]:checked::after{content:'';position:absolute;left:6px;top:2.5px;width:5px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(43deg)}
+
+.pickedItem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;border-radius:11px;font-size:15px;cursor:pointer;user-select:none;margin-bottom:6px;background:#fff;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:background .15s,border-color .15s,transform .1s,box-shadow .15s}
+.pickedItem:hover{background:var(--accent-soft);border-color:rgba(91,156,245,.4);transform:translateX(2px);box-shadow:0 6px 16px -8px rgba(40,70,120,.22)}
+.pickedItem:active{transform:translateX(2px) scale(.99)}
+.pickedItem .state{flex:0 0 auto;font-size:12px;font-weight:600;letter-spacing:.3px;color:var(--muted);padding:3px 9px;border-radius:99px;background:var(--panel-2);border:1px solid var(--border)}
+.pickedItem .state:empty{display:none}
+.pickedItem .state.set{color:#fff;background:linear-gradient(180deg,#5bd393,#2fb56b);border-color:transparent;box-shadow:0 3px 10px -3px rgba(58,196,125,.6)}
+.pickedItem .state.damaged{color:#fff;background:linear-gradient(180deg,#ff7b7b,#d63b3b);border-color:transparent;box-shadow:0 3px 10px -3px rgba(239,83,80,.6)}
+
+.unknownBox{margin:10px 0 2px;padding:12px 14px;border-radius:11px;border:1px solid rgba(239,83,80,.28);background:linear-gradient(180deg,rgba(239,83,80,.09),rgba(239,83,80,.03));color:#b73a38;font-size:13.5px;line-height:1.6;cursor:pointer;user-select:none;transition:background .16s,border-color .16s}
+.unknownBox:hover{background:linear-gradient(180deg,rgba(239,83,80,.15),rgba(239,83,80,.06));border-color:rgba(239,83,80,.45)}
+.unknownBox.readonly{cursor:default}
+.unknownBox.readonly:hover{background:linear-gradient(180deg,rgba(239,83,80,.09),rgba(239,83,80,.03));border-color:rgba(239,83,80,.28)}
+.unknownBox .line{margin:2px 0}
+.unknownBox .warn{color:#c88a17;margin-top:6px}
+
+.dropZone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:32px 20px;border-radius:16px;border:2px dashed rgba(91,156,245,.4);background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(245,249,253,.5));cursor:pointer;user-select:none;text-align:center;transition:border-color .18s,background .18s,transform .12s,box-shadow .18s;min-height:180px}
+.dropZone:hover{border-color:rgba(91,156,245,.7);background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(238,246,255,.75));box-shadow:0 12px 32px -16px rgba(77,143,240,.35)}
+.dropZone.dragging{border-color:var(--accent);background:linear-gradient(180deg,rgba(238,246,255,1),rgba(220,235,255,.95));transform:scale(1.01);box-shadow:0 18px 40px -16px rgba(77,143,240,.5)}
+.dropZone .dropIcon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#e4eefb,#d3e3f8);color:var(--accent-d);font-size:24px;line-height:1;box-shadow:0 8px 20px -10px rgba(77,143,240,.4);transition:transform .18s}
+.dropZone.dragging .dropIcon{transform:scale(1.08) translateY(2px)}
+.dropZone .dropMain{font-size:15px;font-weight:600;color:var(--fg-2)}
+.dropZone .dropSub{font-size:13px;color:var(--muted);letter-spacing:.2px}
+.dropZone .dropSub code{background:rgba(91,156,245,.1);color:var(--accent-d);padding:2px 7px;border-radius:5px;font-size:12px;font-weight:600}
+
+.readonlyField{padding:13px 15px;border-radius:11px;background:var(--panel-2);border:1px solid var(--border);font-size:15px;color:var(--fg);line-height:1.65;word-break:break-word;min-height:44px}
+.readonlyField.empty{color:var(--muted-2);font-style:italic}
+
+.cropStage{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;overflow:hidden;position:relative;padding:8px}
+.cropCanvas{display:block;max-width:100%;max-height:100%;touch-action:none;user-select:none;border:1px solid rgba(91,156,245,.5);border-radius:12px;background:#f0f4fa;box-shadow:0 20px 50px -22px rgba(40,70,120,.3),0 0 30px -10px rgba(91,156,245,.35)}
+.cropBtns{display:flex;gap:10px;justify-content:center;padding:14px 0 4px;flex:0 0 auto;flex-wrap:wrap}
+.cropBtns button{padding:10px 20px;font-size:14.5px;border-radius:10px;min-height:40px}
+
+.formRow{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.formRow label{font-size:13px;color:var(--muted);letter-spacing:.3px;padding-left:2px;font-weight:600}
+.formRow input,.formRow textarea{width:100%;background:var(--panel-2);color:var(--fg);border:1px solid var(--border-2);border-radius:11px;padding:12px 14px;font-size:15px;font-family:inherit;outline:none;transition:border-color .16s,background .16s,box-shadow .16s}
+.formRow input::placeholder,.formRow textarea::placeholder{color:var(--muted-2)}
+.formRow input:focus,.formRow textarea:focus{border-color:rgba(91,156,245,.65);background:#fff;box-shadow:0 0 0 3px rgba(91,156,245,.14)}
+.formRow textarea{resize:vertical;min-height:130px;line-height:1.7}
+
+.byteHint{font-size:12px;color:var(--muted-2);text-align:right;letter-spacing:.2px;font-variant-numeric:tabular-nums}
+.byteHint.over{color:var(--err);font-weight:700}
+
+.warnText{font-size:13px;color:#a8710d;background:linear-gradient(180deg,rgba(245,166,35,.12),rgba(245,166,35,.04));padding:11px 13px;border-radius:11px;border:1px solid rgba(245,166,35,.25);margin-bottom:16px;line-height:1.7}
+
+.previewImgWrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:0;position:relative;padding:10px}
+.previewImgWrap img{max-width:100%;max-height:100%;display:block;border-radius:12px;box-shadow:0 20px 50px -20px rgba(40,70,120,.3),0 0 0 1px rgba(20,35,60,.06)}
+.previewImgWrap .warnOverlay{position:absolute;pointer-events:none;border-radius:2px}
+.previewImgWrap audio{width:100%;max-width:480px}
+
+.exportNote{text-align:center;color:var(--muted);font-size:15px;margin:auto 0;padding:0 12px;line-height:1.8}
+.exportNote.big{font-size:22px;color:var(--fg);font-weight:700;letter-spacing:.5px}
+.exportNote.big::before{content:'';display:block;width:64px;height:64px;margin:0 auto 18px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='rgba(58,196,125,0.14)' stroke='%233ac47d' stroke-width='2'/%3E%3Cpath d='M19 33l9 9 17-19' fill='none' stroke='%233ac47d' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;filter:drop-shadow(0 6px 14px rgba(58,196,125,.4));animation:pop .42s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+
+.downloadHint{text-align:center;font-size:13.5px;color:var(--muted);padding:18px;line-height:1.8}
+.downloadHint a{color:var(--accent-d);text-decoration:none;border-bottom:1px dashed rgba(91,156,245,.6);padding-bottom:1px;transition:color .15s,border-color .15s}
+.downloadHint a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+.noteBox{font-size:13px;color:var(--fg-2);background:linear-gradient(180deg,rgba(91,156,245,.07),rgba(91,156,245,.02));border:1px solid rgba(91,156,245,.18);border-radius:12px;padding:14px;margin-top:12px;line-height:1.85}
+.noteBox code{background:rgba(91,156,245,.12);padding:1px 6px;border-radius:5px;font-size:12px;color:var(--accent-d)}
+
+.mask{position:fixed;inset:0;z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:20px;text-align:center;background:rgba(240,245,252,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--fg);font-size:16px}
+.mask.show{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.spinner{width:44px;height:44px;border-radius:50%;border:3.5px solid rgba(91,156,245,.18);border-top-color:var(--accent);border-right-color:var(--accent-l);animation:spin .78s linear infinite;box-shadow:0 4px 16px -6px rgba(91,156,245,.5)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.dialogCard{width:100%;max-width:440px;padding:22px;border-radius:20px;text-align:left;background:#fff;border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.9);animation:dialogPop .28s cubic-bezier(.2,.9,.3,1.25)}
+@keyframes dialogPop{from{opacity:0;transform:scale(.92) translateY(10px)}to{opacity:1;transform:none}}
+.dialogHeader{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.dialogIcon{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;line-height:1;color:#fff;background:linear-gradient(180deg,#7cb2fb,#4d8ff0)}
+.dialogIcon.info{background:linear-gradient(180deg,#7cb2fb,#4d8ff0)}
+.dialogIcon.fail{background:linear-gradient(180deg,#ff7b7b,#e24a4a)}
+.dialogIcon.success{background:linear-gradient(180deg,#5bd393,#2fb56b)}
+.dialogTitle{font-size:17px;font-weight:700;color:var(--fg);flex:1;min-width:0}
+.dialogBody{color:var(--fg-2);font-size:14.5px;line-height:1.75;white-space:pre-line;margin-bottom:20px;text-align:left}
+.dialogBtns{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.dialogBtns button{padding:10px 22px;font-size:14.5px;border-radius:10px;min-height:42px}
+
+/* ============================================================
+   主界面 / 二级菜单 —— 竖长方形按钮（修复：使用固定比例）
+   ============================================================ */
+#page1,#page2{justify-content:center}
+#page1 .titleRow,#page2 .titleRow{justify-content:center}
+#page1 .title,#page2 .title{justify-content:center;font-size:21px;flex:0 1 auto}
+#page1 .desc,#page2 .desc{text-align:center;padding-left:0;margin-bottom:22px}
+
+#page1 .btnRow,#page2 .btnRow{
+  flex:0 0 auto;
+  flex-direction:row;
+  align-items:stretch;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:nowrap;
+  margin-top:4px;
+}
+/* 竖长方形：宽 < 高，固定比例 */
+#page1 .btnRow button,#page2 .btnRow button{
+  position:relative;
+  flex:0 0 auto;
+  width:132px;
+  height:186px;
+  padding:22px 10px;
+  border-radius:18px;
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:1.2px;
+  line-height:1.5;
+  text-align:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transform:none;
+}
+#page1 .btnRow button::after,#page2 .btnRow button::after{
+  background:linear-gradient(180deg,rgba(255,255,255,.4),transparent 60%);
+}
+#page1 .btnRow button:hover:not(:disabled),
+#page2 .btnRow button:hover:not(:disabled){transform:translateY(-2px)}
+#page1 .btnRow button:active:not(:disabled),
+#page2 .btnRow button:active:not(:disabled){transform:translateY(1px) scale(.99)}
+
+/* 签名方式页：竖长方形按钮 */
+#pageChooseSign .btnRow{
+  flex-direction:row;align-items:stretch;justify-content:center;
+  gap:18px;flex-wrap:nowrap;flex:0 0 auto;
+}
+#pageChooseSign .btnRow button{
+  flex:0 0 auto;
+  width:132px;height:160px;
+  padding:22px 10px;border-radius:18px;
+  font-size:15.5px;font-weight:700;letter-spacing:1.2px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+@media (max-width:520px){
+  .page{padding:16px 14px;border-radius:18px}
+  .title{font-size:17px;gap:8px}
+  .title::before{height:17px}
+  .desc{padding-left:13px;font-size:13px;margin-bottom:12px}
+  button{padding:11px 16px;font-size:14.5px;min-height:44px;border-radius:11px}
+  #page1 .title,#page2 .title{font-size:19px}
+  #page1 .btnRow button,#page2 .btnRow button{
+    width:118px;height:168px;font-size:15px;gap:14px;
+  }
+  #page1 .btnRow,#page2 .btnRow{gap:14px}
+  #pageChooseSign .btnRow button{width:118px;height:148px;font-size:14.5px}
+  .bottomBar{gap:8px;padding-top:12px;margin-top:10px}
+  .bottomBar button{padding:10px 14px;font-size:13.5px}
+  .versionText{font-size:11.5px}
+  .item{font-size:14px;padding:9px 10px}
+  .pickedItem{font-size:14.5px;padding:12px}
+  .dialogCard{padding:18px;border-radius:16px}
+  .dialogBtns button{padding:10px 18px;font-size:14px}
+  .dropZone{padding:26px 14px;min-height:160px}
+  .dropZone .dropIcon{width:44px;height:44px;font-size:20px}
+  .dropZone .dropMain{font-size:14px}
+  .dropZone .dropSub{font-size:12px}
+}
+@media (orientation:landscape) and (max-height:520px){
+  .cropStage{max-height:44vh}
+  .exportNote.big{font-size:18px}
+  .exportNote.big::before{width:48px;height:48px;margin-bottom:10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ 主界面 ============ -->
+  <section class="page active" id="page1">
+    <div class="titleRow"><div class="title">主界面</div></div>
+    <div class="desc">请选择要进行的操作</div>
+    <div class="btnRow">
+      <button id="btnBeauty">APK 美化</button>
+      <button id="btnCustom">定制美化包</button>
+    </div>
+  </section>
+
+  <!-- ============ 定制美化包二级菜单（修复：去掉 ghost） ============ -->
+  <section class="page" id="page2">
+    <div class="titleRow"><div class="title">定制美化包</div></div>
+    <div class="desc">请选择操作</div>
+    <div class="btnRow">
+      <button id="btnNew">新建美化包</button>
+      <button id="btnEdit">修改美化包</button>
+    </div>
+  </section>
+
+  <!-- ============ 勾选页 ============ -->
+  <section class="page" id="page3">
+    <div class="titleRow">
+      <div class="title" id="p3Title">新建美化包</div>
+      <div class="stepIndicator" id="prog3">1 / 5</div>
+    </div>
+    <div class="desc">请勾选要修改的内容</div>
+    <div class="searchRow">
+      <input type="search" id="p3Search" placeholder="搜索要修改的内容…" autocomplete="off">
+    </div>
+    <div class="listWrap">
+      <div class="scrollArea" id="scrollArea3"></div>
+      <div class="unknownBox" id="unknownBox3" style="display:none"></div>
+      <div class="bottomBar spread">
+        <div class="versionText" id="ver3"></div>
+        <button id="btnLock" disabled>锁定自定义内容</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 待设置页 ============ -->
+  <section class="page" id="page4">
+    <div class="titleRow">
+      <div class="title" id="p4Title">新建美化包</div>
+      <div class="stepIndicator" id="prog4">2 / 5</div>
+    </div>
+    <div class="desc" id="p4Desc">点击任意一行进行设置</div>
+    <div class="listWrap">
+      <div class="scrollArea" id="scrollArea4"></div>
+      <div class="bottomBar spread">
+        <div class="versionText" id="ver4"></div>
+        <button id="btnSign" disabled>设置初始项</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 导入文件（子项，拖拽区） ============ -->
+  <section class="page" id="page5">
+    <div class="titleRow">
+      <div class="title"><span id="p5Title">导入</span></div>
+    </div>
+    <div class="desc" id="p5Desc"></div>
+    <div class="flexCol">
+      <div class="dropZone" id="p5Drop">
+        <div class="dropIcon">⬇</div>
+        <div class="dropMain">点击选择，或将文件拖拽到此处</div>
+        <div class="dropSub" id="p5DropSub">支持所选格式</div>
+      </div>
+      <input type="file" id="p5File" hidden>
+      <div class="bottomBar"><button class="ghost" id="p5Back">返回</button></div>
+    </div>
+  </section>
+
+  <!-- ============ 裁剪页 ============ -->
+  <section class="page" id="page6">
+    <div class="titleRow">
+      <div class="title"><span id="p6Title">裁剪</span></div>
+      <div class="qmark" id="p6Qmark" style="display:none">?</div>
+    </div>
+    <div class="desc" id="p6Desc"></div>
+    <div class="flexCol">
+      <div class="cropStage" id="cropStage"><canvas class="cropCanvas" id="cropCanvas"></canvas></div>
+      <div class="cropBtns">
+        <button class="ghost" id="cropZoomIn">放大</button>
+        <button class="ghost" id="cropZoomOut">缩小</button>
+        <button class="ghost" id="cropReset">重置</button>
+      </div>
+      <div class="bottomBar spread">
+        <button class="ghost" id="p6Back">返回</button>
+        <button id="p6Ok">确定</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 预览页 ============ -->
+  <section class="page" id="page7">
+    <div class="titleRow">
+      <div class="title"><span id="p7Title">预览</span></div>
+      <div class="qmark" id="p7Qmark" style="display:none">?</div>
+    </div>
+    <div class="desc" id="p7Desc"></div>
+    <div class="flexCol">
+      <div class="previewImgWrap" id="p7Preview"></div>
+      <div class="bottomBar spread">
+        <button class="ghost" id="p7Back">返回</button>
+        <button id="p7Ok">确定</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 默认选中页 ============ -->
+  <section class="page" id="page8">
+    <div class="titleRow">
+      <div class="title">设置默认选中内容</div>
+      <div class="stepIndicator" id="prog8">3 / 5</div>
+    </div>
+    <div class="desc">勾选后，玩家首次进入将默认选中这些内容</div>
+    <div class="listWrap">
+      <div class="scrollArea" id="scrollArea8"></div>
+      <div class="bottomBar spread">
+        <button class="ghost" id="p8Back">返回</button>
+        <div class="versionText" id="ver8"></div>
+        <button id="p8Next">去署名</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 加密完成页 ============ -->
+  <section class="page" id="page9">
+    <div class="titleRow">
+      <div class="title"><span id="p9Title">加密完成</span></div>
+    </div>
+    <div class="desc" id="p9Desc"></div>
+    <div class="flexCol">
+      <div class="exportNote big">加密完成</div>
+      <div class="bottomBar spread">
+        <button class="ghost" id="p9Back">返回</button>
+        <div class="versionText" id="ver9"></div>
+        <button id="p9Ok">确定</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 文本编辑页 ============ -->
+  <section class="page" id="pageText">
+    <div class="titleRow">
+      <div class="title"><span id="ptTitle">文本编辑</span></div>
+      <div class="qmark" id="ptQmark" style="display:none">?</div>
+    </div>
+    <div class="desc" id="ptDesc"></div>
+    <div class="flexCol">
+      <div class="scrollArea" style="padding-right:6px">
+        <div id="ptWarn" class="warnText"></div>
+        <div id="ptForm"></div>
+      </div>
+      <div class="bottomBar spread">
+        <button class="ghost" id="ptBack">返回</button>
+        <button id="ptOk">确定</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 署名页 ============ -->
+  <section class="page" id="page10">
+    <div class="titleRow">
+      <div class="title">署名</div>
+      <div class="stepIndicator" id="prog10">4 / 5</div>
+    </div>
+    <div class="desc">描述可留空；名称与署名为必填</div>
+    <div class="flexCol">
+      <div class="scrollArea" style="padding-right:6px">
+        <div class="formRow"><label>美化包名称</label><input type="text" id="signName" autocomplete="off"></div>
+        <div class="formRow"><label>署名</label><input type="text" id="signAuthor" autocomplete="off"></div>
+        <div class="formRow"><label>描述（可留空）</label><textarea id="signDesc"></textarea></div>
+      </div>
+      <div class="bottomBar spread">
+        <button class="ghost" id="p10Back">返回</button>
+        <div class="versionText" id="ver10"></div>
+        <button id="p10Next">去导出</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 导出页 ============ -->
+  <section class="page" id="page11">
+    <div class="titleRow">
+      <div class="title">导出</div>
+      <div class="stepIndicator" id="prog11">5 / 5</div>
+    </div>
+    <div class="desc"></div>
+    <div class="flexCol">
+      <div class="exportNote" id="p11Note">正在导出，请在导出完毕后刷新页面</div>
+      <div class="bottomBar spread">
+        <div class="versionText" id="ver11"></div>
+        <button id="p11Refresh">刷新页面</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 导入 apk（拖拽区） ============ -->
+  <section class="page" id="pageApk1">
+    <div class="titleRow"><div class="title">导入 apk</div></div>
+    <div class="desc">上传需要更改的 phira 版本</div>
+    <div class="flexCol">
+      <div class="dropZone" id="apk1Drop">
+        <div class="dropIcon">⬇</div>
+        <div class="dropMain">点击选择，或将文件拖拽到此处</div>
+        <div class="dropSub">支持 <code>.apk</code></div>
+      </div>
+      <input type="file" id="apk1File" accept=".apk" hidden>
+      <div class="downloadHint">
+        如果没有 apk 前往 <a href="https://phira.dmocken.top" target="_blank" rel="noopener noreferrer">phira.dmocken.top</a> 下载
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 导入 psz（拖拽区） ============ -->
+  <section class="page" id="pageApk2">
+    <div class="titleRow"><div class="title">导入 psz</div></div>
+    <div class="desc">上传想要更改的美化包</div>
+    <div class="flexCol">
+      <div class="dropZone" id="apk2Drop">
+        <div class="dropIcon">⬇</div>
+        <div class="dropMain">点击选择，或将文件拖拽到此处</div>
+        <div class="dropSub">支持 <code>.psz</code></div>
+      </div>
+      <input type="file" id="apk2File" accept=".psz" hidden>
+    </div>
+  </section>
+
+  <!-- ============ APK 默认选中页 ============ -->
+  <section class="page" id="pageApk3">
+    <div class="titleRow"><div class="title">设置默认选中内容</div></div>
+    <div class="desc">勾选要应用的美化项</div>
+    <div class="searchRow">
+      <input type="search" id="apk3Search" placeholder="搜索要应用的内容…" autocomplete="off">
+    </div>
+    <div class="listWrap">
+      <div class="scrollArea" id="scrollAreaApk3"></div>
+      <div class="unknownBox readonly" id="unknownBoxApk3" style="display:none"></div>
+      <div class="bottomBar spread">
+        <button class="ghost" id="apk3Back">返回</button>
+        <div class="versionText" id="verApk3"></div>
+        <button id="apk3Beautify">一键美化</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ psz 信息页 ============ -->
+  <section class="page" id="pagePszInfo">
+    <div class="titleRow"><div class="title">美化包信息</div></div>
+    <div class="desc">以下是该美化包的信息</div>
+    <div class="flexCol">
+      <div class="scrollArea" style="padding-right:6px">
+        <div class="formRow">
+          <label>名称</label>
+          <div class="readonlyField" id="pszInfoName">—</div>
+        </div>
+        <div class="formRow">
+          <label>作者</label>
+          <div class="readonlyField" id="pszInfoAuthor">—</div>
+        </div>
+        <div class="formRow">
+          <label>简介</label>
+          <div class="readonlyField" id="pszInfoDesc">—</div>
+        </div>
+      </div>
+      <div class="bottomBar spread">
+        <button class="ghost" id="pszInfoBack">返回</button>
+        <button id="pszInfoNext">下一步</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 签名方式选择页 ============ -->
+  <section class="page" id="pageChooseSign">
+    <div class="titleRow"><div class="title">APK 处理完成</div></div>
+    <div class="desc">请选择签名方式</div>
+    <div class="flexCol">
+      <div class="noteBox" style="margin:0 0 14px 0">
+        修复完成。修复后的 APK 未签名。
+        <br>· 手动自签：直接下载未签名 APK，由你自行使用mt管理器签名。
+        <br>· 自动签名：使用内嵌密钥自动完成 v2 签名后下载。
+        <br>· 无论是任何签名方式都无法直接与正式版共存(这意味着你需要删除正式版)
+        <br>· 你可以使用mt管理器开启apk共存
+      </div>
+      <div class="btnRow">
+        <button class="ghost" id="btnManualSign">手动自签</button>
+        <button id="btnAutoSign">自动签名</button>
+      </div>
+      <div class="bottomBar">
+        <button class="ghost" id="chooseBack">返回</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="mask" id="mask">
+  <div class="spinner"></div>
+  <div id="maskText">处理中</div>
+</div>
+
+<div class="mask" id="dialogMask">
+  <div class="dialogCard">
+    <div class="dialogHeader">
+      <div class="dialogIcon" id="dialogIcon">i</div>
+      <div class="dialogTitle" id="dialogTitle"></div>
+    </div>
+    <div class="dialogBody" id="dialogBody"></div>
+    <div class="dialogBtns" id="dialogBtns"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
+<script type="module">
+/* ============================================================
+ * 0. 全局
+ * ============================================================ */
+const TOOL_VERSION = 'beta0.1';
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+let modifyMode = false;
+let importedVersionRaw = null;
+let importedVersionObj = null;
+let infoEntries = {};
+let originalPicked = [];
+let originalInfoKeys = new Set();
+let unknownKeys = [];
+let apkFile = null;
+let pendingPszInfo = null;
+
+const vfs = {};
+const vfsSet = (p, b) => { vfs[p] = b; };
+
+const state = { picked: [], status: {}, data: {}, signData: null };
+
+function resetState(){
+  state.picked = [];
+  state.status = {};
+  state.data = {};
+  state.signData = null;
+  Object.keys(vfs).forEach(k => delete vfs[k]);
+  infoEntries = {};
+  originalPicked = [];
+  originalInfoKeys = new Set();
+  unknownKeys = [];
+  importedVersionRaw = null;
+  importedVersionObj = null;
+  modifyMode = false;
+}
+
+/* ============================================================
+ * 1. 版本工具
+ * ============================================================ */
+function parseVersion(s){
+  if (!s || typeof s !== 'string') return null;
+  const m = s.match(/^([A-Za-z]*)(\d+)\.(\d+)(?:\.(\d+))?$/);
+  if (!m) return null;
+  return { prefix: m[1], major: +m[2], minor: +m[3], patch: m[4] ? +m[4] : 0 };
+}
+function compareVersions(a, b){
+  if (a === null && b === null) return 0;
+  if (a === null) return 1;
+  if (b === null) return -1;
+  if (a.major !== b.major) return a.major - b.major;
+  if (a.minor !== b.minor) return a.minor - b.minor;
+  return a.patch - b.patch;
+}
+
+/* ============================================================
+ * 2. info 工具
+ * ============================================================ */
+function parseInfoText(text){
+  const lines = text.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.length > 0);
+  const version = lines[0] || null;
+  const entries = {};
+  for (let i = 1; i < lines.length; i++){
+    const parts = lines[i].trim().split(/\s+/);
+    if (parts.length >= 2) entries[parts[0]] = parts[1];
+  }
+  return { version, entries };
+}
+function buildInfoText(version, entries){
+  const lines = [version];
+  for (const [k, v] of Object.entries(entries)) lines.push(k + ' ' + v);
+  return lines.join('\n') + '\n';
+}
+function isValidKey(key){ return ALL_KEYS.includes(key); }
+
+/* ============================================================
+ * 3. 结构 / 配置
+ * ============================================================ */
+const TREE = [
+  { title:'角色修改', children:[
+    { key:'shee',  label:'角色立绘修改' },
+    { key:'intor', label:'角色描述信息修改[仅对于离线模式生效]' },
+    { key:'COMBO', label:'COMBO显示修改' },
+  ]},
+  { title:'背景修改', children:[
+    { key:'background', label:'背景图片修改' },
+    { key:'bgm',        label:'背景音乐修改' },
+  ]},
+  { title:'图标修改', children:[
+    { title:'主界面图标', children:[
+      { key:'message',  label:'邮件 图标' },
+      { key:'settings', label:'设置 图标' },
+      { key:'respack',  label:'资源包 图标' },
+      { key:'medal',    label:'活动 图标' },
+      { key:'resume',   label:'开始 图标' },
+      { key:'back',     label:'返回 图标' },
+      { key:'language', label:'语言 图标' },
+      { key:'retry',    label:'重新开始 图标' },
+    ]},
+    { title:'谱面界面图标', children:[
+      { key:'delete',        label:'删除 图标' },
+      { key:'download',      label:'下载 图标' },
+      { key:'edit',          label:'编辑 图标' },
+      { key:'filter',        label:'过滤器 图标' },
+      { key:'star',          label:'收藏 图标' },
+      { key:'star_outline',  label:'收藏[边框] 图标' },
+      { key:'heart',         label:'喜欢 图标' },
+      { key:'heart_outline', label:'喜欢[边框] 图标' },
+      { key:'info',          label:'信息 图标' },
+      { key:'leaderboard',   label:'排行榜 图标' },
+      { key:'menu',          label:'更多 图标' },
+      { key:'multiplayer',   label:'联机 图标' },
+      { key:'ok',            label:'确认 图标' },
+      { key:'order',         label:'排序 图标' },
+      { key:'close',         label:'取消 图标' },
+      { key:'plus',          label:'添加谱面 图标' },
+      { key:'question',      label:'疑问 图标' },
+      { key:'search',        label:'搜索 图标' },
+      { key:'select',        label:'选择 图标' },
+      { key:'user',          label:'用户 图标' },
+      { key:'warn',          label:'警告提示 图标' },
+      { key:'error',         label:'错误提示 图标' },
+      { key:'cloud_check',   label:'上传成功 图标' },
+      { key:'cloud_none',    label:'上传失败 图标' },
+      { key:'mod',           label:'模组选择 图标' },
+      { key:'proceed',       label:'下一步 图标' },
+    ]},
+    { title:'评分图标', children:[
+      { key:'F',   label:'F 图标' },
+      { key:'C',   label:'C 图标' },
+      { key:'B',   label:'B 图标' },
+      { key:'A',   label:'A 图标' },
+      { key:'S',   label:'S 图标' },
+      { key:'V',   label:'V 图标' },
+      { key:'FC',  label:'FC 图标' },
+      { key:'phi', label:'AP 图标' },
+    ]},
+    { title:'模组图标', children:[
+      { key:'autoplay',  label:'自动游玩 图标' },
+      { key:'fade-in',   label:'上隐 图标' },
+      { key:'fade-out',  label:'下隐 图标' },
+      { key:'flip-x',    label:'镜像 图标' },
+      { key:'nightcore', label:'夜店 图标' },
+      { key:'no-shader', label:'禁用着色器 图标' },
+      { key:'rainbow',   label:'彩虹 图标' },
+    ]},
+  ]},
+];
+function flattenKeys(nodes, out=[]){
+  for (const n of nodes){
+    if (n.key) out.push(n.key);
+    if (n.children) flattenKeys(n.children, out);
+  }
+  return out;
+}
+const ALL_KEYS = flattenKeys(TREE);
+
+const ITEM_CONFIG = {};
+(function buildConfig(){
+  const rankKeys = ['F','C','B','A','S','V','FC','phi'];
+  const modKeys  = ['autoplay','fade-in','fade-out','flip-x','nightcore','no-shader','rainbow'];
+  const iconKeys = [
+    'message','settings','respack','medal','resume','back','language','retry',
+    'delete','download','edit','filter','star','star_outline','heart','heart_outline',
+    'info','leaderboard','menu','multiplayer','ok','order','close','plus','question',
+    'search','select','user','warn','error','cloud_check','cloud_none','mod','proceed',
+    ...rankKeys, ...modKeys,
+  ];
+  for (const key of iconKeys){
+    let file;
+    if (rankKeys.includes(key)) file = `rank/${key}.png`;
+    else if (modKeys.includes(key)) file = `mod/${key}.png`;
+    else file = `${key}.png`;
+    ITEM_CONFIG[key] = {
+      type:'icon', file,
+      cropW:200, cropH:200,
+      contain:false, allowGap:true,
+      minScale:0.25, maxScale:4.0,
+      encrypt:false, outputType:'image/png',
+    };
+  }
+  ITEM_CONFIG['shee'] = {
+    type:'image_shee', file:'res/shee.char',
+    cropW:1000, cropH:1100,
+    contain:false, allowGap:true,
+    minScale:0.25, maxScale:4.0,
+    encrypt:true, outputType:'image/png',
+    warnArea:  {x1:0,   y1:0,   x2:122,  y2:1100},
+    warnArea2: {x1:122, y1:650, x2:1000, y2:1100},
+    extraDesc:'请前往官网将角色更改为shee后生效\n红色区域可能不会在游戏中显示',
+    padTransparent:5,
+  };
+  ITEM_CONFIG['background'] = {
+    type:'image_bg', file:'background.jpg',
+    cropW:4000, cropH:2000,
+    contain:false, allowGap:false,
+    minScale:1.0, maxScale:8.0,
+    snapBack:true, encrypt:false, outputType:'image/jpeg',
+  };
+  ITEM_CONFIG['bgm'] = {
+    type:'audio', file:'res/bgm', encrypt:true,
+    accept:'audio/mpeg,audio/wav,audio/flac,audio/mp4,audio/aac,audio/ogg,.mp3,.wav,.flac,.m4a,.aac,.ogg',
+  };
+  ITEM_CONFIG['intor'] = {
+    type:'text_intor', file:'intor.txt', encrypt:false,
+    fields:[
+      { id:'artist',   label:'画师名',   maxBytes:8, multiline:false, allowEmpty:true },
+      { id:'charname', label:'角色名',   group:'descGroup', multiline:false, allowEmpty:true },
+      { id:'desc',     label:'角色描述', group:'descGroup', groupMaxBytes:423, multiline:true, allowEmpty:true },
+    ],
+    warnText:'画师名总计 8 字节；角色名与角色描述合计 423 字节。',
+    info: '对于画师、角色名称与角色描述，phira 会尝试从服务器中获取信息，我目前无法截获服务器信息并更改，请见谅',
+  };
+  ITEM_CONFIG['COMBO'] = {
+    type:'text_combo', file:'COMBO.txt', encrypt:false,
+    fields:[{ id:'combo', label:'COMBO', maxBytes:5, multiline:false, defaultValue:'COMBO' }],
+    warnText:'总计 5 字节。',
+  };
+})();
+
+/* ============================================================
+ * 4. 页面切换 / 蒙版 / 弹窗
+ * ============================================================ */
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  $(id).classList.add('active');
+}
+const maskEl = $('mask'), maskText = $('maskText');
+async function showMask(text, fn){
+  const t0 = performance.now();
+  maskText.textContent = text;
+  maskEl.classList.add('show');
+  await sleep(20);
+  try{
+    const r = await fn();
+    const dt = performance.now() - t0;
+    if (dt < 50) await sleep(50 - dt);
+    maskEl.classList.remove('show');
+    return r;
+  }catch(e){
+    const dt = performance.now() - t0;
+    if (dt < 50) await sleep(50 - dt);
+    maskEl.classList.remove('show');
+    throw e;
+  }
+}
+
+const dialogMask = $('dialogMask');
+function showDialog(opt = {}){
+  const { title='', body='', type='confirm', onYes, onNo, yesText, noText } = opt;
+  $('dialogTitle').textContent = title;
+  $('dialogBody').textContent = body;
+  const iconEl = $('dialogIcon');
+  const btnsEl = $('dialogBtns');
+  btnsEl.innerHTML = '';
+  if (type === 'info'){ iconEl.className='dialogIcon info'; iconEl.textContent='i'; }
+  else if (type === 'fail'){ iconEl.className='dialogIcon fail'; iconEl.textContent='!'; }
+  else if (type === 'success'){ iconEl.className='dialogIcon success'; iconEl.textContent='✓'; }
+  else { iconEl.className='dialogIcon info'; iconEl.textContent='i'; }
+  const close = () => { dialogMask.classList.remove('show'); btnsEl.innerHTML=''; };
+  const mkBtn = (text, cls, fn) => {
+    const b = document.createElement('button');
+    b.textContent = text;
+    if (cls) b.className = cls;
+    b.onclick = () => { close(); fn && fn(); };
+    return b;
+  };
+  if (type === 'info' || type === 'success'){
+    btnsEl.append(mkBtn(yesText || '知道了', '', onYes));
+  } else if (type === 'fail'){
+    btnsEl.append(mkBtn(noText || '取消','ghost',onNo), mkBtn(yesText || '重试','',onYes));
+  } else if (type === 'danger'){
+    btnsEl.append(mkBtn(noText || '取消','ghost',onNo), mkBtn(yesText || '确定','dangerBtn',onYes));
+  } else {
+    btnsEl.append(mkBtn(noText || '取消','ghost',onNo), mkBtn(yesText || '确定','',onYes));
+  }
+  dialogMask.classList.add('show');
+}
+
+/* ============================================================
+ * 5. zstd + phiraEncrypt（核心，未改动）
+ * ============================================================ */
+const ZSTD_CDNS = [
+  'https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js',
+  'https://esm.sh/@bokuweb/zstd-wasm',
+  'https://unpkg.com/@bokuweb/zstd-wasm/dist/web/index.js',
+];
+let zstdMod = null;
+async function ensureZstd(){
+  if (zstdMod) return zstdMod;
+  let lastErr;
+  for (const url of ZSTD_CDNS){
+    try{
+      const mod = await import(/* @vite-ignore */ url);
+      if (typeof mod.init === 'function') await mod.init();
+      if (typeof mod.compress !== 'function') throw new Error('缺少 compress');
+      zstdMod = mod; return mod;
+    }catch(e){ lastErr = e; }
+  }
+  throw lastErr || new Error('无法加载 zstd');
+}
+function encryptBlock(v, o){
+  let t;
+  t=v[o+3]; v[o+3]=v[o+5]; v[o+5]=t;
+  v[o+4]=(v[o+4]+v[o+0])&0xFF; v[o+5]=(v[o+5]+v[o+1])&0xFF;
+  v[o+6]=(v[o+6]+v[o+2])&0xFF; v[o+7]=(v[o+7]+v[o+3])&0xFF;
+  v[o+2]=(v[o+2]+v[o+0])&0xFF; v[o+3]=(v[o+3]+v[o+1])&0xFF;
+  v[o+6]=(v[o+6]+v[o+4])&0xFF; v[o+7]=(v[o+7]+v[o+5])&0xFF;
+  v[o+1]=(v[o+1]+v[o+0])&0xFF; v[o+3]=(v[o+3]+v[o+2])&0xFF;
+  v[o+5]=(v[o+5]+v[o+4])&0xFF; v[o+7]=(v[o+7]+v[o+6])&0xFF;
+  t=v[o+1]; v[o+1]=v[o+4]; v[o+4]=t;
+  t=v[o+3]; v[o+3]=v[o+6]; v[o+6]=t;
+  t=v[o+1]; v[o+1]=v[o+4]; v[o+4]=t;
+  t=v[o+2]; v[o+2]=v[o+6]; v[o+6]=t;
+}
+function phiraEncrypt(raw){
+  const compressed = new Uint8Array(zstdMod.compress(raw, 3));
+  const L = compressed.length;
+  let N;
+  if (L % 8 === 0) N = L + 8;
+  else N = Math.ceil(L / 8) * 8;
+  const lastByte = 8 - (N - L);
+  const D = new Uint8Array(N);
+  D.set(compressed, 0);
+  D[N - 1] = lastByte;
+  for (let i = 0; i < N; i += 8) encryptBlock(D, i);
+  return D;
+}
+
+/* ============================================================
+ * 6. 版本 UI
+ * ============================================================ */
+function getVersionToShow(){
+  if (!modifyMode) return TOOL_VERSION;
+  return importedVersionRaw === null ? 'null' : importedVersionRaw;
+}
+function isVersionClickable(){
+  if (!modifyMode) return false;
+  if (importedVersionObj === null) return true;
+  const toolObj = parseVersion(TOOL_VERSION);
+  return compareVersions(importedVersionObj, toolObj) > 0;
+}
+function refreshVersionLines(){
+  const text = '生成版本：' + getVersionToShow();
+  const clickable = isVersionClickable();
+  ['ver3','ver4','ver8','ver9','ver10','ver11'].forEach(id => {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.classList.toggle('clickable', clickable);
+    el.onclick = clickable ? onVersionLineClick : null;
+  });
+}
+function onVersionLineClick(){
+  showDialog({
+    title: '是否替换版本号',
+    body: '替换后将版本号替换为当前版本且删除未知资源',
+    type: 'danger', yesText: '替换',
+    onYes: () => {
+      importedVersionRaw = TOOL_VERSION;
+      importedVersionObj = parseVersion(TOOL_VERSION);
+      unknownKeys.forEach(k => {
+        delete infoEntries[k];
+        const cfg = ITEM_CONFIG[k];
+        if (cfg) delete vfs[cfg.file];
+      });
+      unknownKeys = [];
+      refreshVersionLines(); refreshUnknownBox(); refreshInfoTxt();
+    }, onNo: () => {}
+  });
+}
+
+/* ============================================================
+ * 7. 未知键文本框
+ * ============================================================ */
+function refreshUnknownBox(){
+  const box = $('unknownBox3');
+  if (!modifyMode || unknownKeys.length === 0){
+    box.style.display='none'; box.onclick=null; box.innerHTML='';
+    return;
+  }
+  const lines = unknownKeys.map(k => `<div class="line">找不到值：${k}</div>`);
+  const toolObj = parseVersion(TOOL_VERSION);
+  if (importedVersionObj === null || compareVersions(importedVersionObj, toolObj) > 0){
+    lines.push('<div class="line warn">该美化包可能生成于更新版本，请升级工具后查看</div>');
+  }
+  box.innerHTML = lines.join('');
+  box.style.display = '';
+  box.onclick = () => {
+    showDialog({
+      title: '是否删除未知值', body: '这会一并删除对应的资源',
+      type: 'danger', yesText: '删除',
+      onYes: () => {
+        unknownKeys.forEach(k => {
+          delete infoEntries[k];
+          const cfg = ITEM_CONFIG[k];
+          if (cfg) delete vfs[cfg.file];
+        });
+        unknownKeys = [];
+        refreshUnknownBox(); refreshVersionLines(); refreshInfoTxt();
+      }, onNo: () => {}
+    });
+  };
+}
+
+/* ============================================================
+ * 8. 第三页
+ * ============================================================ */
+let p3Built = false;
+function buildPage3(){
+  const root = $('scrollArea3');
+  root.innerHTML = '';
+  renderTree(root, TREE);
+  root.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.checked = state.picked.includes(cb.dataset.key);
+  });
+  $('p3Title').textContent = modifyMode ? '修改美化包' : '新建美化包';
+  $('p3Search').value = '';
+  enhancePage3(root);
+  updateLockBtn(); refreshVersionLines(); refreshUnknownBox();
+  p3Built = true;
+}
+function renderTree(container, nodes){
+  for (const node of nodes){
+    if (node.key){
+      const label = document.createElement('label');
+      label.className = 'item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.dataset.key = node.key;
+      cb.addEventListener('change', () => {
+        if (cb.checked){ if (!state.picked.includes(node.key)) state.picked.push(node.key); }
+        else { state.picked = state.picked.filter(k => k !== node.key); }
+        state.picked.sort((a,b) => ALL_KEYS.indexOf(a) - ALL_KEYS.indexOf(b));
+        updateLockBtn();
+      });
+      const span = document.createElement('span');
+      span.textContent = node.label;
+      label.append(cb, span); container.append(label);
+    } else {
+      const group = document.createElement('div');
+      group.className = 'group';
+      const title = document.createElement('div');
+      title.className = 'groupTitle';
+      const tri = document.createElement('span'); tri.className = 'tri';
+      const tspan = document.createElement('span'); tspan.className='groupLabel'; tspan.textContent = node.title;
+      title.append(tri, tspan);
+      const body = document.createElement('div'); body.className = 'groupBody';
+      renderTree(body, node.children);
+      title.addEventListener('click', e => {
+        if (e.target.classList.contains('groupAll')) return;
+        group.classList.toggle('open');
+      });
+      group.append(title, body); container.append(group);
+    }
+  }
+}
+function enhancePage3(root){
+  root.querySelectorAll('.group').forEach(group => {
+    const title = group.querySelector(':scope > .groupTitle');
+    if (!title || title.querySelector('.groupAll')) return;
+    const btn = document.createElement('span');
+    btn.className = 'groupAll'; btn.textContent = '全选';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const boxes = Array.from(group.querySelectorAll('.item input[type=checkbox]'));
+      const allChecked = boxes.every(b => b.checked);
+      const target = !allChecked;
+      boxes.forEach(b => {
+        if (b.checked !== target){ b.checked = target; b.dispatchEvent(new Event('change')); }
+      });
+      updateGroupAllLabel(group);
+    });
+    title.append(btn);
+    updateGroupAllLabel(group);
+    group.querySelectorAll('.item input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => updateGroupAllLabel(group));
+    });
+  });
+  const searchEl = $('p3Search');
+  searchEl.oninput = () => applySearch(root, searchEl.value);
+}
+function updateGroupAllLabel(group){
+  const btn = group.querySelector(':scope > .groupTitle .groupAll');
+  if (!btn) return;
+  const boxes = Array.from(group.querySelectorAll('.item input[type=checkbox]'));
+  if (boxes.length === 0){ btn.textContent = '全选'; return; }
+  const allChecked = boxes.every(b => b.checked);
+  btn.textContent = allChecked ? '取消' : '全选';
+}
+function applySearch(root, q){
+  const query = (q || '').trim().toLowerCase();
+  const items = root.querySelectorAll('.item');
+  const visibleGroups = new Set();
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    const match = !query || text.includes(query);
+    item.style.display = match ? '' : 'none';
+    if (match){
+      let p = item.parentElement;
+      while (p && p !== root){
+        if (p.classList.contains('group')) visibleGroups.add(p);
+        p = p.parentElement;
+      }
+    }
+  });
+  root.querySelectorAll('.group').forEach(g => {
+    if (query) g.classList.toggle('open', visibleGroups.has(g));
+  });
+  if (!query) root.querySelectorAll('.group').forEach(g => g.classList.remove('open'));
+}
+function updateLockBtn(){ $('btnLock').disabled = state.picked.length === 0; }
+
+$('btnLock').addEventListener('click', () => {
+  if (state.picked.length === 0) return;
+  if (!modifyMode){
+    infoEntries = {};
+    state.picked.forEach(k => infoEntries[k] = '1');
+    importedVersionRaw = TOOL_VERSION;
+    importedVersionObj = parseVersion(TOOL_VERSION);
+    refreshInfoTxt();
+    state.status = {}; state.data = {};
+    buildPage4(); showPage('page4');
+  } else {
+    const removed = originalPicked.filter(k => !state.picked.includes(k));
+    const added = state.picked.filter(k => !originalPicked.includes(k));
+    const commit = () => {
+      removed.forEach(k => {
+        delete infoEntries[k];
+        const cfg = ITEM_CONFIG[k];
+        if (cfg) delete vfs[cfg.file];
+      });
+      added.forEach(k => infoEntries[k] = '1');
+      refreshInfoTxt();
+      originalPicked = state.picked.slice();
+      buildPage4(); showPage('page4');
+    };
+    if (removed.length > 0){
+      showDialog({
+        title: '删除确认',
+        body: '如果取消勾选已勾选内容则将删除对应文件（包括 info 的键与资源包实际对应内容）',
+        type: 'danger', yesText: '删除', onYes: commit, onNo: () => {}
+      });
+    } else commit();
+  }
+});
+
+function refreshInfoTxt(){
+  const version = (function(){
+    if (!modifyMode) return TOOL_VERSION;
+    const toolObj = parseVersion(TOOL_VERSION);
+    if (importedVersionObj === null) return importedVersionRaw || TOOL_VERSION;
+    if (compareVersions(toolObj, importedVersionObj) > 0) return TOOL_VERSION;
+    return importedVersionRaw;
+  })();
+  const text = buildInfoText(version, infoEntries);
+  vfsSet('info.txt', new Blob([text], {type:'text/plain'}));
+}
+
+/* ============================================================
+ * 9. 第四页
+ * ============================================================ */
+function buildPage4(){
+  const root = $('scrollArea4');
+  root.innerHTML = '';
+  renderPicked(root, filterTree(TREE, new Set(state.picked)));
+  $('p4Title').textContent = modifyMode ? '修改美化包' : '新建美化包';
+  updatePage4Progress(); updateSignBtn(); refreshVersionLines();
+}
+function updatePage4Progress(){
+  const total = state.picked.length;
+  const done = state.picked.filter(k => isItemReady(k)).length;
+  $('p4Desc').textContent = total === 0
+    ? '点击任意一行进行设置'
+    : `点击任意一行进行设置 · 已设置 ${done}/${total}`;
+}
+function filterTree(nodes, pickedSet){
+  const out = [];
+  for (const n of nodes){
+    if (n.key){ if (pickedSet.has(n.key)) out.push(n); }
+    else {
+      const kids = filterTree(n.children, pickedSet);
+      if (kids.length) out.push({ title:n.title, children:kids });
+    }
+  }
+  return out;
+}
+function renderPicked(container, nodes){
+  for (const node of nodes){
+    if (node.key){
+      const div = document.createElement('div');
+      div.className = 'pickedItem'; div.dataset.key = node.key;
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = node.label;
+      const stateSpan = document.createElement('span');
+      stateSpan.className = 'state'; stateSpan.dataset.role = 'state';
+      const cfg = ITEM_CONFIG[node.key];
+      const hasInInfo = infoEntries.hasOwnProperty(node.key);
+      const hasInVfs = cfg ? vfs.hasOwnProperty(cfg.file) : false;
+      if (state.status[node.key] === 'set'){ stateSpan.textContent='已设置'; stateSpan.classList.add('set'); }
+      else if (modifyMode && hasInInfo && !hasInVfs && originalInfoKeys.has(node.key)){
+        stateSpan.textContent='已损坏'; stateSpan.classList.add('damaged');
+      } else if (modifyMode && hasInInfo && hasInVfs){
+        stateSpan.textContent='已设置'; stateSpan.classList.add('set');
+      }
+      div.append(nameSpan, stateSpan);
+      div.addEventListener('click', () => onPickedClick(node.key, node.label));
+      container.append(div);
+    } else {
+      const group = document.createElement('div');
+      group.className = 'group open';
+      const title = document.createElement('div');
+      title.className = 'groupTitle';
+      const tri = document.createElement('span'); tri.className = 'tri';
+      const tspan = document.createElement('span'); tspan.className='groupLabel'; tspan.textContent = node.title;
+      title.append(tri, tspan);
+      const body = document.createElement('div'); body.className = 'groupBody';
+      renderPicked(body, node.children);
+      title.addEventListener('click', () => group.classList.toggle('open'));
+      group.append(title, body); container.append(group);
+    }
+  }
+}
+function updatePickedStatus(key){
+  const el = document.querySelector(`.pickedItem[data-key="${key}"] .state`);
+  if (el){ el.textContent='已设置'; el.classList.remove('damaged'); el.classList.add('set'); }
+  updatePage4Progress();
+}
+function isItemReady(key){
+  if (state.status[key] === 'set') return true;
+  if (modifyMode){
+    const cfg = ITEM_CONFIG[key];
+    const hasInInfo = infoEntries.hasOwnProperty(key);
+    const hasInVfs = cfg ? vfs.hasOwnProperty(cfg.file) : false;
+    return hasInInfo && hasInVfs;
+  }
+  return false;
+}
+function updateSignBtn(){
+  const allSet = state.picked.length > 0 && state.picked.every(k => isItemReady(k));
+  $('btnSign').disabled = !allSet;
+}
+function onPickedClick(key, label){
+  const cfg = ITEM_CONFIG[key];
+  if (!cfg){ showDialog({title:'提示', body:'正在开发中……', type:'info'}); return; }
+  if (cfg.type === 'text_intor' || cfg.type === 'text_combo'){ openTextPage(key, label); return; }
+  openImportPage(key, label);
+}
+
+/* ============================================================
+ * 10. 第8页
+ * ============================================================ */
+function buildPage8(){
+  const root = $('scrollArea8');
+  root.innerHTML = '';
+  renderPage8(root, filterTree(TREE, new Set(state.picked)));
+  refreshVersionLines();
+}
+function renderPage8(container, nodes){
+  for (const node of nodes){
+    if (node.key){
+      const label = document.createElement('label');
+      label.className = 'item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.dataset.key = node.key;
+      const v = infoEntries[node.key];
+      cb.checked = (v === undefined) ? true : (v !== '0');
+      cb.addEventListener('change', () => {
+        infoEntries[node.key] = cb.checked ? '1' : '0';
+        refreshInfoTxt();
+      });
+      const span = document.createElement('span');
+      span.textContent = node.label;
+      label.append(cb, span); container.append(label);
+    } else {
+      const group = document.createElement('div');
+      group.className = 'group open';
+      const title = document.createElement('div');
+      title.className = 'groupTitle';
+      const tri = document.createElement('span'); tri.className = 'tri';
+      const tspan = document.createElement('span'); tspan.className='groupLabel'; tspan.textContent = node.title;
+      title.append(tri, tspan);
+      const body = document.createElement('div'); body.className = 'groupBody';
+      renderPage8(body, node.children);
+      title.addEventListener('click', () => group.classList.toggle('open'));
+      group.append(title, body); container.append(group);
+    }
+  }
+}
+$('p8Back').addEventListener('click', () => showPage('page4'));
+$('p8Next').addEventListener('click', () => openSignPage());
+$('btnSign').addEventListener('click', () => {
+  if ($('btnSign').disabled) return;
+  buildPage8(); showPage('page8');
+});
+
+/* ============================================================
+ * 11. 第五页（拖拽）
+ * ============================================================ */
+let p5Ctx = null;
+let pszImportMode = false;
+
+function openImportPage(key, label){
+  const cfg = ITEM_CONFIG[key];
+  p5Ctx = { key, label, cfg };
+  pszImportMode = false;
+  $('p5Title').textContent = label;
+  const input = $('p5File');
+  let accept, sub;
+  if (cfg.type === 'icon'){ accept='image/png'; sub='支持 <code>PNG</code>'; $('p5Desc').textContent='自动压缩至 200×200'; }
+  else if (cfg.type === 'image_shee'){ accept='image/png,image/jpeg'; sub='支持 <code>PNG</code> / <code>JPG</code>'; $('p5Desc').textContent=''; }
+  else if (cfg.type === 'image_bg'){ accept='image/jpeg,image/png'; sub='支持 <code>JPG</code> / <code>PNG</code>'; $('p5Desc').textContent='自动压缩至 4000×2000'; }
+  else if (cfg.type === 'audio'){ accept=cfg.accept; sub='支持 <code>MP3</code> / <code>WAV</code> / <code>FLAC</code> / <code>M4A</code> 等'; $('p5Desc').textContent=''; }
+  input.accept = accept; input.value = '';
+  $('p5DropSub').innerHTML = sub;
+  showPage('page5');
+}
+function openPszImportPage(){
+  pszImportMode = true; p5Ctx = null;
+  $('p5Title').textContent = '修改美化包';
+  $('p5Desc').textContent = '请导入 .psz 文件';
+  const input = $('p5File');
+  input.accept = '.psz'; input.value = '';
+  $('p5DropSub').innerHTML = '支持 <code>.psz</code>';
+  showPage('page5');
+}
+$('p5Back').addEventListener('click', () => showPage('page4'));
+
+/* 通用拖拽绑定 */
+const dropBound = new WeakSet();
+function bindDropZone(zoneId, inputId){
+  const zone = $(zoneId);
+  const input = $(inputId);
+  if (!zone || !input) return;
+  zone.onclick = () => input.click();
+  if (dropBound.has(zone)) return;
+  dropBound.add(zone);
+  let dragDepth = 0;
+  zone.addEventListener('dragenter', e => {
+    e.preventDefault(); e.stopPropagation();
+    dragDepth++; zone.classList.add('dragging');
+  });
+  zone.addEventListener('dragover', e => {
+    e.preventDefault(); e.stopPropagation();
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+  });
+  zone.addEventListener('dragleave', e => {
+    e.preventDefault(); e.stopPropagation();
+    dragDepth--;
+    if (dragDepth <= 0){ dragDepth = 0; zone.classList.remove('dragging'); }
+  });
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); e.stopPropagation();
+    dragDepth = 0; zone.classList.remove('dragging');
+    const files = e.dataTransfer && e.dataTransfer.files;
+    if (!files || !files.length) return;
+    const f = files[0];
+    if (inputId === 'p5File') handleP5File(f);
+    else if (inputId === 'apk1File') handleApk1File(f);
+    else if (inputId === 'apk2File') handleApk2File(f);
+  });
+}
+
+function readAsDataURL(file){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(new Error('读取文件失败'));
+    r.readAsDataURL(file);
+  });
+}
+function loadImage(src){
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = () => rej(new Error('图片解码失败'));
+    img.src = src;
+  });
+}
+async function importImage(ctx, file){
+  const { cfg } = ctx;
+  if (cfg.type === 'icon' && !/image\/png/.test(file.type)){ showDialog({title:'提示',body:'图标只允许导入 PNG',type:'info'}); return; }
+  if ((cfg.type === 'image_shee' || cfg.type === 'image_bg') && !/image\/(png|jpeg)/.test(file.type)){ showDialog({title:'提示',body:'只允许导入 PNG 或 JPG',type:'info'}); return; }
+  const dataUrl = await readAsDataURL(file);
+  const img = await loadImage(dataUrl);
+  await showMask('导入中', async () => { await sleep(10); });
+  openCropPage(ctx.key, ctx.label, cfg, img, file.type);
+}
+async function importAudio(ctx, file){
+  const { key, label, cfg } = ctx;
+  const buf = await file.arrayBuffer();
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ac = new AC();
+  let audioBuffer;
+  try{ audioBuffer = await ac.decodeAudioData(buf.slice(0)); }
+  catch(e){ ac.close(); showDialog({title:'提示',body:'音频解码失败，请检查格式',type:'info'}); return; }
+  let mp3Blob;
+  try{ mp3Blob = await showMask('导入中', async () => await encodeMp3(audioBuffer)); }
+  catch(e){ ac.close(); showDialog({title:'提示',body:'MP3 编码失败：' + (e.message || e),type:'info'}); return; }
+  ac.close();
+  state.data[key] = { mp3Blob, label };
+  openPreviewPage(key, label, cfg, mp3Blob, 'audio');
+}
+async function encodeMp3(audioBuffer){
+  const lameMod = await import('https://cdn.jsdelivr.net/npm/@breezystack/lamejs@1.2.7/+esm').catch(()=>null)
+                || await import('https://esm.sh/@breezystack/lamejs@1.2.7').catch(()=>null);
+  if (!lameMod) throw new Error('无法加载 lamejs');
+  const lamejs = lameMod.default || lameMod;
+  const channels = Math.min(2, audioBuffer.numberOfChannels);
+  const sampleRate = audioBuffer.sampleRate;
+  const encoder = new lamejs.Mp3Encoder(channels, sampleRate, 128);
+  const left = audioBuffer.getChannelData(0);
+  const right = channels > 1 ? audioBuffer.getChannelData(1) : left;
+  const l = floatTo16(left), r = floatTo16(right);
+  const blockSize = 1152;
+  const chunks = [];
+  for (let i = 0; i < l.length; i += blockSize){
+    const lc = l.subarray(i, i + blockSize);
+    const rc = r.subarray(i, i + blockSize);
+    const mp3buf = channels > 1 ? encoder.encodeBuffer(lc, rc) : encoder.encodeBuffer(lc);
+    if (mp3buf.length) chunks.push(new Uint8Array(mp3buf));
+  }
+  const end = encoder.flush();
+  if (end.length) chunks.push(new Uint8Array(end));
+  return new Blob(chunks, { type:'audio/mpeg' });
+}
+function floatTo16(f32){
+  const out = new Int16Array(f32.length);
+  for (let i = 0; i < f32.length; i++){
+    const s = Math.max(-1, Math.min(1, f32[i]));
+    out[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  return out;
+}
+
+async function handleP5File(file){
+  if (pszImportMode){
+    pszImportMode = false;
+    try{
+      await showMask('导入中', async () => { await importPsz(file); });
+      showPszInfoPage();
+    }catch(e){
+      showDialog({
+        title: '导入失败', body: (e.message || String(e)),
+        type: 'fail', yesText: '重试', noText: '取消',
+        onYes: () => openPszImportPage(), onNo: () => showPage('page2')
+      });
+    }
+    return;
+  }
+  if (!p5Ctx) return;
+  const ctx = p5Ctx;
+  try{
+    if (ctx.cfg.type === 'audio') await importAudio(ctx, file);
+    else await importImage(ctx, file);
+  }catch(e){
+    showDialog({
+      title: '导入失败', body: (e.message || String(e)),
+      type: 'fail', yesText: '重试', noText: '取消',
+      onYes: () => { if (p5Ctx) openImportPage(p5Ctx.key, p5Ctx.label); else showPage('page4'); },
+      onNo: () => showPage('page4')
+    });
+  }
+}
+$('p5File').addEventListener('change', () => {
+  const file = $('p5File').files[0];
+  if (!file) return;
+  handleP5File(file); $('p5File').value = '';
+});
+
+/* ============================================================
+ * 12. 第六页（裁剪）
+ * ============================================================ */
+let cropCtx = null;
+function openCropPage(key, label, cfg, img, mimeType){
+  const canvas = $('cropCanvas');
+  let dw = cfg.cropW, dh = cfg.cropH;
+  const maxDim = 720;
+  if (dw > maxDim || dh > maxDim){
+    const k = Math.min(maxDim / dw, maxDim / dh);
+    dw = Math.round(dw * k); dh = Math.round(dh * k);
+  }
+  canvas.width = dw; canvas.height = dh;
+  const ratio = dw / cfg.cropW;
+  const sx = cfg.cropW / img.width;
+  const sy = cfg.cropH / img.height;
+  const base = cfg.contain ? Math.min(sx, sy) : Math.max(sx, sy);
+  cropCtx = {
+    key, label, cfg, img,
+    cropW: cfg.cropW, cropH: cfg.cropH,
+    displayW: dw, displayH: dh, ratio,
+    baseScale: base, imgScale: base,
+    imgOffsetX: (cfg.cropW - img.width * base) / 2,
+    imgOffsetY: (cfg.cropH - img.height * base) / 2,
+  };
+  if (!cfg.allowGap) clampNoGap();
+  $('p6Title').textContent = label;
+  $('p6Desc').textContent = cfg.type === 'image_bg' ? '自动压缩至 4000×2000'
+    : cfg.type === 'icon' ? '自动压缩至 200×200' : '';
+  const q = $('p6Qmark');
+  if (cfg.type === 'image_shee' && cfg.extraDesc){
+    q.style.display = ''; q.onclick = () => showDialog({ title:'提示', body: cfg.extraDesc, type:'info' });
+  } else { q.style.display = 'none'; q.onclick = null; }
+  attachCropEvents(); renderCrop();
+  showPage('page6');
+}
+function resetCropTransform(){
+  const c = cropCtx;
+  c.imgScale = c.baseScale;
+  c.imgOffsetX = (c.cropW - c.img.width * c.imgScale) / 2;
+  c.imgOffsetY = (c.cropH - c.img.height * c.imgScale) / 2;
+  if (!c.cfg.allowGap) clampNoGap();
+}
+function clampNoGap(){
+  const c = cropCtx;
+  const imgW = c.img.width * c.imgScale;
+  const imgH = c.img.height * c.imgScale;
+  if (imgW <= c.cropW) c.imgOffsetX = (c.cropW - imgW) / 2;
+  else {
+    if (c.imgOffsetX > 0) c.imgOffsetX = 0;
+    if (c.imgOffsetX + imgW < c.cropW) c.imgOffsetX = c.cropW - imgW;
+  }
+  if (imgH <= c.cropH) c.imgOffsetY = (c.cropH - imgH) / 2;
+  else {
+    if (c.imgOffsetY > 0) c.imgOffsetY = 0;
+    if (c.imgOffsetY + imgH < c.cropH) c.imgOffsetY = c.cropH - imgH;
+  }
+}
+async function snapBack(){
+  const c = cropCtx;
+  const imgW = c.img.width * c.imgScale;
+  const imgH = c.img.height * c.imgScale;
+  let targetX = c.imgOffsetX, targetY = c.imgOffsetY;
+  if (imgW <= c.cropW) targetX = (c.cropW - imgW) / 2;
+  else {
+    if (targetX > 0) targetX = 0;
+    if (targetX + imgW < c.cropW) targetX = c.cropW - imgW;
+  }
+  if (imgH <= c.cropH) targetY = (c.cropH - imgH) / 2;
+  else {
+    if (targetY > 0) targetY = 0;
+    if (targetY + imgH < c.cropH) targetY = c.cropH - imgH;
+  }
+  const startX = c.imgOffsetX, startY = c.imgOffsetY;
+  const dur = 180, t0 = performance.now();
+  return new Promise(res => {
+    function step(){
+      const t = Math.min(1, (performance.now() - t0) / dur);
+      const e = 1 - Math.pow(1 - t, 3);
+      c.imgOffsetX = startX + (targetX - startX) * e;
+      c.imgOffsetY = startY + (targetY - startY) * e;
+      renderCrop();
+      if (t < 1) requestAnimationFrame(step); else res();
+    }
+    requestAnimationFrame(step);
+  });
+}
+function renderCrop(){
+  const c = cropCtx;
+  const canvas = $('cropCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (c.cfg.type === 'image_bg') ctx.fillStyle = '#eaf0fa';
+  else if (c.cfg.type === 'image_shee') ctx.fillStyle = '#e5ecf6';
+  else ctx.fillStyle = '#eef3fa';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const r = c.ratio;
+  ctx.drawImage(c.img, c.imgOffsetX * r, c.imgOffsetY * r,
+                c.img.width * c.imgScale * r, c.img.height * c.imgScale * r);
+  if (c.cfg.type === 'image_shee' && c.cfg.warnArea && c.cfg.warnArea2){
+    ctx.save();
+    ctx.fillStyle = 'rgba(239,83,80,0.30)';
+    for (const a of [c.cfg.warnArea, c.cfg.warnArea2]){
+      ctx.fillRect(a.x1 * r, a.y1 * r, (a.x2 - a.x1) * r, (a.y2 - a.y1) * r);
+    }
+    ctx.restore();
+  }
+}
+let cropEventsAttached = false;
+function attachCropEvents(){
+  if (cropEventsAttached) return;
+  cropEventsAttached = true;
+  const canvas = $('cropCanvas');
+  let dragging = false, lastX = 0, lastY = 0;
+  canvas.addEventListener('pointerdown', e => {
+    if (!cropCtx) return;
+    dragging = true; lastX = e.clientX; lastY = e.clientY;
+    try{ canvas.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!dragging || !cropCtx) return;
+    const r = cropCtx.ratio;
+    cropCtx.imgOffsetX += (e.clientX - lastX) / r;
+    cropCtx.imgOffsetY += (e.clientY - lastY) / r;
+    lastX = e.clientX; lastY = e.clientY;
+    renderCrop();
+  });
+  const stopDrag = async () => {
+    if (!dragging) return;
+    dragging = false;
+    if (cropCtx && cropCtx.cfg.snapBack) await snapBack();
+  };
+  canvas.addEventListener('pointerup', stopDrag);
+  canvas.addEventListener('pointercancel', stopDrag);
+  canvas.addEventListener('wheel', e => {
+    if (!cropCtx) return;
+    e.preventDefault();
+    applyZoom(e.deltaY < 0 ? 1.08 : 1/1.08);
+  }, { passive:false });
+  $('cropZoomIn').addEventListener('click', () => applyZoom(1.15));
+  $('cropZoomOut').addEventListener('click', () => applyZoom(1/1.15));
+  $('cropReset').addEventListener('click', () => {
+    if (!cropCtx) return;
+    resetCropTransform(); renderCrop();
+  });
+}
+function applyZoom(factor){
+  const c = cropCtx; if (!c) return;
+  const minS = c.baseScale * c.cfg.minScale;
+  const maxS = c.baseScale * c.cfg.maxScale;
+  let target = Math.max(minS, Math.min(maxS, c.imgScale * factor));
+  const cx = c.cropW / 2, cy = c.cropH / 2;
+  const relX = (cx - c.imgOffsetX) / c.imgScale;
+  const relY = (cy - c.imgOffsetY) / c.imgScale;
+  c.imgScale = target;
+  c.imgOffsetX = cx - relX * target;
+  c.imgOffsetY = cy - relY * target;
+  if (!c.cfg.allowGap) clampNoGap();
+  renderCrop();
+}
+$('p6Back').addEventListener('click', () => { if (p5Ctx) openImportPage(p5Ctx.key, p5Ctx.label); });
+$('p6Ok').addEventListener('click', async () => {
+  if (!cropCtx) return;
+  const c = cropCtx;
+  try{
+    const blob = await showMask('裁剪中', async () => await exportCrop(c));
+    openPreviewPage(c.key, c.label, c.cfg, blob, 'image');
+  }catch(e){
+    showDialog({ title: '裁剪失败', body: (e.message || String(e)), type: 'fail',
+      yesText: '重试', noText: '取消', onYes: () => $('p6Ok').click(), onNo: () => {} });
+  }
+});
+async function exportCrop(c){
+  const cfg = c.cfg;
+  const pad = cfg.padTransparent || 0;
+  const temp = document.createElement('canvas');
+  temp.width = c.cropW; temp.height = c.cropH;
+  const tctx = temp.getContext('2d');
+  tctx.drawImage(c.img, c.imgOffsetX, c.imgOffsetY,
+                 c.img.width * c.imgScale, c.img.height * c.imgScale);
+  const outW = c.cropW + pad * 2, outH = c.cropH + pad * 2;
+  const off = document.createElement('canvas');
+  off.width = outW; off.height = outH;
+  const ctx = off.getContext('2d');
+  if (cfg.outputType === 'image/jpeg'){
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, outW, outH);
+  }
+  ctx.drawImage(temp, pad, pad);
+  return await new Promise(res => off.toBlob(res, cfg.outputType, 0.92));
+}
+
+/* ============================================================
+ * 13. 第七页（预览）
+ * ============================================================ */
+let p7Ctx = null;
+function openPreviewPage(key, label, cfg, blob, kind){
+  p7Ctx = { key, label, cfg, blob, kind };
+  $('p7Title').textContent = label;
+  $('p7Desc').textContent = cfg.type === 'image_bg' ? '自动压缩至 4000×2000'
+    : cfg.type === 'icon' ? '自动压缩至 200×200' : '';
+  const q = $('p7Qmark');
+  if (cfg.type === 'image_shee' && cfg.extraDesc){
+    q.style.display = ''; q.onclick = () => showDialog({ title:'提示', body: cfg.extraDesc, type:'info' });
+  } else { q.style.display = 'none'; q.onclick = null; }
+  const wrap = $('p7Preview');
+  wrap.innerHTML = '';
+  if (kind === 'image'){
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(blob);
+    img.onload = () => {
+      if (cfg.type === 'image_shee' && cfg.warnArea && cfg.warnArea2){
+        const rect = img.getBoundingClientRect();
+        const wrapRect = wrap.getBoundingClientRect();
+        const imgLeft = rect.left - wrapRect.left;
+        const imgTop = rect.top - wrapRect.top;
+        const pad = cfg.padTransparent || 0;
+        const totalW = cfg.cropW + pad * 2, totalH = cfg.cropH + pad * 2;
+        for (const a of [cfg.warnArea, cfg.warnArea2]){
+          const ov = document.createElement('div');
+          ov.className = 'warnOverlay';
+          ov.style.background = 'rgba(239,83,80,0.18)';
+          ov.style.left = (imgLeft + (a.x1 + pad) * rect.width / totalW) + 'px';
+          ov.style.top  = (imgTop  + (a.y1 + pad) * rect.height / totalH) + 'px';
+          ov.style.width  = ((a.x2 - a.x1) * rect.width / totalW) + 'px';
+          ov.style.height = ((a.y2 - a.y1) * rect.height / totalH) + 'px';
+          wrap.appendChild(ov);
+        }
+      }
+    };
+    wrap.appendChild(img);
+  } else if (kind === 'audio'){
+    const audio = document.createElement('audio');
+    audio.src = URL.createObjectURL(blob);
+    audio.controls = true;
+    audio.style.width = '100%';
+    audio.style.maxWidth = '480px';
+    wrap.appendChild(audio);
+  }
+  $('p7Ok').textContent = cfg.encrypt ? '加密' : '确定';
+  showPage('page7');
+}
+$('p7Back').addEventListener('click', () => { if (p5Ctx) openImportPage(p5Ctx.key, p5Ctx.label); });
+$('p7Ok').addEventListener('click', async () => {
+  if (!p7Ctx) return;
+  const { key, label, cfg, blob } = p7Ctx;
+  if (cfg.encrypt){
+    try{
+      const encBlob = await showMask('加密中', async () => {
+        await ensureZstd();
+        const raw = new Uint8Array(await blob.arrayBuffer());
+        const enc = phiraEncrypt(raw);
+        return new Blob([enc], { type:'application/octet-stream' });
+      });
+      vfsSet(cfg.file, encBlob);
+      state.status[key] = 'set';
+      state.data[key] = { blob: encBlob, label };
+      openEncryptDonePage(key, label, cfg);
+    }catch(e){
+      showDialog({ title: '加密失败', body: (e.message || String(e)), type: 'fail',
+        yesText: '重试', noText: '取消', onYes: () => $('p7Ok').click(), onNo: () => {} });
+    }
+  } else {
+    vfsSet(cfg.file, blob);
+    state.status[key] = 'set';
+    state.data[key] = { blob, label };
+    updatePickedStatus(key); updateSignBtn(); refreshInfoTxt();
+    showPage('page4');
+  }
+});
+
+/* ============================================================
+ * 14. 第9页（加密完成）
+ * ============================================================ */
+let p9Ctx = null;
+function openEncryptDonePage(key, label, cfg){
+  p9Ctx = { key, label, cfg };
+  $('p9Title').textContent = label;
+  $('p9Desc').textContent = '';
+  refreshVersionLines();
+  showPage('page9');
+}
+$('p9Back').addEventListener('click', () => { if (p5Ctx) openImportPage(p5Ctx.key, p5Ctx.label); });
+$('p9Ok').addEventListener('click', () => {
+  if (!p9Ctx) return;
+  updatePickedStatus(p9Ctx.key); updateSignBtn(); refreshInfoTxt();
+  showPage('page4');
+});
+
+/* ============================================================
+ * 15. 文本页（intor 允许空）
+ * ============================================================ */
+let ptCtx = null;
+function openTextPage(key, label){
+  const cfg = ITEM_CONFIG[key];
+  ptCtx = { key, label, cfg };
+  $('ptTitle').textContent = label;
+  $('ptDesc').textContent = '';
+  $('ptWarn').textContent = cfg.warnText || '';
+  const q = $('ptQmark');
+  if (cfg.type === 'text_intor' && cfg.info){
+    q.style.display = ''; q.onclick = () => showDialog({ title: '提示', body: cfg.info, type: 'info' });
+  } else { q.style.display = 'none'; q.onclick = null; }
+  const form = $('ptForm');
+  form.innerHTML = '';
+  let old = {};
+  if (state.data[key] && state.data[key].text){
+    const lines = state.data[key].text.split('\n');
+    cfg.fields.forEach((f, i) => old[f.id] = lines[i] || '');
+  }
+  for (const f of cfg.fields){
+    const row = document.createElement('div');
+    row.className = 'formRow';
+    const lab = document.createElement('label');
+    lab.textContent = f.allowEmpty ? f.label + '（可留空）' : f.label;
+    let input;
+    if (f.multiline) input = document.createElement('textarea');
+    else { input = document.createElement('input'); input.type = 'text'; }
+    input.id = 'pt_' + f.id;
+    if (f.defaultValue) input.value = f.defaultValue;
+    if (old[f.id] !== undefined && old[f.id] !== '') input.value = old[f.id];
+    input.addEventListener('input', () => { updateByteHints(); updateTextOk(); });
+    row.append(lab, input);
+    const hint = document.createElement('div');
+    hint.className = 'byteHint'; hint.id = 'hint_' + f.id;
+    row.append(hint); form.append(row);
+  }
+  updateByteHints(); updateTextOk();
+  showPage('pageText');
+}
+function utf8Len(s){ return new TextEncoder().encode(s).length; }
+function updateByteHints(){
+  const cfg = ptCtx.cfg;
+  const groups = {};
+  for (const f of cfg.fields) if (f.group) (groups[f.group] = groups[f.group] || []).push(f.id);
+  const groupSums = {};
+  for (const g in groups) groupSums[g] = groups[g].reduce((s, id) => s + utf8Len($('pt_' + id).value), 0);
+  for (const f of cfg.fields){
+    const el = $('pt_' + f.id);
+    const hint = $('hint_' + f.id);
+    if (!el || !hint) continue;
+    const len = utf8Len(el.value);
+    if (f.maxBytes != null){
+      hint.textContent = `${len} / ${f.maxBytes} 字节`;
+      hint.classList.toggle('over', len > f.maxBytes);
+    } else if (f.group && f.groupMaxBytes != null){
+      const total = groupSums[f.group];
+      const isLastInGroup = groups[f.group][groups[f.group].length - 1] === f.id;
+      if (isLastInGroup){
+        hint.textContent = `${total} / ${f.groupMaxBytes} 字节`;
+        hint.classList.toggle('over', total > f.groupMaxBytes);
+      } else { hint.textContent = ''; hint.classList.remove('over'); }
+    } else { hint.textContent = ''; }
+  }
+}
+function textFormValid(){
+  const cfg = ptCtx.cfg;
+  const groups = {};
+  for (const f of cfg.fields) if (f.group) (groups[f.group] = groups[f.group] || []).push(f.id);
+  const groupSums = {};
+  for (const g in groups) groupSums[g] = groups[g].reduce((s, id) => s + utf8Len($('pt_' + id).value), 0);
+  for (const f of cfg.fields){
+    const el = $('pt_' + f.id);
+    if (!el) return false;
+    const v = el.value;
+    if (!f.allowEmpty && !v.trim()) return false;
+    const len = utf8Len(v);
+    if (f.maxBytes != null && len > f.maxBytes) return false;
+  }
+  for (const g in groupSums){
+    const f = cfg.fields.find(x => x.group === g && x.groupMaxBytes != null);
+    if (f && groupSums[g] > f.groupMaxBytes) return false;
+  }
+  return true;
+}
+function updateTextOk(){ $('ptOk').disabled = !textFormValid(); }
+$('ptBack').addEventListener('click', () => showPage('page4'));
+$('ptOk').addEventListener('click', async () => {
+  if (!ptCtx || !textFormValid()) return;
+  const { key, cfg } = ptCtx;
+  try{
+    await showMask('导入中', async () => {
+      // intor 允许空行，但保留 3 行结构
+      const lines = cfg.fields.map(f => $('pt_' + f.id).value);
+      const text = lines.join('\n') + '\n';
+      const blob = new Blob([text], { type:'text/plain' });
+      vfsSet(cfg.file, blob);
+      state.data[key] = { text, blob, label: ptCtx.label };
+      state.status[key] = 'set';
+      await sleep(10);
+    });
+    updatePickedStatus(key); updateSignBtn(); refreshInfoTxt();
+    showPage('page4');
+  }catch(e){
+    showDialog({ title: '保存失败', body: (e.message || String(e)), type: 'fail',
+      yesText: '重试', noText: '取消', onYes: () => $('ptOk').click(), onNo: () => {} });
+  }
+});
+
+/* ============================================================
+ * 16. 署名页（描述可留空）
+ * ============================================================ */
+async function openSignPage(){
+  let data = state.signData;
+  if (!data){
+    const signBlob = vfs['sign.txt'];
+    if (signBlob){
+      try{
+        const text = await signBlob.text();
+        const lines = text.split('\n');
+        data = { name: lines[0] || '', author: lines[1] || '', desc: lines[2] || '' };
+      }catch(e){ data = null; }
+    }
+  }
+  if (data){
+    $('signName').value = data.name || '';
+    $('signAuthor').value = data.author || '';
+    $('signDesc').value = data.desc || '';
+  } else {
+    $('signName').value = ''; $('signAuthor').value = ''; $('signDesc').value = '';
+  }
+  updateSignNextState(); refreshVersionLines();
+  showPage('page10');
+}
+function updateSignNextState(){
+  const name = $('signName').value.trim();
+  const author = $('signAuthor').value.trim();
+  const hasIllegal = /[\\/:*?"<>|\x00-\x1F]/.test(name);
+  $('p10Next').disabled = !(name && author && !hasIllegal);
+}
+['signName','signAuthor','signDesc'].forEach(id => $(id).addEventListener('input', updateSignNextState));
+$('p10Back').addEventListener('click', () => { buildPage8(); showPage('page8'); });
+$('p10Next').addEventListener('click', () => {
+  const name = $('signName').value.trim();
+  const author = $('signAuthor').value.trim();
+  const desc = $('signDesc').value.trim();
+  vfsSet('sign.txt', new Blob([name + '\n' + author + '\n' + desc + '\n'], {type:'text/plain'}));
+  state.signData = { name, author, desc };
+  openExportPage(name);
+});
+
+/* ============================================================
+ * 17. 导出页
+ * ============================================================ */
+async function openExportPage(packageName){
+  refreshVersionLines();
+  showPage('page11');
+  $('p11Note').textContent = '正在导出，请在导出完毕后刷新页面';
+  try{
+    await showMask('导出中', async () => {
+      refreshInfoTxt();
+      const blob = await packageToPsz();
+      downloadBlob(blob, packageName + '.psz');
+    });
+  }catch(e){
+    showDialog({ title: '导出失败', body: (e.message || String(e)), type: 'fail',
+      yesText: '重试', noText: '返回',
+      onYes: () => openExportPage(packageName), onNo: () => showPage('page10') });
+  }
+}
+$('p11Refresh').addEventListener('click', () => location.reload());
+async function packageToPsz(){
+  const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm')).default;
+  const zip = new JSZip();
+  for (const [path, blob] of Object.entries(vfs)) zip.file(path, blob);
+  return await zip.generateAsync({ type: 'blob' });
+}
+function downloadBlob(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+/* ============================================================
+ * 18. 修改美化包流程：导入 psz
+ * ============================================================ */
+async function importPsz(file){
+  const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm')).default;
+  const buf = await file.arrayBuffer();
+  const zip = await JSZip.loadAsync(buf);
+  const entries = Object.keys(zip.files).filter(p => !zip.files[p].dir);
+  for (const path of entries){
+    const blob = await zip.files[path].async('blob');
+    vfsSet(path, blob);
+  }
+  const infoBlob = vfs['info.txt'];
+  if (!infoBlob) throw new Error('压缩包内缺少 info.txt');
+  const text = await infoBlob.text();
+  const { version, entries: infoMap } = parseInfoText(text);
+  importedVersionRaw = version;
+  importedVersionObj = parseVersion(version);
+  infoEntries = {};
+  const known = [], unknown = [];
+  for (const k in infoMap){
+    infoEntries[k] = infoMap[k];
+    if (isValidKey(k)) known.push(k); else unknown.push(k);
+  }
+  unknownKeys = unknown;
+  originalInfoKeys = new Set(known);
+  state.picked = known.slice().sort((a,b) => ALL_KEYS.indexOf(a) - ALL_KEYS.indexOf(b));
+  originalPicked = state.picked.slice();
+  state.status = {}; state.data = {};
+  pendingPszInfo = null;
+  const signBlob = vfs['sign.txt'];
+  if (signBlob){
+    try{
+      const t = await signBlob.text();
+      const lines = t.split('\n');
+      const name = (lines[0] || '').trim();
+      const author = (lines[1] || '').trim();
+      const desc = (lines[2] || '').trim();
+      pendingPszInfo = {
+        name: name || '未署名',
+        author: author || '未署名',
+        desc: desc || '未署名',
+      };
+    }catch(e){ pendingPszInfo = null; }
+  }
+  if (!pendingPszInfo){
+    pendingPszInfo = { name: '未署名', author: '未署名', desc: '未署名' };
+  }
+}
+function enterModifyFlow(){
+  modifyMode = true;
+  p3Built = false;
+  buildPage3(); showPage('page3');
+}
+function showPszInfoPage(){
+  const info = pendingPszInfo || { name:'未署名', author:'未署名', desc:'未署名' };
+  const nameEl = $('pszInfoName');
+  const authorEl = $('pszInfoAuthor');
+  const descEl = $('pszInfoDesc');
+  nameEl.textContent = info.name;
+  authorEl.textContent = info.author;
+  descEl.textContent = info.desc;
+  [nameEl, authorEl, descEl].forEach(el => {
+    el.classList.toggle('empty', el.textContent === '未署名');
+  });
+  showPage('pagePszInfo');
+}
+$('pszInfoBack').addEventListener('click', () => {
+  Object.keys(vfs).forEach(k => delete vfs[k]);
+  infoEntries = {}; unknownKeys = []; originalInfoKeys = new Set();
+  importedVersionRaw = null; importedVersionObj = null;
+  pendingPszInfo = null;
+  openPszImportPage();
+});
+$('pszInfoNext').addEventListener('click', () => enterModifyFlow());
+
+/* ============================================================
+ * 19. APK 流程
+ * ============================================================ */
+$('btnBeauty').addEventListener('click', () => {
+  resetState(); apkFile = null;
+  showPage('pageApk1');
+});
+
+function handleApk1File(f){
+  if (!f) return;
+  apkFile = { blob: f, name: f.name };
+  showPage('pageApk2');
+}
+
+function handleApk2File(f){
+  if (!f) return;
+  (async () => {
+    try{
+      await showMask('导入中', async () => { await importPsz(f); });
+      buildPageApk3(); showPage('pageApk3');
+    }catch(e){
+      showDialog({
+        title: '导入失败', body: (e.message || String(e)),
+        type: 'fail', yesText: '重试', noText: '取消',
+        onYes: () => showPage('pageApk2'), onNo: () => showPage('pageApk2')
+      });
+    }
+  })();
+}
+
+$('apk1File').addEventListener('change', () => {
+  const f = $('apk1File').files[0];
+  if (!f) return;
+  $('apk1File').value = '';
+  handleApk1File(f);
+});
+$('apk2File').addEventListener('change', () => {
+  const f = $('apk2File').files[0];
+  if (!f) return;
+  $('apk2File').value = '';
+  handleApk2File(f);
+});
+
+$('apk3Back').addEventListener('click', () => {
+  Object.keys(vfs).forEach(k => delete vfs[k]);
+  infoEntries = {}; unknownKeys = []; originalInfoKeys = new Set();
+  importedVersionRaw = null; importedVersionObj = null;
+  showPage('pageApk2');
+});
+
+function buildPageApk3(){
+  const root = $('scrollAreaApk3');
+  root.innerHTML = '';
+  const known = Object.keys(infoEntries).filter(isValidKey);
+  const filtered = filterTree(TREE, new Set(known));
+  renderApk3Tree(root, filtered);
+  enhanceApk3(root);
+  refreshApk3Version(); refreshApk3Unknown();
+}
+function renderApk3Tree(container, nodes){
+  for (const node of nodes){
+    if (node.key){
+      const label = document.createElement('label');
+      label.className = 'item';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.dataset.key = node.key;
+      cb.checked = infoEntries[node.key] !== '0';
+      const span = document.createElement('span');
+      span.textContent = node.label;
+      label.append(cb, span); container.append(label);
+    } else {
+      const group = document.createElement('div');
+      group.className = 'group open';
+      const title = document.createElement('div');
+      title.className = 'groupTitle';
+      const tri = document.createElement('span'); tri.className = 'tri';
+      const tspan = document.createElement('span'); tspan.className='groupLabel'; tspan.textContent = node.title;
+      title.append(tri, tspan);
+      const body = document.createElement('div'); body.className = 'groupBody';
+      renderApk3Tree(body, node.children);
+      title.addEventListener('click', e => {
+        if (e.target.classList.contains('groupAll')) return;
+        group.classList.toggle('open');
+      });
+      group.append(title, body); container.append(group);
+    }
+  }
+}
+function enhanceApk3(root){
+  root.querySelectorAll('.group').forEach(group => {
+    const title = group.querySelector(':scope > .groupTitle');
+    if (!title || title.querySelector('.groupAll')) return;
+    const btn = document.createElement('span');
+    btn.className = 'groupAll'; btn.textContent = '全选';
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const boxes = Array.from(group.querySelectorAll('.item input[type=checkbox]'));
+      const allChecked = boxes.every(b => b.checked);
+      const target = !allChecked;
+      boxes.forEach(b => { b.checked = target; });
+      updateGroupAllLabelApk3(group);
+    });
+    title.append(btn);
+    updateGroupAllLabelApk3(group);
+    group.querySelectorAll('.item input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => updateGroupAllLabelApk3(group));
+    });
+  });
+  const searchEl = $('apk3Search');
+  searchEl.oninput = () => applySearch(root, searchEl.value);
+}
+function updateGroupAllLabelApk3(group){
+  const btn = group.querySelector(':scope > .groupTitle .groupAll');
+  if (!btn) return;
+  const boxes = Array.from(group.querySelectorAll('.item input[type=checkbox]'));
+  if (boxes.length === 0){ btn.textContent = '全选'; return; }
+  const allChecked = boxes.every(b => b.checked);
+  btn.textContent = allChecked ? '取消' : '全选';
+}
+function refreshApk3Version(){
+  const el = $('verApk3');
+  const version = importedVersionRaw === null ? 'null' : importedVersionRaw;
+  el.textContent = '生成版本：' + version;
+  el.classList.remove('clickable');
+  el.onclick = null;
+}
+function refreshApk3Unknown(){
+  const box = $('unknownBoxApk3');
+  if (unknownKeys.length === 0){ box.style.display='none'; box.innerHTML=''; return; }
+  const lines = unknownKeys.map(k => `<div class="line">找不到值：${k}</div>`);
+  const toolObj = parseVersion(TOOL_VERSION);
+  if (importedVersionObj === null || compareVersions(importedVersionObj, toolObj) > 0){
+    lines.push('<div class="line warn">该美化包可能生成于更新版本，请升级工具后查看</div>');
+  }
+  box.innerHTML = lines.join('');
+  box.style.display = '';
+}
+function getApk3Checked(){
+  const result = {};
+  $('scrollAreaApk3').querySelectorAll('input[type=checkbox]').forEach(cb => {
+    result[cb.dataset.key] = cb.checked;
+  });
+  return result;
+}
+
+/* ---------- 十六进制工具 ---------- */
+function hexToBytes(hex){
+  const arr = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < arr.length; i++) arr[i] = parseInt(hex.substr(i*2, 2), 16);
+  return arr;
+}
+function findBytes(haystack, needle, fromIdx = 0){
+  const end = haystack.length - needle.length;
+  for (let i = fromIdx; i <= end; i++){
+    let ok = true;
+    for (let j = 0; j < needle.length; j++){
+      if (haystack[i+j] !== needle[j]){ ok = false; break; }
+    }
+    if (ok) return i;
+  }
+  return -1;
+}
+
+/* ---------- so 修改（核心，未改动） ---------- */
+function modifySo(soBytes, intorText, comboText){
+  const u8 = new Uint8Array(soBytes);
+  const enc = new TextEncoder();
+  if (intorText){
+    const lines = intorText.split('\n');
+    const artist   = (lines[0] || '').replace(/\r$/, '');
+    const charName = (lines[1] || '').replace(/\r$/, '');
+    const charDesc = (lines[2] || '').replace(/\r$/, '');
+    const authorPat = hexToBytes('e6b885e6b0b45152');
+    const authorIdx = findBytes(u8, authorPat);
+    if (authorIdx >= 0){
+      let ab = enc.encode(artist);
+      if (ab.length > 8) ab = ab.slice(0, 8);
+      for (let i = 0; i < 8; i++) u8[authorIdx + i] = i < ab.length ? ab[i] : 0;
+    }
+    const namePat = hexToBytes('6D61696E2D6368617261637465722D6E616D65203D20E5A495');
+    const positions = [];
+    let searchFrom = 0;
+    while (true){
+      const found = findBytes(u8, namePat, searchFrom);
+      if (found < 0) break;
+      positions.push(found);
+      searchFrom = found + 1;
+    }
+    const configs = [
+      { pos: positions[0], total: 423, bHex: '0A6D61696E2D6368617261637465722D696E74726F203D200A2020' },
+      { pos: positions[1], total: 427, bHex: '0A6D61696E2D6368617261637465722D696E74726F203D200A20202020' },
+    ];
+    for (const cfg of configs){
+      if (cfg.pos === undefined) continue;
+      const nameStart = cfg.pos + 22;
+      const B = hexToBytes(cfg.bHex);
+      let nb = enc.encode(charName);
+      let db = enc.encode(charDesc);
+      const limit = 423;
+      if (nb.length + db.length > limit){
+        if (nb.length > limit){ nb = nb.slice(0, limit); db = new Uint8Array(0); }
+        else { db = db.slice(0, limit - nb.length); }
+      }
+      let offset = nameStart;
+      for (let i = 0; i < nb.length; i++) u8[offset++] = nb[i];
+      for (let i = 0; i < B.length;  i++) u8[offset++] = B[i];
+      for (let i = 0; i < db.length; i++) u8[offset++] = db[i];
+      const end = nameStart + cfg.total + B.length;
+      while (offset < end) u8[offset++] = 0;
+    }
+  }
+  if (comboText){
+    const combo = comboText.split('\n')[0].replace(/\r$/, '');
+    const comboPat = hexToBytes('434F4D424FC7');
+    const comboIdx = findBytes(u8, comboPat);
+    if (comboIdx >= 0){
+      let cb = enc.encode(combo);
+      if (cb.length > 5) cb = cb.slice(0, 5);
+      for (let i = 0; i < 5; i++) u8[comboIdx + i] = i < cb.length ? cb[i] : 0;
+    }
+  }
+  return u8;
+}
+
+/* ============================================================
+ * 19.5 APK 修复（核心，未改动）
+ * ============================================================ */
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++){
+    let c = n;
+    for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+    t[n] = c;
+  }
+  return t;
+})();
+function crc32(data){
+  let c = 0xFFFFFFFF;
+  for (let i = 0; i < data.length; i++) c = CRC_TABLE[(c ^ data[i]) & 0xFF] ^ (c >>> 8);
+  return (c ^ 0xFFFFFFFF) >>> 0;
+}
+let fflate = null;
+async function ensureFflate(){
+  if (fflate) return fflate;
+  const mod = await import('https://cdn.jsdelivr.net/npm/fflate@0.8.2/+esm').catch(() => null)
+            || await import('https://esm.sh/fflate@0.8.2').catch(() => null);
+  if (!mod) throw new Error('无法加载 fflate 压缩库');
+  fflate = mod;
+  return mod;
+}
+function decideCompression(path, origMap){
+  if (origMap && origMap[path]) return origMap[path];
+  const lower = path.toLowerCase();
+  if (lower === 'resources.arsc') return 'STORE';
+  if (lower.startsWith('assets/dexopt/')) return 'STORE';
+  if (/\.(png|jpg|jpeg|webp|gif|bmp)$/.test(lower)) return 'STORE';
+  if (/\.(ogg|mp3|wav|flac|m4a|aac|opus)$/.test(lower)) return 'STORE';
+  if (/\.(mp4|webm|m4v|3gp)$/.test(lower)) return 'STORE';
+  if (lower.endsWith('.so')) return 'STORE';
+  return 'DEFLATE';
+}
+class ZipBuilder {
+  constructor(){ this.chunks = []; this.entries = []; this.offset = 0; }
+  addFile(name, data, compression, alignTo){
+    const nameBytes = new TextEncoder().encode(name);
+    const crc = crc32(data);
+    let method, stored;
+    if (compression === 'STORE'){ method = 0; stored = data; }
+    else { method = 8; stored = fflate.deflateSync(data, { level: 6 }); }
+    const headerBase = 30 + nameBytes.length;
+    let extraLen = 0;
+    if (alignTo > 1){
+      const r = (this.offset + headerBase) % alignTo;
+      if (r !== 0) extraLen = alignTo - r;
+    }
+    const header = new Uint8Array(headerBase + extraLen);
+    const dv = new DataView(header.buffer);
+    dv.setUint32(0, 0x04034b50, true);
+    dv.setUint16(4, 20, true); dv.setUint16(6, 0, true);
+    dv.setUint16(8, method, true);
+    dv.setUint16(10, 0, true); dv.setUint16(12, 0, true);
+    dv.setUint32(14, crc, true);
+    dv.setUint32(18, stored.length, true);
+    dv.setUint32(22, data.length, true);
+    dv.setUint16(26, nameBytes.length, true);
+    dv.setUint16(28, extraLen, true);
+    header.set(nameBytes, 30);
+    const localOffset = this.offset;
+    this.chunks.push(header, stored);
+    this.offset += header.length + stored.length;
+    this.entries.push({ nameBytes, method, crc, cs: stored.length, us: data.length, offset: localOffset });
+  }
+  finish(){
+    const centrals = [];
+    let centralSize = 0;
+    for (const e of this.entries){
+      const ch = new Uint8Array(46 + e.nameBytes.length);
+      const dv = new DataView(ch.buffer);
+      dv.setUint32(0, 0x02014b50, true);
+      dv.setUint16(4, 20, true); dv.setUint16(6, 20, true);
+      dv.setUint16(8, 0, true);
+      dv.setUint16(10, e.method, true);
+      dv.setUint16(12, 0, true); dv.setUint16(14, 0, true);
+      dv.setUint32(16, e.crc, true);
+      dv.setUint32(20, e.cs, true);
+      dv.setUint32(24, e.us, true);
+      dv.setUint16(28, e.nameBytes.length, true);
+      dv.setUint16(30, 0, true); dv.setUint16(32, 0, true);
+      dv.setUint16(34, 0, true); dv.setUint16(36, 0, true);
+      dv.setUint32(38, 0, true);
+      dv.setUint32(42, e.offset, true);
+      ch.set(e.nameBytes, 46);
+      centrals.push(ch);
+      centralSize += ch.length;
+    }
+    const eocd = new Uint8Array(22);
+    const edv = new DataView(eocd.buffer);
+    edv.setUint32(0, 0x06054b50, true);
+    edv.setUint16(4, 0, true); edv.setUint16(6, 0, true);
+    edv.setUint16(8, this.entries.length, true);
+    edv.setUint16(10, this.entries.length, true);
+    edv.setUint32(12, centralSize, true);
+    edv.setUint32(16, this.offset, true);
+    edv.setUint16(20, 0, true);
+    return new Blob([...this.chunks, ...centrals, eocd], { type: 'application/vnd.android.package-archive' });
+  }
+}
+function readZipCompressionMap(buffer){
+  const u8 = new Uint8Array(buffer);
+  const dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
+  let eocd = -1;
+  const minPos = Math.max(0, u8.length - 65557);
+  for (let i = u8.length - 22; i >= minPos; i--){
+    if (dv.getUint32(i, true) === 0x06054b50){ eocd = i; break; }
+  }
+  if (eocd < 0) return null;
+  const count = dv.getUint16(eocd + 10, true);
+  let off = dv.getUint32(eocd + 16, true);
+  const map = {};
+  const td = new TextDecoder();
+  for (let i = 0; i < count; i++){
+    if (off + 46 > u8.length) break;
+    if (dv.getUint32(off, true) !== 0x02014b50) break;
+    const method = dv.getUint16(off + 10, true);
+    const nameLen = dv.getUint16(off + 28, true);
+    const extraLen = dv.getUint16(off + 30, true);
+    const commentLen = dv.getUint16(off + 32, true);
+    const name = td.decode(u8.subarray(off + 46, off + 46 + nameLen));
+    map[name] = method === 0 ? 'STORE' : 'DEFLATE';
+    off += 46 + nameLen + extraLen + commentLen;
+  }
+  return map;
+}
+async function buildRepairedApk(apkZip, origBlob){
+  await ensureFflate();
+  let origMap = null;
+  if (origBlob){
+    try{
+      const buf = await origBlob.arrayBuffer();
+      origMap = readZipCompressionMap(buf);
+    }catch(e){}
+  }
+  const paths = [];
+  apkZip.forEach((path, entry) => { if (!entry.dir) paths.push(path); });
+  const builder = new ZipBuilder();
+  for (const path of paths){
+    const data = await apkZip.files[path].async('uint8array');
+    const comp = decideCompression(path, origMap);
+    const align = path.toLowerCase().endsWith('.so') ? 4096 : 4;
+    builder.addFile(path, data, comp, align);
+  }
+  return builder.finish();
+}
+async function applyApkModification(apkBlob){
+  const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm')).default;
+  const apkZip = await JSZip.loadAsync(apkBlob);
+  const checked = getApk3Checked();
+  for (const [key, val] of Object.entries(checked)){
+    if (!val) continue;
+    const cfg = ITEM_CONFIG[key];
+    if (!cfg) continue;
+    if (key === 'intor' || key === 'COMBO') continue;
+    if (cfg.file === 'info.txt' || cfg.file === 'sign.txt') continue;
+    const pszBlob = vfs[cfg.file];
+    if (!pszBlob) continue;
+    apkZip.file('assets/' + cfg.file, pszBlob);
+  }
+  const soPath = 'lib/arm64-v8a/libphira.so';
+  const soFile = apkZip.file(soPath);
+  if (soFile){
+    let intorText = '';
+    let comboText = '';
+    if (checked['intor']){
+      const b = vfs['intor.txt'];
+      if (b) intorText = await b.text();
+    }
+    if (checked['COMBO']){
+      const b = vfs['COMBO.txt'];
+      if (b) comboText = await b.text();
+    }
+    if (intorText || comboText){
+      const soBytes = await soFile.async('uint8array');
+      const newSo = modifySo(soBytes, intorText, comboText);
+      apkZip.file(soPath, newSo);
+    }
+  }
+  return apkZip;
+}
+
+/* ============================================================
+ * 19.6 签名（核心，未改动）
+ * ============================================================ */
+var ENC_P12_B64 = 'KN3YwIg6V/NSUqhggiQmTAIDEPmEtQU6CTOwIo8Bj4wHCAu1EZSnHQpp9HQU9ToyBbc+EwleCokwsjlqYH01oAYRH7MHHBJMBUWxagrMNc4FEnpxNZs1PysviqPhCz/611dVCs3lZzF1PVuNqXpHrAIpWUMDLBKYBg4QPQscCGsGD3ATTt1mpgQFutkUGS4tmVlE83im8eTGQlFy5aTROdDubE016XEMyE/xOXWScO4o5dPiQwCC82XD6Y6KRTvBXBvfOOSpf0lMLdF94GKEvtKR0XCd2MlUnrjIVs8Fwrqmi7bhNnfneOfrYFd6gLvXJ00f6O61YEmD3Vvc4hNT24n6GFHT3degUS97YGwqz4q02nwhqPCVydbA1GXJmYFFfXdX96q/FzPy7wJLgfen5pDoGD3k3BgIM1Ic3ubUbGpcWofSTLRNkpqHXDD6vmzBxVNmoS0kVLu9M8AiFlMz86MIEzk2sJ+ncWHivJui3kdMmV2A6wvjE7207lsvfOkSBWdcXj9IX0RSE95sloGfedO7nmHvFA6KsN6WOphS82W4+K3XB3cAv+esZIycaHbXh0Bf8a75JsDLjRqeM2HtbV/bZGSQphIsFrBFgzTG2eHejx1rIlgqZDkPePofVqUdCjpdnwg8DAOcDRae7c+UCBpLZgwqIF98ezG9St9r2lcPgR4nIHlGGKhr2umM1LNsCc8nk033pBCzU2blCPjm/qeyMP4bDsyiFGRO3Mp9mSyJsLbq2UuInoAFRp5p8dTlYlusholNQZrSgLLnhMOh3qoLZLmqgQvJGFRUWNQQUWOoJvo/8b4jSpQ4lvEOEaCBJ/BCOeYw5Z9sf+2qrFFfmyzRHP/bRUGrjJYLd4YEeiHTlLjXwhJp2XcBfR+4p25tVb7vKqQ7JD9z/lnHJx1Kc62/JH4lYGbHgofS60E6/FSoVmQoqeW4WBiKHVNFmtW2ZddIWoMgTD+xro4/Qg4vDT/+oT7YWPdhhvRnduqhywtYKXFmZNvpGahdblnvyeUvfn2YdXGt+62Rgu5dHryBEsu226bzRo16vhAEPoeCT2FCGYL/Qlcy5iWqxRwWGDQFjn65gh6hPGTc2SBcA3n7oqSV/FhPXyWW3KCzNGeZbZaiAbHdcve8BdMaigqqaYHAzm3Osy8ezV3YaNPidkHxnSUiIdi3Rtrpo8DnUo8kCFY0D4kHEk5rmM8GQN566AF5AjhqUwd0W/gK89rcwtcOS4kSdab+9GddkKsjjfifHGTaFIGze9PuUEcQJHGaotf4vp7dOZRU3u7YaIrqU4FSf41kyAUARrwoA4pUadzRZ1NuhPfXhRtSahhCRXJuoVWnyfkMKVXxzfz85raCIojiPgKGRRoU6+zLA0h+jfOBcPWhqTmOI/FIl3DIc7d4MI/RclIbtAXXoCo3/TdQcE6DYUfiUFeaklkoqoWfwrxoDtUiI/1kqLXVZrWO69vEiQiB5e6YyWMPP8dEMz3ygJVxhRRW9AJsOuVbrUQbgAx4JuKenFRUGr+bOCx0h8ly7u+KbK9FnO5OemEoegk98XVuqrngBHc/3TSkXlViGjn+yOIp3DiMloSdfosz399OckvNGmCGEQlH0u188+tPTXQe0Cu0Tv0fg+yDInp7eJpZi5Got8qW1UuQXQmEW4uhwykqduzizuCs7sM0ZKCoFOUna9s+pT0F93uselLjpeurFdI9JL17kncSRn8d/ByHoN94IxnxFImMHTvL5u88NjVRCF9Z0tXSgO9XVKrXb08BsyY64KO3xYOpLNKrTmWFUCvCuG1K7MJ14bZHw2CLIqITBQwO934HSVM7B+lAjYVkuIqW4xKY8YSMF1GbedgPwOfwpdYjHMQl6bcSMEAQi6kiLnl54sXt7eLFb2/kEZDA23sUGJf0fdUm2TFo09hn12mxMmbOIGbQar6hqLK7I8qnloKGFEGDiRDJBIugsirSBZMIU3C8ErJ07FiAqAUW/UxZI79z5WxsHMzgbB4U9JF2TYKGDqOYUZK+695Dqp02oILBO/yIZQnJ4RzD2ZBzHCN7aENc0ROFAL8Jiu7Zamyz44R2x4Up2S5aViaIbZUfzUDAnXLU9u09KKyCNnG9SdDcUBkJEpANTRD9ObJFk6QtMRTNVGxJSrvk0hAAwbwVqZHH+2y1rOS3oMInxzoU1uUEtt60x69h95gVO6pS9kn92ujwJr3M+hCWqPcnaaDWUJtTLIoY1T/y7M+vFmgedEXKyfk/c7eMZYfQl6t+1SwcD7bS9MuAAHlGo5EPZ1HuhpnWAa2zp+pzwP9A7RFx8vuWVxBs5TjN2yHYcAz45ce3wYJ5UWmeNwIBOs6hsYxU8Cpqe4+vXFmKE/05Vz1oUTfBjC+Y0hJTNhD7H76MFPFcbKWQrux81WndVyihcEF6bTotU0v+StZDGyXbWc2LzN4Ll8YyuOX2V2g0l2yLFOYaciuYoR2q/G+AuEYX+s1MidbyZWlvFg5TJNilsHTi9+C/t0Hns7DQwB5JzAXzzBIUlBBqETIwB3GLsu7H0sb1+9qCRBu0begf5uwnnp4mClLk53rdcSzbzpXpQ3Q+lB+SUE4rrKDpd9wI5WIEv2p4NcXlacnKs7kdAgFOFz4A7xUsEuL/CB5B3YL+To12RGEHejeMHHRSBV9s/kWe4KGW4SAlYIsWhOaw3T5aav0z6IatN1e3VJvKcOp39A05pW+jdVXwbzRVU52BIbj4ch2QcHMUnWL4c3E/xS5Xf4V6mpieSyic/3PrtTJsFgp8H58Ms9SwtmtaIvRLPUxHoT7iG7uQ8g+BzxNxmPW00/QaP9faUTPU1iFm3fAGuKBukrJXvCvQu4wwRpkWnT+7nFk+iRBKHxcLjmcgAaZs+c/6xoATBsz1h9w0WcdHHf5hT7TLDn0ZoV97ZNTD8Cq64z+i0cBv8+6YZr/R8FgydGkfBgjcQ1H/E5DFw6Yc+mbgxh3a5NhPgE0kAxcLj31CGX0LOgMOsxVpvNnk81R4pOm80MYK5ZOeXgEZ4xAHB0Oe56DUn/D7Uo0NrU9G4DLH5KQdgtdzy8DBHKB5uwuvPrCt8fV3VeLYkjpNHJb92I0HwMY+py0VKsUopQ5gev8RNBia155zJWlCITkr28r+cBsIeIthyuEQGgiSO738pKd1VUGjhMRd0cVg2oM0r8IadGqfPg7oCiQq0uX5nUtlGwRvpjV4f/NohpAmbXnrl5dtDPMMSjPPXRKykJ4Gd2pyFG/7RjQHn+z2v4F6MTPSarp6qJlTgawrAGv1cWOxw6b77GEWm4q3vnYSF8FRu+Isr9YwcaPO+nvk0cPLm4jYWVjbhN4fQSVVxx7YmPIbHjEPfTJn72EYqxIp03cj9r/2lejCQdoZBtdZmlhY4efwn7XgVXxkjAlBEtmGlB8NDxQuDRQOboG0qBH0mIb/WLdGiDIyoBljCZSrN/a9PNuMngHkIXW6FCAqHhdVABdZrenJpfD9mqRgpQXAH+eNEBwjuqTaEEtA8pprH+qrdSkWH3fA18GYchMo5a657jGq0lX+oCPK5QAAAAAAAAAA';
+var P12_PASSWORD = 'YuYiTool';
+
+var TE={encode:function(s){var b=[];for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);
+  if(c<0x80)b.push(c);else if(c<0x800)b.push(0xC0|(c>>6),0x80|(c&63));
+  else b.push(0xE0|(c>>12),0x80|((c>>6)&63),0x80|(c&63));}return new Uint8Array(b);}};
+var TD=new TextDecoder();
+function cat(){var n=0;for(var i=0;i<arguments.length;i++)n+=arguments[i].length;
+  var o=new Uint8Array(n),p=0;for(var j=0;j<arguments.length;j++){o.set(arguments[j],p);p+=arguments[j].length;}
+  return o;}
+function u32(v){return new Uint8Array([v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255]);}
+function u64(v){var b=new Uint8Array(8),x=BigInt(v);
+  for(var i=0;i<8;i++){b[i]=Number(x&255n);x>>=8n;}return b;}
+function r16(b,o){return b[o]|(b[o+1]<<8);}
+function r32(b,o){return (b[o]|(b[o+1]<<8)|(b[o+2]<<16)|(b[o+3]<<24))>>>0;}
+var SHA256_K=new Uint32Array([
+  0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+  0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+  0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+  0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+  0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+  0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+  0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+  0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2]);
+function rotr(x,n){return ((x>>>n)|(x<<(32-n)))>>>0;}
+function sha256(data){
+  var H=new Uint32Array([0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19]);
+  var len=data.length,bitLen=len*8;
+  var padLen=((len+9)%64===0)?0:64-((len+9)%64);
+  var total=len+1+padLen+8;
+  var msg=new Uint8Array(total);msg.set(data);msg[len]=0x80;
+  var hi=Math.floor(bitLen/0x100000000),lo=bitLen>>>0;
+  msg[total-8]=(hi>>>24)&255;msg[total-7]=(hi>>>16)&255;msg[total-6]=(hi>>>8)&255;msg[total-5]=hi&255;
+  msg[total-4]=(lo>>>24)&255;msg[total-3]=(lo>>>16)&255;msg[total-2]=(lo>>>8)&255;msg[total-1]=lo&255;
+  var W=new Uint32Array(64);
+  for(var off=0;off<total;off+=64){
+    for(var i=0;i<16;i++)W[i]=(msg[off+i*4]<<24)|(msg[off+i*4+1]<<16)|(msg[off+i*4+2]<<8)|msg[off+i*4+3];
+    for(var i=16;i<64;i++){
+      var s0=rotr(W[i-15],7)^rotr(W[i-15],18)^(W[i-15]>>>3);
+      var s1=rotr(W[i-2],17)^rotr(W[i-2],19)^(W[i-2]>>>10);
+      W[i]=(W[i-16]+s0+W[i-7]+s1)>>>0;}
+    var a=H[0],b=H[1],c=H[2],d=H[3],e=H[4],f=H[5],g=H[6],h=H[7];
+    for(var i=0;i<64;i++){
+      var S1=rotr(e,6)^rotr(e,11)^rotr(e,25);
+      var ch=(e&f)^((~e)&g);
+      var t1=(h+S1+ch+SHA256_K[i]+W[i])>>>0;
+      var S0=rotr(a,2)^rotr(a,13)^rotr(a,22);
+      var maj=(a&b)^(a&c)^(b&c);
+      var t2=(S0+maj)>>>0;
+      h=g;g=f;f=e;e=(d+t1)>>>0;d=c;c=b;b=a;a=(t1+t2)>>>0;}
+    H[0]=(H[0]+a)>>>0;H[1]=(H[1]+b)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;
+    H[4]=(H[4]+e)>>>0;H[5]=(H[5]+f)>>>0;H[6]=(H[6]+g)>>>0;H[7]=(H[7]+h)>>>0;}
+  var out=new Uint8Array(32);
+  for(var i=0;i<8;i++){out[i*4]=(H[i]>>>24)&255;out[i*4+1]=(H[i]>>>16)&255;out[i*4+2]=(H[i]>>>8)&255;out[i*4+3]=H[i]&255;}
+  return out;}
+function b2bi(b){var h='';for(var i=0;i<b.length;i++)h+=b[i].toString(16).padStart(2,'0');return h.length===0?0n:BigInt('0x'+h);}
+function bi2b(bi,len){var h=bi.toString(16);if(h.length%2)h='0'+h;
+  var raw=new Uint8Array(h.length/2);for(var i=0;i<raw.length;i++)raw[i]=parseInt(h.substr(i*2,2),16);
+  if(raw.length<len){var p=new Uint8Array(len);p.set(raw,len-raw.length);return p;}return raw;}
+function modPow(base,exp,mod){var r=1n;base=base%mod;
+  while(exp>0n){if(exp&1n)r=(r*base)%mod;exp>>=1n;base=(base*base)%mod;}return r;}
+function fbi2js(fbi){if(fbi.sign===0)return 0n;var h=fbi.toRadix(16);
+  if(fbi.sign<0)return -BigInt('0x'+h);return BigInt('0x'+h);}
+function dLen(n){if(n<0x80)return new Uint8Array([n]);var a=[];
+  while(n>0){a.unshift(n&255);n=Math.floor(n/256);}
+  return new Uint8Array([0x80|a.length].concat(a));}
+function dTag(t,c){return cat(new Uint8Array([t]),dLen(c.length),c);}
+function dSeq(){var a=[];for(var i=0;i<arguments.length;i++)a.push(arguments[i]);return dTag(0x30,cat.apply(null,a));}
+function dNull(){return new Uint8Array([0x05,0x00]);}
+function dOctet(b){return dTag(0x04,b);}
+function dOID(s){var p=s.split('.').map(Number),a=[p[0]*40+p[1]];
+  for(var i=2;i<p.length;i++){var v=p[i],t=[v&127];v=Math.floor(v/128);
+    while(v>0){t.unshift((v&127)|128);v=Math.floor(v/128);}a.push.apply(a,t);}
+  return dTag(0x06,new Uint8Array(a));}
+function dRead(b,o){var tag=b[o],len=b[o+1],hl=2;
+  if(len&0x80){var n=len&0x7f;len=0;for(var i=0;i<n;i++)len=len*256+b[o+2+i];hl=2+n;}
+  return {tag:tag,len:len,hl:hl,cs:o+hl,end:o+hl+len};}
+function rsaSign(pk,data){
+  var digest=sha256(data);
+  var di=dSeq(dSeq(dOID('2.16.840.1.101.3.4.2.1'),dNull()),dOctet(digest));
+  var nBig=fbi2js(pk.n),dBig=fbi2js(pk.d);
+  var nBytes=Math.ceil(pk.n.bitLength()/8);
+  var psLen=nBytes-3-di.length;
+  if(psLen<8)throw new Error('RSA key too small');
+  var em=new Uint8Array(nBytes);
+  em[0]=0;em[1]=1;
+  for(var i=0;i<psLen;i++)em[2+i]=0xFF;
+  em[2+psLen]=0;em.set(di,3+psLen);
+  var m=b2bi(em),s=modPow(m,dBig,nBig);
+  return bi2b(s,nBytes);}
+function zipFindEOCD(b){for(var i=b.length-22;i>=Math.max(0,b.length-22-65535);i--)
+  if(b[i]===0x50&&b[i+1]===0x4b&&b[i+2]===0x05&&b[i+3]===0x06)return i;return -1;}
+function zipRead(b){
+  var eo=zipFindEOCD(b);if(eo<0)throw new Error('找不到 EOCD');
+  var count=r16(b,eo+10),cdSize=r32(b,eo+12),cdOff=r32(b,eo+16);
+  if(cdOff===0xFFFFFFFF||cdSize===0xFFFFFFFF||count===0xFFFF)throw new Error('暂不支持 ZIP64');
+  var entries=[],p=cdOff;
+  for(var i=0;i<count;i++){
+    if(r32(b,p)!==0x02014b50)throw new Error('CD 损坏 @'+p);
+    var flags=r16(b,p+8),method=r16(b,p+10),mtime=r16(b,p+12),mdate=r16(b,p+14);
+    var crc=r32(b,p+16),csize=r32(b,p+20),usize=r32(b,p+24);
+    var nlen=r16(b,p+28),elen=r16(b,p+30),clen=r16(b,p+32);
+    var extAttr=r32(b,p+38),lo=r32(b,p+42);
+    var name=TD.decode(b.subarray(p+46,p+46+nlen));
+    if(r32(b,lo)!==0x04034b50)throw new Error('LFH 损坏: '+name);
+    var lnlen=r16(b,lo+26),lelen=r16(b,lo+28);
+    var dataStart=lo+30+lnlen+lelen;
+    entries.push({name:name,flags:flags,method:method,mtime:mtime,mdate:mdate,
+      crc:crc,usize:usize,extAttr:extAttr,data:b.subarray(dataStart,dataStart+csize)});
+    p+=46+nlen+elen+clen;
+  }
+  return entries;}
+async function inflateRaw(data){
+  var ds=new DecompressionStream('deflate-raw');
+  var stream=new Blob([data]).stream().pipeThrough(ds);
+  var ab=await new Response(stream).arrayBuffer();
+  return new Uint8Array(ab);}
+function isOldV1Sig(name){
+  var u=name.toUpperCase();
+  if(!u.startsWith('META-INF/'))return false;
+  var rest=u.slice(9);if(rest.includes('/'))return false;
+  if(rest==='MANIFEST.MF')return true;
+  if(rest.startsWith('SIG-'))return true;
+  return /\.(SF|RSA|DSA|EC)$/.test(rest);}
+async function rebuildZip(entries){
+  var out=[], cdArr=[], offset=0;
+  for(var i=0;i<entries.length;i++){
+    var e=entries[i];
+    var nameBytes=TE.encode(e.name);
+    var isArsc=/(^|\/)resources\.arsc$/i.test(e.name);
+    var method=e.method, data=e.data, usize=e.usize, crc=e.crc;
+    if(isArsc){
+      if(e.method===8) data = await inflateRaw(e.data);
+      method = 0; usize = data.length; crc = crc32(data);
+    }
+    var extra=new Uint8Array(0);
+    if(isArsc){
+      var base=(offset+34+nameBytes.length)%4;
+      var pad=(4-base)%4;
+      var ex=new Uint8Array(4+pad);
+      ex[0]=0xd9;ex[1]=0x35;ex[2]=pad&0xff;ex[3]=0;
+      extra=ex;
+    }
+    var lh=new Uint8Array(30+nameBytes.length+extra.length);
+    var dv=new DataView(lh.buffer);
+    dv.setUint32(0,0x04034b50,true);dv.setUint16(4,20,true);dv.setUint16(6,e.flags&0x800,true);
+    dv.setUint16(8,method,true);dv.setUint16(10,e.mtime,true);dv.setUint16(12,e.mdate,true);
+    dv.setUint32(14,crc,true);dv.setUint32(18,data.length,true);dv.setUint32(22,usize,true);
+    dv.setUint16(26,nameBytes.length,true);dv.setUint16(28,extra.length,true);
+    lh.set(nameBytes,30);if(extra.length)lh.set(extra,30+nameBytes.length);
+    out.push(lh);out.push(data);
+    var cd=new Uint8Array(46+nameBytes.length+extra.length);
+    var dv2=new DataView(cd.buffer);
+    dv2.setUint32(0,0x02014b50,true);dv2.setUint16(4,20,true);dv2.setUint16(6,20,true);
+    dv2.setUint16(8,e.flags&0x800,true);dv2.setUint16(10,method,true);dv2.setUint16(12,e.mtime,true);
+    dv2.setUint16(14,e.mdate,true);dv2.setUint32(16,crc,true);dv2.setUint32(20,data.length,true);
+    dv2.setUint32(24,usize,true);dv2.setUint16(28,nameBytes.length,true);dv2.setUint16(30,extra.length,true);
+    dv2.setUint16(32,0,true);dv2.setUint16(34,0,true);dv2.setUint16(36,0,true);
+    dv2.setUint32(38,e.extAttr>>>0,true);dv2.setUint32(42,offset,true);
+    cd.set(nameBytes,46);if(extra.length)cd.set(extra,46+nameBytes.length);
+    cdArr.push(cd);
+    offset += lh.length + data.length;
+  }
+  var cdOff=offset, cdSize=0;
+  for(var j=0;j<cdArr.length;j++) cdSize += cdArr[j].length;
+  var eocd=new Uint8Array(22);var dv3=new DataView(eocd.buffer);
+  dv3.setUint32(0,0x06054b50,true);dv3.setUint16(8,entries.length,true);
+  dv3.setUint16(10,entries.length,true);dv3.setUint32(12,cdSize,true);dv3.setUint32(16,cdOff,true);
+  return {localPart:cat.apply(null,out),cdPart:cat.apply(null,cdArr),eocd:eocd,cdOff:cdOff};}
+function chunkedDigest(fullData,CHUNK){
+  if(fullData.length===0)return sha256(new Uint8Array([0x5a,0,0,0,0]));
+  var parts=[],n=Math.ceil(fullData.length/CHUNK);
+  for(var i=0;i<n;i++){
+    var s=i*CHUNK,e=Math.min(s+CHUNK,fullData.length),len=e-s;
+    var pre=new Uint8Array(5);pre[0]=(i===0)?0x5a:0xa5;
+    new DataView(pre.buffer).setUint32(1,len,true);
+    parts.push(pre);parts.push(fullData.subarray(s,e));}
+  return sha256(cat.apply(null,parts));}
+function certSPKI(certDer){
+  var c=dRead(certDer,0),tbs=dRead(certDer,c.cs),p=tbs.cs;
+  var r=dRead(certDer,p);
+  if(r.tag===0xA0){p=r.end;r=dRead(certDer,p);}
+  p=r.end;
+  r=dRead(certDer,p);p=r.end;
+  r=dRead(certDer,p);p=r.end;
+  r=dRead(certDer,p);p=r.end;
+  r=dRead(certDer,p);p=r.end;
+  var st=p;r=dRead(certDer,p);
+  return certDer.subarray(st,r.end);}
+function buildV2Block(digest,certDer,pk,spki){
+  var ALGO=0x0103;
+  var digests=cat(u32(8+digest.length),u32(ALGO),u32(digest.length),digest);
+  var certs=cat(u32(certDer.length),certDer);
+  var sd=cat(u32(digests.length),digests,u32(certs.length),certs,u32(0));
+  var sig=rsaSign(pk,sd);
+  var sigs=cat(u32(8+sig.length),u32(ALGO),u32(sig.length),sig);
+  var signer=cat(u32(sd.length),sd,u32(sigs.length),sigs,u32(spki.length),spki);
+  var signers=cat(u32(signer.length),signer);
+  var value=cat(u32(signers.length),signers);
+  var pair=cat(u64(4+value.length),u32(0x7109871a),value);
+  var blockSize=pair.length+8+16;
+  return cat(u64(blockSize),pair,u64(blockSize),TE.encode('APK Sig Block 42'));}
+function bytesToBinaryString(bytes){var CHUNK=8192,r='';
+  for(var i=0;i<bytes.length;i+=CHUNK){
+    var e=Math.min(i+CHUNK,bytes.length),sub=bytes.subarray(i,e),a=new Array(sub.length);
+    for(var j=0;j<sub.length;j++)a[j]=sub[j];
+    r+=String.fromCharCode.apply(null,a);}
+  return r;}
+function parsePkcs12(p12Bytes,password){
+  var bin=bytesToBinaryString(p12Bytes);
+  var asn1=forge.asn1.fromDer(forge.util.createBuffer(bin,'raw'));
+  var p12=forge.pkcs12.pkcs12FromAsn1(asn1,password);
+  var kb=p12.getBags({bagType:forge.pki.oids.pkcs8ShroudedKeyBag});
+  var kl=kb[forge.pki.oids.pkcs8ShroudedKeyBag];
+  if(!kl||!kl.length)throw new Error('PKCS12 中未找到私钥');
+  var pk=kl[0].key;
+  var cb=p12.getBags({bagType:forge.pki.oids.certBag});
+  var cl=cb[forge.pki.oids.certBag];
+  if(!cl||!cl.length)throw new Error('PKCS12 中未找到证书');
+  var cert=cl[0].cert;
+  var certDerStr=forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes();
+  var certDer=new Uint8Array(certDerStr.length);
+  for(var i=0;i<certDerStr.length;i++)certDer[i]=certDerStr.charCodeAt(i)&0xff;
+  return {privateKey:pk,certDer:certDer};}
+function decryptBlock(v, o) {
+  var t;
+  t = v[o + 1]; v[o + 1] = v[o + 4]; v[o + 4] = t;
+  t = v[o + 2]; v[o + 2] = v[o + 6]; v[o + 6] = t;
+  t = v[o + 1]; v[o + 1] = v[o + 4]; v[o + 4] = t;
+  t = v[o + 3]; v[o + 3] = v[o + 6]; v[o + 6] = t;
+  v[o + 1] = (v[o + 1] - v[o + 0]) & 0xFF;
+  v[o + 3] = (v[o + 3] - v[o + 2]) & 0xFF;
+  v[o + 5] = (v[o + 5] - v[o + 4]) & 0xFF;
+  v[o + 7] = (v[o + 7] - v[o + 6]) & 0xFF;
+  v[o + 2] = (v[o + 2] - v[o + 0]) & 0xFF;
+  v[o + 3] = (v[o + 3] - v[o + 1]) & 0xFF;
+  v[o + 6] = (v[o + 6] - v[o + 4]) & 0xFF;
+  v[o + 7] = (v[o + 7] - v[o + 5]) & 0xFF;
+  v[o + 4] = (v[o + 4] - v[o + 0]) & 0xFF;
+  v[o + 5] = (v[o + 5] - v[o + 1]) & 0xFF;
+  v[o + 6] = (v[o + 6] - v[o + 2]) & 0xFF;
+  v[o + 7] = (v[o + 7] - v[o + 3]) & 0xFF;
+  t = v[o + 3]; v[o + 3] = v[o + 5]; v[o + 5] = t;
+}
+function phiraDecryptFrame(data) {
+  var buf = data.slice();
+  var n = buf.length - (buf.length % 8);
+  for (var i = 0; i < n; i += 8) decryptBlock(buf, i);
+  if (n >= 8) {
+    var lastByte = buf[n - 1];
+    var newSize = n + lastByte - 8;
+    if (newSize > 0 && newSize <= n) return buf.subarray(0, newSize);
+  }
+  return buf;
+}
+var _fzstd = null;
+async function loadFzstd() {
+  if (_fzstd) return _fzstd;
+  var urls = ['https://cdn.jsdelivr.net/npm/fzstd@0.1.1/+esm','https://esm.sh/fzstd@0.1.1'];
+  var lastErr = null;
+  for (var i = 0; i < urls.length; i++) {
+    try {
+      var m = await import(urls[i]);
+      if (m.Decompress) { _fzstd = m.Decompress; return _fzstd; }
+      if (m.default && m.default.Decompress) { _fzstd = m.default.Decompress; return _fzstd; }
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr || new Error('无法加载 fzstd');
+}
+var _cachedP12 = null;
+async function getEmbeddedP12() {
+  if (_cachedP12) return _cachedP12;
+  var binStr = atob(ENC_P12_B64);
+  var encrypted = new Uint8Array(binStr.length);
+  for (var i = 0; i < binStr.length; i++) encrypted[i] = binStr.charCodeAt(i) & 0xff;
+  var frame = phiraDecryptFrame(encrypted);
+  if (frame[0] !== 0x28 || frame[1] !== 0xB5 || frame[2] !== 0x2F || frame[3] !== 0xFD) {
+    throw new Error('zstd 魔数不匹配');
+  }
+  var Decompress = await loadFzstd();
+  var chunks = [];
+  var d = new Decompress(function(c){ chunks.push(c.slice()); });
+  d.push(frame, true);
+  var total = 0;
+  for (var k = 0; k < chunks.length; k++) total += chunks[k].length;
+  var p12 = new Uint8Array(total);
+  var off = 0;
+  for (var k = 0; k < chunks.length; k++) { p12.set(chunks[k], off); off += chunks[k].length; }
+  if (p12[0] !== 0x30) throw new Error('不是有效 PKCS12');
+  _cachedP12 = p12;
+  return p12;
+}
+async function signApkBlob(apkBlob){
+  var p12Bytes = await getEmbeddedP12();
+  var parsed = parsePkcs12(p12Bytes, P12_PASSWORD);
+  var apkBuf = new Uint8Array(await apkBlob.arrayBuffer());
+  var entries = zipRead(apkBuf);
+  var filtered = [];
+  for (var i = 0; i < entries.length; i++){
+    if (isOldV1Sig(entries[i].name)) continue;
+    filtered.push(entries[i]);
+  }
+  entries = filtered;
+  var z = await rebuildZip(entries);
+  var eocdForDigest = new Uint8Array(z.eocd);
+  new DataView(eocdForDigest.buffer).setUint32(16, 0, true);
+  var fullData = cat(z.localPart, z.cdPart, eocdForDigest);
+  var digest = chunkedDigest(fullData, 1048576);
+  var spki = certSPKI(parsed.certDer);
+  var block = buildV2Block(digest, parsed.certDer, parsed.privateKey, spki);
+  var newEocd = new Uint8Array(z.eocd);
+  new DataView(newEocd.buffer).setUint32(16, z.cdOff + block.length, true);
+  var result = cat(z.localPart, block, z.cdPart, newEocd);
+  return new Blob([result], { type: 'application/vnd.android.package-archive' });
+}
+
+/* ============================================================
+ * 19.7 一键美化
+ * ============================================================ */
+let repairedBlob = null;
+let repairedName = '';
+$('apk3Beautify').addEventListener('click', async () => {
+  if (!apkFile) return;
+  repairedBlob = null;
+  repairedName = apkFile.name.replace(/\.apk$/i, '') + '_repaired.apk';
+  try{
+    const apkZip = await showMask('美化中', async () => await applyApkModification(apkFile.blob));
+    let outBlob;
+    try{
+      outBlob = await showMask('修复中', async () => await buildRepairedApk(apkZip, apkFile.blob));
+    }catch(e){
+      console.warn('修复失败，回退为普通打包', e);
+      outBlob = await showMask('打包中', async () => await apkZip.generateAsync({ type: 'blob', compression: 'DEFLATE' }));
+    }
+    repairedBlob = outBlob;
+    showPage('pageChooseSign');
+  }catch(e){
+    console.error(e);
+    showDialog({
+      title: '处理失败', body: (e.message || String(e)),
+      type: 'fail', yesText: '重试', noText: '返回',
+      onYes: () => { if (apkFile) $('apk3Beautify').click(); },
+      onNo: () => showPage('pageApk3')
+    });
+  }
+});
+$('chooseBack').addEventListener('click', () => showPage('pageApk3'));
+$('btnManualSign').addEventListener('click', () => {
+  if (!repairedBlob) return;
+  downloadBlob(repairedBlob, repairedName);
+  showDialog({ title:'完成', body:'未签名 APK 已下载。\n请使用 apksigner 签名后再安装。',
+    type:'success', yesText:'知道了', onYes: () => showPage('page1') });
+});
+$('btnAutoSign').addEventListener('click', async () => {
+  if (!repairedBlob) return;
+  try{
+    const signed = await showMask('签名中', async () => await signApkBlob(repairedBlob));
+    const outName = apkFile.name.replace(/\.apk$/i, '') + '-v2signed.apk';
+    downloadBlob(signed, outName);
+    showDialog({ title:'完成', body:'v2 签名完成，已下载：' + outName,
+      type:'success', yesText:'知道了', onYes: () => showPage('page1') });
+  }catch(e){
+    console.error(e);
+    showDialog({
+      title:'签名失败', body:(e.message || String(e)),
+      type:'fail', yesText:'重试', noText:'返回',
+      onYes: () => $('btnAutoSign').click(), onNo: () => showPage('pageChooseSign')
+    });
+  }
+});
+
+/* ============================================================
+ * 20. 入口
+ * ============================================================ */
+$('btnCustom').addEventListener('click', () => showPage('page2'));
+$('btnNew').addEventListener('click', () => {
+  resetState(); modifyMode = false; p3Built = false;
+  buildPage3(); showPage('page3');
+});
+$('btnEdit').addEventListener('click', () => {
+  resetState(); openPszImportPage();
+});
+
+/* ============================================================
+ * 21. 启动 —— 修复：绑定 apk 拖拽区 + 文件选择
+ * ============================================================ */
+bindDropZone('p5Drop', 'p5File');
+bindDropZone('apk1Drop', 'apk1File');
+bindDropZone('apk2Drop', 'apk2File');
+refreshVersionLines();
+</script>
+</body>
+</html>

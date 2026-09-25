@@ -1,0 +1,2666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PRSL-β0.2</title>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;padding:12px;background:linear-gradient(180deg,#f8f9fb 0%,#eef1f5 100%);
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+color:#2b2f36;-webkit-font-smoothing:antialiased}
+[hidden]{display:none!important}
+.app{max-width:1120px;margin:0 auto;height:calc(100vh - 24px);min-height:520px}
+.grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:12px;height:100%}
+.win{background:#fff;border:1px solid #e6e9ee;border-radius:14px;
+box-shadow:0 1px 2px rgba(16,24,40,.04),0 12px 30px -14px rgba(16,24,40,.20);
+display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.win-bar{display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid #eef0f4;
+background:linear-gradient(180deg,#fdfdfe,#f7f8fa);flex:0 0 auto;min-height:34px}
+.dots{display:flex;gap:5px}
+.dots i{width:9px;height:9px;border-radius:50%;display:block}
+.dots i:nth-child(1){background:#ff5f57}
+.dots i:nth-child(2){background:#febc2e}
+.dots i:nth-child(3){background:#28c840}
+.win-title{font-size:12px;color:#6b7280;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spacer{flex:1 1 auto}
+.placeholder{cursor:pointer}
+.placeholder .win-body{align-items:center;justify-content:center;color:#c9cfd9;font-size:11px;letter-spacing:.18em}
+.box-view{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;padding:10px;gap:8px}
+
+#box1 > .box-view:not([data-view="import"]),
+#box2 > .box-view:not([data-view="import"]),
+#box3 > .box-view:not([data-view="import"]) {
+  position:fixed;inset:0;z-index:40;background:#fff;padding:16px;gap:12px;
+}
+
+.dropzone{flex:1 1 auto;min-height:0;border:2px dashed #d8dce3;border-radius:10px;background:#fbfcfd;
+display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;
+color:#8b93a1;font-size:13px;font-weight:500;transition:border-color .18s,background .18s,color .18s;
+user-select:none;text-align:center;padding:10px}
+.dropzone:hover{border-color:#b9c6dd;background:#f6f9ff}
+.dropzone.over{border-color:#4f8cff;background:#eef4ff;color:#3b6fd4}
+.dropzone svg{width:26px;height:26px;opacity:.72}
+.dropzone .sub{font-size:11px;color:#aab2bf;font-weight:400;line-height:1.5}
+.stage-wrap{flex:1 1 auto;min-height:0;display:flex;padding:0}
+.stage{position:relative;flex:1 1 auto;min-height:0;border-radius:10px;overflow:hidden;
+background-color:#e9edf3;background-image:
+linear-gradient(45deg,#e0e5ed 25%,transparent 25%),
+linear-gradient(-45deg,#e0e5ed 25%,transparent 25%),
+linear-gradient(45deg,transparent 75%,#e0e5ed 75%),
+linear-gradient(-45deg,transparent 75%,#e0e5ed 75%);
+background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0;
+border:1px solid #e3e7ee;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.stage.dragging{cursor:grabbing}
+.stage img{position:absolute;left:0;top:0;transform-origin:0 0;pointer-events:none;
+-webkit-user-drag:none;user-select:none;will-change:transform}
+.crop-frame{position:absolute;pointer-events:none;box-shadow:0 0 0 9999px rgba(17,20,26,.55)}
+.crop-frame::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.92);pointer-events:none}
+.warn-layer{position:absolute;inset:0;background-color:rgba(255,62,62,.22);
+background-image:repeating-linear-gradient(45deg,rgba(255,62,62,.40) 0 8px,rgba(255,62,62,.13) 8px 16px);
+clip-path:polygon(0% 0%,12.2% 0%,12.2% 59.0909%,100% 59.0909%,100% 100%,0% 100%)}
+.size-tag{position:absolute;right:6px;top:6px;padding:2px 6px;font-size:10px;
+font-variant-numeric:tabular-nums;color:#2b2f36;background:rgba(255,255,255,.95);
+border-radius:5px;box-shadow:0 1px 4px rgba(0,0,0,.2);white-space:nowrap;pointer-events:none}
+.stage-hint{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
+padding:4px 10px;border-radius:20px;font-size:10.5px;color:#4a5364;background:rgba(255,255,255,.9);
+box-shadow:0 2px 10px rgba(16,24,40,.14);pointer-events:none;white-space:nowrap;transition:opacity .45s}
+.stage-hint.fade{opacity:0}
+.foot{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 10px;
+border-top:1px solid #eef0f4;background:linear-gradient(180deg,#fbfcfd,#f7f8fa)}
+.btn{border-radius:8px;font-size:12px;padding:7px 12px;cursor:pointer;
+border:1px solid transparent;transition:.15s;font-family:inherit;white-space:nowrap}
+.btn.ghost{background:#fff;border-color:#dfe4ec;color:#5b6472}
+.btn.ghost:hover{background:#f6f8fb;border-color:#cbd4e2}
+.btn.primary{background:#4f8cff;color:#fff;box-shadow:0 2px 8px -2px rgba(79,140,255,.65)}
+.btn.primary:hover{background:#3f7cf0}
+.btn.primary:active{transform:translateY(1px)}
+.btn.primary:disabled{background:#c9d8f3;box-shadow:none;cursor:not-allowed}
+.btn.danger{background:#e5484d;color:#fff;box-shadow:0 2px 8px -2px rgba(229,72,77,.6)}
+.btn.danger:hover{background:#d63b40}
+.preview-stage{flex:1 1 auto;min-height:0;border-radius:10px;border:1px solid #e3e7ee;overflow:hidden;
+display:flex;align-items:center;justify-content:center;padding:10px;background-color:#e9edf3;
+background-image:linear-gradient(45deg,#e0e5ed 25%,transparent 25%),
+linear-gradient(-45deg,#e0e5ed 25%,transparent 25%),
+linear-gradient(45deg,transparent 75%,#e0e5ed 75%),
+linear-gradient(-45deg,transparent 75%,#e0e5ed 75%);
+background-size:18px 18px;background-position:0 0,0 9px,9px -9px,-9px 0}
+.preview-stage img{max-width:100%;max-height:100%;object-fit:contain;display:block;
+box-shadow:0 0 0 1px rgba(0,0,0,.10),0 6px 20px -8px rgba(16,24,40,.35);
+-webkit-user-drag:none;user-select:none}
+.preview-stage audio{width:100%;max-width:400px}
+.field{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.field>label{font-size:11.5px;color:#5b6472;flex:0 0 auto;font-weight:500}
+select,input[type=text]{font-family:inherit;font-size:12px;color:#2b2f36;padding:6px 9px;
+border-radius:7px;border:1px solid #dfe4ec;background:#fff;outline:none;
+transition:border-color .15s,box-shadow .15s;min-width:0}
+select:focus,input[type=text]:focus{border-color:#4f8cff;box-shadow:0 0 0 3px rgba(79,140,255,.15)}
+select{flex:0 0 auto;min-width:110px;cursor:pointer}
+input[type=text]{flex:1 1 100px}
+input[type=text]:read-only{background:#f7f9fc;color:#5b6472}
+input[type=text].slim{
+  height:30px!important;min-height:30px!important;max-height:30px!important;
+  padding:3px 9px;line-height:1.2;box-sizing:border-box;
+  -webkit-appearance:none;appearance:none;
+}
+.note{display:flex;gap:8px;font-size:11px;line-height:1.5;color:#a33a3a;
+background:#fff5f5;border:1px solid #ffdcdc;border-radius:8px;padding:8px 10px}
+.note b{color:#c62828}
+.audio-body{flex:1 1 auto;min-height:0;padding:12px;display:flex;align-items:center;justify-content:center}
+.audio-card{width:100%;max-width:380px;background:#f8fafc;border:1px solid #e9eef6;border-radius:14px;
+padding:20px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.audio-icon{width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#e7f0ff,#c8dcff);
+color:#4f8cff;display:flex;align-items:center;justify-content:center;font-size:26px}
+.audio-name{font-size:12.5px;color:#374050;font-weight:600;word-break:break-all;line-height:1.5}
+.audio-card audio{width:100%;height:36px}
+.overlay{position:fixed;inset:0;background:rgba(22,26,33,.42);-webkit-backdrop-filter:blur(3px);
+backdrop-filter:blur(3px);display:flex;flex-direction:column;align-items:center;justify-content:center;
+gap:14px;z-index:90}
+.spinner{width:50px;height:50px;border:3px solid rgba(79,140,255,.18);border-radius:50%;
+position:relative;animation:spin 1.1s linear infinite}
+.spinner::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+width:11px;height:11px;border-radius:50%;
+background:radial-gradient(circle at 32% 28%,#fff 0%,#a8c8ff 30%,#4f8cff 100%);
+box-shadow:0 2px 8px rgba(79,140,255,.65)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.overlay-text{color:#fff;font-size:12.5px;letter-spacing:.05em;text-shadow:0 1px 4px rgba(0,0,0,.35);
+max-width:80%;text-align:center;line-height:1.5}
+.bottom-bar{grid-column:1/-1}
+.bottom-body{flex:1 1 auto;min-height:0;display:flex;padding:8px;gap:8px;overflow:hidden;align-items:stretch}
+.import-card{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:8px 12px;
+border:2px solid #4f8cff;border-radius:10px;background:#fff;color:#4f8cff;font-size:12px;
+font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.import-card:hover{background:#eef4ff}
+.import-card .plus{font-size:18px;line-height:1}
+.cards-scroll{flex:1 1 auto;min-height:0;display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;padding:2px}
+.cards-scroll::-webkit-scrollbar{height:6px}
+.cards-scroll::-webkit-scrollbar-thumb{background:#cbd4e2;border-radius:3px}
+.card{flex:0 0 auto;width:78px;background:#fbfcfd;border:1px solid #e6e9ee;border-radius:10px;
+display:flex;flex-direction:column;cursor:pointer;transition:.15s;overflow:hidden;position:relative}
+.card:hover{border-color:#4f8cff;background:#f6f9ff;transform:translateY(-1px)}
+.card-thumb{flex:0 0 auto;height:52px;background:#f0f3f7;display:flex;align-items:center;
+justify-content:center;overflow:hidden;position:relative}
+.card-thumb img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.card-thumb .icon{font-size:22px;color:#8b93a1;font-weight:700}
+.card-thumb .icon.audio{color:#4f8cff}
+.card-label{flex:1 1 auto;display:flex;align-items:center;justify-content:center;
+padding:6px 4px;font-size:10.5px;color:#374050;font-weight:600;
+writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:.05em;
+max-height:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.export-card{flex:0 0 auto;width:78px;background:#4f8cff;border-radius:10px;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+cursor:pointer;transition:.15s;overflow:hidden;box-shadow:0 2px 8px -2px rgba(79,140,255,.65)}
+.export-card:hover{background:#3f7cf0}
+.export-card .icon{font-size:24px;color:#fff;margin-bottom:4px}
+.export-card .card-label{color:#fff;writing-mode:vertical-rl;text-orientation:mixed;padding:0 0 6px 0}
+
+.fullscreen-view{position:fixed;inset:0;z-index:40;background:#fff;border-radius:0;border:none;box-shadow:none;
+display:flex;flex-direction:column;overflow:hidden}
+.fullscreen-body{flex:1 1 auto;min-height:0;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+.uilist-search{width:100%;flex:0 0 auto}
+.uilist-groups{display:flex;flex-direction:column;gap:8px}
+.uilist-group{border:1px solid #eef0f4;border-radius:10px;overflow:hidden;background:#fff}
+.uilist-group-head{padding:9px 13px;font-size:12px;font-weight:600;color:#374050;
+background:#f7f9fc;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none}
+.uilist-group-head .arrow{font-size:10px;color:#8b93a1;transition:transform .15s}
+.uilist-group.collapsed .arrow{transform:rotate(-90deg)}
+.uilist-group.collapsed .uilist-items{display:none}
+.uilist-items{display:flex;flex-direction:column}
+.uilist-item{padding:8px 13px 8px 28px;font-size:12.5px;color:#4a5364;cursor:pointer;
+display:flex;gap:8px;align-items:center;transition:.1s}
+.uilist-item:hover{background:#eef4ff;color:#3b6fd4}
+.uilist-item.selected{background:#e0e9ff;color:#2b5fc4;font-weight:600}
+.uilist-item .item-id{color:#8b93a1;font-size:11px;font-family:monospace}
+.uilist-item.selected .item-id{color:#5b7fc4}
+.uilist-item .item-size{color:#c9cfd9;font-size:10.5px;margin-left:auto}
+
+.detail-content{padding:16px;display:flex;flex-direction:column;gap:14px;align-items:center;
+max-width:640px;margin:0 auto;width:100%}
+.detail-preview{width:100%;min-height:180px;max-height:52vh;background:#f0f3f7;border-radius:12px;
+display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px}
+.detail-preview img{max-width:100%;max-height:52vh;object-fit:contain;display:block;border-radius:6px}
+.detail-preview audio{width:100%}
+.detail-preview .icon{font-size:64px;color:#8b93a1}
+.detail-preview pre{margin:0;padding:0;width:100%;height:100%;max-height:52vh;overflow:auto;
+font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.55;
+white-space:pre-wrap;word-break:break-all;color:#374050;text-align:left}
+.detail-info{width:100%;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#4a5364}
+.detail-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed #eef0f4}
+.detail-row:last-child{border-bottom:none}
+.detail-row .key{color:#98a0ae;flex:0 0 auto}
+.detail-row .val{color:#374050;text-align:right;word-break:break-all;font-weight:500}
+
+.modal-mask{position:fixed;inset:0;background:rgba(22,26,33,.44);-webkit-backdrop-filter:blur(3px);
+backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:80;padding:16px}
+.modal{background:#fff;border-radius:14px;box-shadow:0 40px 80px -28px rgba(16,24,40,.5);
+max-width:520px;width:100%;max-height:80vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-head{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid #eef0f4;
+background:linear-gradient(180deg,#fdfdfe,#f7f8fa)}
+.modal-title{font-size:13px;font-weight:600;color:#374050}
+.modal-body{padding:14px 16px;flex:1 1 auto;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:10px}
+.modal-foot{display:flex;gap:10px;padding:12px 16px;border-top:1px solid #eef0f4;background:#fbfcfd;flex-wrap:wrap}
+.modal-foot .spacer{flex:1 1 auto}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="grid" id="gridView">
+
+    <!-- 框1 -->
+    <section class="win" id="box1">
+      <header class="win-bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="win-title">文件加密</span>
+      </header>
+      <div class="box-view" data-view="import">
+        <div class="dropzone" id="drop1" tabindex="0" role="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V4m0 0L8 8m4-4 4 4"/>
+            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          </svg>
+          <div>图片 / 音频</div>
+          <div class="sub">拖入或点击选择单个文件</div>
+        </div>
+        <input type="file" id="file1" hidden>
+      </div>
+
+      <div class="box-view" data-view="crop" hidden>
+        <div class="field">
+          <select id="charSel">
+            <option value="shee">夕 [shee]</option>
+            <option value="fred">芙莱 [fred]</option>
+            <option value="fred2">芙莱-正装 [fred2]</option>
+            <option value="jed">杰德 [jed]</option>
+          </select>
+          <input type="text" id="charName" readonly value="夕" style="flex:0 0 80px">
+          <input type="text" id="charId" class="slim" value="shee" autocomplete="off" spellcheck="false" style="flex:1 1 70px">
+          <select id="sizeSel" style="flex:0 0 auto">
+            <option value="1000x1100">1000x1100</option>
+            <option value="2000x2200">2000x2200</option>
+          </select>
+        </div>
+        <div class="note" id="charWarn" hidden>
+          <span>⚠️</span>
+          <div>自定义 id 必须为 <b>4 字节</b></div>
+        </div>
+        <div class="stage-wrap">
+          <div class="stage" id="stage">
+            <img id="cropImg" alt="">
+            <div class="crop-frame" id="cropFrame">
+              <div class="warn-layer"></div>
+              <div class="size-tag" id="sizeTag1">1000 × 1100</div>
+            </div>
+            <div class="stage-hint" id="stageHint">拖动移动 · 双指 / 滚轮缩放</div>
+          </div>
+        </div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackCrop">← 返回</button>
+          <button class="btn ghost" id="btnResetCrop">重置</button>
+          <span class="spacer"></span>
+          <button class="btn primary" id="btnToPreview">下一步</button>
+        </div>
+      </div>
+
+      <div class="box-view" data-view="preview" hidden>
+        <div class="preview-stage"><img id="previewImg" alt=""></div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackPreview">← 返回</button>
+          <span class="spacer"></span>
+          <button class="btn primary" id="btnNext">下一步</button>
+        </div>
+      </div>
+
+      <div class="box-view" data-view="audio" hidden>
+        <div class="audio-body">
+          <div class="audio-card">
+            <div class="audio-icon">♪</div>
+            <div class="audio-name" id="audioName">—</div>
+            <audio id="audioPlayer" controls preload="metadata"></audio>
+          </div>
+        </div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackAudio">← 返回</button>
+          <span class="spacer"></span>
+          <button class="btn primary" id="btnEncryptAudio">下一步</button>
+        </div>
+      </div>
+
+      <div class="box-view" data-view="done" hidden>
+        <div class="preview-stage" id="donePreview"></div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn danger" id="btnDoneDelete">删除</button>
+          <span class="spacer"></span>
+          <button class="btn ghost" id="btnDoneAdd">加入压缩包</button>
+          <span class="spacer"></span>
+          <button class="btn primary" id="btnDoneDownload">直接下载</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 框2 -->
+    <section class="win" id="box2">
+      <header class="win-bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="win-title">编辑常规文件</span>
+      </header>
+      <div class="box-view" data-view="import">
+        <div class="dropzone" id="drop2" tabindex="0" role="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V4m0 0L8 8m4-4 4 4"/>
+            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          </svg>
+          <div>图片 / 音频</div>
+          <div class="sub">拖入或点击选择单个文件</div>
+        </div>
+        <input type="file" id="file2" hidden>
+      </div>
+
+      <div class="box-view" data-view="crop" hidden>
+        <div class="field">
+          <button class="btn ghost" id="btnOpenUiList" style="flex:0 0 auto">替换UI</button>
+          <input type="text" id="uiDesc" readonly placeholder="中文描述" style="flex:0 0 100px">
+          <input type="text" id="uiId" class="slim" placeholder="id" style="flex:1 1 80px" autocomplete="off" spellcheck="false">
+          <select id="uiSize" style="flex:0 0 auto">
+            <option value="128x">128x</option>
+            <option value="256x">256x</option>
+            <option value="200x">200x</option>
+            <option value="626x">626x</option>
+            <option value="2000x1000">2000x1000</option>
+          </select>
+        </div>
+        <div class="stage-wrap">
+          <div class="stage" id="stage2">
+            <img id="cropImg2" alt="">
+            <div class="crop-frame" id="cropFrame2" style="box-shadow:0 0 0 9999px rgba(17,20,26,.45)">
+              <div class="size-tag" id="sizeTag2">128 × 128</div>
+            </div>
+            <div class="stage-hint" id="stageHint2">拖动移动 · 双指 / 滚轮缩放</div>
+          </div>
+        </div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackCrop2">← 返回</button>
+          <button class="btn ghost" id="btnResetCrop2">重置</button>
+          <span class="spacer"></span>
+          <button class="btn primary" id="btnToPreview2">下一步</button>
+        </div>
+      </div>
+
+      <div class="box-view" data-view="audio" hidden>
+        <div class="field">
+          <button class="btn ghost" id="btnOpenAudioList" style="flex:0 0 auto">替换音频</button>
+          <input type="text" id="audDesc" readonly placeholder="中文描述" style="flex:0 0 100px">
+          <input type="text" id="audId" class="slim" placeholder="id" style="flex:1 1 80px" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="audio-body">
+          <div class="audio-card">
+            <div class="audio-icon">♪</div>
+            <div class="audio-name" id="audName">—</div>
+            <audio id="audPlayer" controls preload="metadata"></audio>
+          </div>
+        </div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackAudio2">← 返回</button>
+          <span class="spacer"></span>
+          <button class="btn danger" id="btnDeleteAudio2">删除</button>
+          <button class="btn ghost" id="btnAddAudio2">加入压缩包</button>
+          <button class="btn primary" id="btnExportAudio2">直接导出</button>
+        </div>
+      </div>
+
+      <div class="box-view" data-view="preview" hidden>
+        <div class="preview-stage"><img id="previewImg2" alt=""></div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackPreview2">← 返回</button>
+          <span class="spacer"></span>
+          <button class="btn danger" id="btnDelete2">删除</button>
+          <button class="btn ghost" id="btnAdd2">加入压缩包</button>
+          <button class="btn primary" id="btnExport2">直接导出</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 框3 -->
+    <section class="win" id="box3">
+      <header class="win-bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="win-title">导入其他文件</span>
+      </header>
+      <div class="box-view" data-view="import">
+        <div class="dropzone" id="drop3" tabindex="0" role="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 16V4m0 0L8 8m4-4 4 4"/>
+            <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+          </svg>
+          <div>图片 / 音频 / 字体 / 文本</div>
+          <div class="sub">拖入或点击选择单个文件</div>
+        </div>
+        <input type="file" id="file3" hidden>
+      </div>
+
+      <div class="box-view" data-view="img" hidden>
+        <div class="preview-stage"><img id="img3Prev" alt=""></div>
+        <div class="field">
+          <button class="btn ghost" id="btnOpenImgList" style="flex:0 0 auto">替换文件</button>
+          <input type="text" id="img3Desc" readonly placeholder="中文描述" style="flex:0 0 100px">
+          <input type="text" id="img3Id" class="slim" placeholder="id" style="flex:1 1 80px" autocomplete="off" spellcheck="false">
+          <select id="img3Fmt" style="flex:0 0 auto">
+            <option value="png">png</option>
+            <option value="jpg">jpg</option>
+          </select>
+        </div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackImg3">← 返回</button>
+          <span class="spacer"></span>
+          <button class="btn danger" id="btnDeleteImg3">删除</button>
+          <button class="btn primary" id="btnAddImg3">加入 zip</button>
+        </div>
+      </div>
+
+      <div class="box-view" data-view="audio3" hidden>
+        <div class="audio-body">
+          <div class="audio-card">
+            <div class="audio-icon">♪</div>
+            <div class="audio-name" id="aud3Name">—</div>
+            <audio id="aud3Player" controls preload="metadata"></audio>
+          </div>
+        </div>
+        <div class="field">
+          <button class="btn ghost" id="btnOpenAudList" style="flex:0 0 auto">替换音频</button>
+          <input type="text" id="aud3Desc" readonly placeholder="中文描述" style="flex:0 0 100px">
+          <input type="text" id="aud3Id" class="slim" placeholder="id" style="flex:1 1 80px" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackAud3">← 返回</button>
+          <span class="spacer"></span>
+          <button class="btn danger" id="btnDeleteAud3">删除</button>
+          <button class="btn primary" id="btnAddAud3">加入 zip</button>
+        </div>
+      </div>
+
+      <div class="box-view" data-view="font" hidden>
+        <div class="preview-stage" id="font3Prev" style="padding:20px"></div>
+        <div class="field">
+          <button class="btn ghost" id="btnOpenFontList" style="flex:0 0 auto">替换字体</button>
+          <input type="text" id="font3Desc" readonly placeholder="中文描述" style="flex:0 0 100px">
+          <input type="text" id="font3Id" class="slim" placeholder="id" style="flex:1 1 80px" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="foot" style="border-top:none;background:transparent;padding:0">
+          <button class="btn ghost" id="btnBackFont3">← 返回</button>
+          <span class="spacer"></span>
+          <button class="btn danger" id="btnDeleteFont3">删除</button>
+          <button class="btn primary" id="btnAddFont3">加入 zip</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 框4 -->
+    <section class="win placeholder" id="box4">
+      <header class="win-bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="win-title">修改角色描述</span>
+      </header>
+      <div class="box-view"><div style="display:flex;align-items:center;justify-content:center;color:#c9cfd9;letter-spacing:.18em;font-size:11px;height:100%">EMPTY</div></div>
+    </section>
+
+    <!-- 底部栏 -->
+    <section class="win bottom-bar" id="bottomBar">
+      <header class="win-bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="win-title">zip 编辑</span>
+      </header>
+      <div class="bottom-body" data-view="import">
+        <div class="dropzone" id="dropZip" tabindex="0" role="button" style="font-size:12px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <div>导入 zip</div>
+          <div class="sub">拖入或点击选择单个文件</div>
+        </div>
+        <input type="file" id="fileZip" accept=".zip,application/zip" hidden>
+      </div>
+      <div class="bottom-body" data-view="cards" hidden>
+        <div class="import-card" id="importZipBtn"><span class="plus">+</span>导入新 zip</div>
+        <div class="cards-scroll" id="cardsScroll"></div>
+        <div class="export-card" id="exportCard">
+          <span class="icon">📦</span>
+          <div class="card-label">导出压缩包</div>
+        </div>
+        <input type="file" id="fileZip2" accept=".zip,application/zip" hidden>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- 全屏：UI列表 -->
+<section class="win fullscreen-view" id="uiListView" hidden>
+  <header class="win-bar">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="win-title" id="uiListTitle">选择要替换的 UI</span>
+    <span class="spacer"></span>
+    <button class="btn ghost" id="btnCloseUiList">关闭</button>
+  </header>
+  <div class="fullscreen-body">
+    <input type="text" id="uiSearchInput" class="uilist-search slim" placeholder="搜索中文描述或 id" autocomplete="off" spellcheck="false">
+    <div class="uilist-groups" id="uiListGroups"></div>
+  </div>
+</section>
+
+<!-- 全屏：详情 -->
+<section class="win fullscreen-view" id="detailView" hidden>
+  <header class="win-bar">
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="win-title" id="detailTitle">文件详情</span>
+    <span class="spacer"></span>
+    <button class="btn ghost" id="btnCloseDetail">关闭</button>
+  </header>
+  <div class="fullscreen-body" style="padding:0">
+    <div class="detail-content">
+      <div class="detail-preview" id="detailPreview"></div>
+      <div class="detail-info">
+        <div class="detail-row"><span class="key">名称</span><span class="val" id="detailName">—</span></div>
+        <div class="detail-row"><span class="key">路径</span><span class="val" id="detailPath">—</span></div>
+        <div class="detail-row"><span class="key">描述</span><span class="val" id="detailDesc">—</span></div>
+        <div class="detail-row" id="detailDimRow"><span class="key">尺寸</span><span class="val" id="detailDim">—</span></div>
+        <div class="detail-row"><span class="key">大小</span><span class="val" id="detailSize">—</span></div>
+      </div>
+    </div>
+  </div>
+  <footer class="foot">
+    <button class="btn danger" id="btnDetailDelete">删除</button>
+    <span class="spacer"></span>
+    <button class="btn primary" id="btnDetailDownload">下载</button>
+  </footer>
+</section>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="spinner"></div>
+  <div class="overlay-text" id="overlayText">正在准备…</div>
+</div>
+
+<script type="module">
+/* ============================================================
+   常量
+   ============================================================ */
+const BORDER = 5;
+const MIN_SCALE = 0.02, MAX_SCALE = 24;
+const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
+const extOf = n => { const i = n.lastIndexOf('.'); return i < 0 ? '' : n.slice(i+1).toLowerCase(); };
+const stripExt = n => { const i = n.lastIndexOf('.'); return i < 0 ? n : n.slice(0, i); };
+const CH_RE = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g;
+
+const IMG_EXT = ['png','jpg','jpeg','webp','gif'];
+const IMG_MIME = ['image/png','image/jpeg','image/webp','image/gif'];
+const AUD_EXT = ['mp3','ogg','wav','m4a','aac','flac','opus'];
+const AUD_MIME = ['audio/mpeg','audio/mp3','audio/ogg','audio/wav','audio/x-wav','audio/mp4','audio/aac','audio/flac','audio/x-flac','audio/opus'];
+
+const ZIP_WHITELIST_EXT = ['png','jpg','ttf','ogg','char','txt'];
+function isZipWhitelisted(fileName) {
+  const lower = (fileName || '').toLowerCase();
+  if (lower === 'bgm') return true;
+  const ext = extOf(lower);
+  return ZIP_WHITELIST_EXT.includes(ext);
+}
+
+function guessType(fileName) {
+  const lower = (fileName || '').toLowerCase();
+  if (lower.endsWith('.char')) return 'image';
+  if (lower === 'bgm') return 'audio';
+  const ext = extOf(lower);
+  if (IMG_EXT.includes(ext)) return 'image';
+  if (AUD_EXT.includes(ext)) return 'audio';
+  return 'other';
+}
+
+const CHAR_NAMES = { shee:'夕', fred:'芙莱', fred2:'芙莱-正装', jed:'杰德' };
+
+const ASSET_TABLE = {
+  'message.png':      {desc:'邮件',    path:'assets/message.png',     size:'128x', group:'main'},
+  'settings.png':     {desc:'设置',    path:'assets/settings.png',    size:'200x', group:'main'},
+  'respack.png':      {desc:'资源包',  path:'assets/respack.png',     size:'128x', group:'main'},
+  'medal.png':        {desc:'活动',    path:'assets/medal.png',       size:'128x', group:'main'},
+  'resume.png':       {desc:'开始',    path:'assets/resume.png',      size:'128x', group:'main'},
+  'back.png':         {desc:'返回',    path:'assets/back.png',        size:'128x', group:'main'},
+  'language.png':     {desc:'语言',    path:'assets/language.png',    size:'128x', group:'main'},
+  'retry.png':        {desc:'重新开始',path:'assets/retry.png',       size:'128x', group:'main'},
+  'background.jpg':   {desc:'背景文件',path:'assets/background.jpg',  size:'2000x1000', group:'main', format:'jpg'},
+  'abstract.jpg':     {desc:'谱面合集',path:'assets/abstract.jpg',    size:'626x', group:'play', format:'jpg'},
+  'delete.png':       {desc:'删除',    path:'assets/delete.png',      size:'128x', group:'play'},
+  'download.png':     {desc:'下载',    path:'assets/download.png',    size:'128x', group:'play'},
+  'edit.png':         {desc:'编辑',    path:'assets/edit.png',        size:'128x', group:'play'},
+  'filter.png':       {desc:'过滤器',  path:'assets/filter.png',      size:'128x', group:'play'},
+  'star.png':         {desc:'收藏',    path:'assets/star.png',        size:'128x', group:'play'},
+  'star_outline.png': {desc:'收藏边框',path:'assets/star_outline.png',size:'128x', group:'play'},
+  'heart.png':        {desc:'喜欢',    path:'assets/heart.png',       size:'200x', group:'play'},
+  'heart_outline.png':{desc:'喜欢边框',path:'assets/heart_outline.png',size:'200x',group:'play'},
+  'info.png':         {desc:'信息',    path:'assets/info.png',        size:'128x', group:'play'},
+  'leaderboard.png':  {desc:'排行榜',  path:'assets/leaderboard.png', size:'128x', group:'play'},
+  'menu.png':         {desc:'更多',    path:'assets/menu.png',        size:'128x', group:'play'},
+  'multiplayer.png':  {desc:'联机',    path:'assets/multiplayer.png', size:'128x', group:'play'},
+  'ok.png':           {desc:'确认',    path:'assets/ok.png',          size:'128x', group:'play'},
+  'order.png':        {desc:'排序',    path:'assets/order.png',       size:'128x', group:'play'},
+  'close.png':        {desc:'取消',    path:'assets/close.png',       size:'128x', group:'play'},
+  'plus.png':         {desc:'添加谱面',path:'assets/plus.png',        size:'128x', group:'play'},
+  'question.png':     {desc:'疑问',    path:'assets/question.png',    size:'128x', group:'play'},
+  'search.png':       {desc:'搜索',    path:'assets/search.png',      size:'128x', group:'play'},
+  'select.png':       {desc:'选择',    path:'assets/select.png',      size:'128x', group:'play'},
+  'user.png':         {desc:'用户',    path:'assets/user.png',        size:'128x', group:'play'},
+  'warn.png':         {desc:'警告提示',path:'assets/warn.png',        size:'128x', group:'play'},
+  'error.png':        {desc:'错误提示',path:'assets/error.png',       size:'128x', group:'play'},
+  'cloud_check.png':  {desc:'上传成功',path:'assets/cloud_check.png', size:'200x', group:'play'},
+  'cloud_none.png':   {desc:'上传失败',path:'assets/cloud_none.png',  size:'200x', group:'play'},
+  'mod.png':          {desc:'模组选择',path:'assets/mod.png',         size:'128x', group:'play'},
+  'proceed.png':      {desc:'下一步',  path:'assets/proceed.png',     size:'128x', group:'play'},
+  'F.png':            {desc:'评分F',   path:'assets/rank/F.png',      size:'256x', group:'rank'},
+  'C.png':            {desc:'评分C',   path:'assets/rank/C.png',      size:'256x', group:'rank'},
+  'B.png':            {desc:'评分B',   path:'assets/rank/B.png',      size:'256x', group:'rank'},
+  'A.png':            {desc:'评分A',   path:'assets/rank/A.png',      size:'256x', group:'rank'},
+  'S.png':            {desc:'评分S',   path:'assets/rank/S.png',      size:'256x', group:'rank'},
+  'V.png':            {desc:'评分V',   path:'assets/rank/V.png',      size:'256x', group:'rank'},
+  'FC.png':           {desc:'评分FC',  path:'assets/rank/FC.png',     size:'256x', group:'rank'},
+  'phi.png':          {desc:'评分AP',  path:'assets/rank/phi.png',    size:'256x', group:'rank'},
+  'autoplay.png':     {desc:'自动游玩',path:'assets/mod/autoplay.png',size:'200x', group:'mod'},
+  'fade_in.png':      {desc:'上隐',    path:'assets/mod/fade_in.png', size:'200x', group:'mod'},
+  'fade_out.png':     {desc:'下隐',    path:'assets/mod/fade_out.png',size:'200x', group:'mod'},
+  'flip_x.png':       {desc:'镜像',    path:'assets/mod/flip_x.png',  size:'200x', group:'mod'},
+  'nightcore.png':    {desc:'夜店',    path:'assets/mod/nightcore.png',size:'200x',group:'mod'},
+  'no-shader.png':    {desc:'禁用着色器',path:'assets/mod/no-shader.png',size:'200x',group:'mod'},
+  'rainbow.png':      {desc:'彩虹',    path:'assets/mod/rainbow.png', size:'200x', group:'mod'},
+  'font.ttf':         {desc:'界面字体',path:'assets/font.ttf',        size:'—',  group:'font'},
+  'bold.ttf':         {desc:'界面字体粗',path:'assets/bold.ttf',      size:'—',  group:'font'},
+  'phigros.ttf':      {desc:'评分字体',path:'assets/phigros.ttf',     size:'—',  group:'font'},
+  'button.ogg':       {desc:'按钮点击',path:'assets/button.ogg',      size:'—',  group:'snd'},
+  'button_large.ogg': {desc:'谱面点击',path:'assets/button_large.ogg',size:'—',  group:'snd'},
+  'ending.ogg':       {desc:'结算音频',path:'assets/ending.ogg',      size:'—',  group:'snd'},
+  'switch.ogg':       {desc:'多选选项',path:'assets/switch.ogg',      size:'—',  group:'snd'},
+};
+const GROUP_NAMES = {
+  common:'常用图标', main:'主界面图标', play:'谱面界面图标',
+  rank:'评分图标', mod:'模组图标', font:'字体', snd:'音频'
+};
+const COMMON_IDS = ['background','phi','respack','medal','settings','message','resume','back','retry'];
+
+function matchAsset(fileName) {
+  const lower = fileName.toLowerCase();
+  if (lower.endsWith('.char')) {
+    return { desc:'', path:'assets/res/'+fileName, type:'image', encrypted:true };
+  }
+  if (lower === 'bgm') {
+    return { desc:'背景音乐', path:'assets/res/bgm', type:'audio', encrypted:true };
+  }
+  const row = ASSET_TABLE[fileName];
+  if (row) {
+    return { desc:row.desc, path:row.path, size:row.size, type:guessType(fileName), encrypted:false };
+  }
+  return { desc:'', path:'assets/'+fileName, type:guessType(fileName), encrypted:false };
+}
+function findById(id) {
+  const keys = [id+'.png', id+'.jpg', id+'.ttf', id+'.ogg'];
+  for (const k of keys) {
+    const r = ASSET_TABLE[k];
+    if (r) {
+      return {
+        fileName: k, desc: r.desc, path: r.path, size: r.size, group: r.group,
+        format: r.format || (k.endsWith('.jpg') ? 'jpg' : 'png'),
+      };
+    }
+  }
+  return null;
+}
+function isJpgId(id) {
+  const f = findById(id);
+  return f ? f.format === 'jpg' : false;
+}
+function sizeOf(str) {
+  if (!str) return [128, 128];
+  if (str === '2000x1000') return [2000, 1000];
+  if (str === '2000x2200') return [2000, 2200];
+  if (str === '1000x1100') return [1000, 1100];
+  if (str === '626x') return [626, 626];
+  const n = parseInt(str, 10);
+  return [n, n];
+}
+
+/* ============================================================
+   工具
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const utf8Len = s => { try { return new TextEncoder().encode(s).length; } catch(_) { return unescape(encodeURIComponent(s)).length; } };
+const filterCN = s => s.replace(CH_RE, '');
+
+function download(blob, name) {
+  const fixed = new Blob([blob], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(fixed);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+function overlay(text){ $('overlayText').textContent = text; $('overlay').hidden = false; }
+function hideOverlay(){ $('overlay').hidden = true; }
+function fmtDuration(sec) {
+  if (!isFinite(sec) || sec < 0) return '—';
+  sec = Math.round(sec);
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  const pad = n => n < 10 ? '0' + n : '' + n;
+  if (h > 0) return h + ':' + pad(m) + ':' + pad(s);
+  return pad(m) + ':' + pad(s);
+}
+
+/* ============================================================
+   库加载
+   ============================================================ */
+async function loadMod(url, cacheName) {
+  try {
+    if ('caches' in window) {
+      const cache = await caches.open(cacheName);
+      let resp = await cache.match(url);
+      if (!resp) {
+        resp = await fetch(url, { mode:'cors', credentials:'omit' });
+        if (resp && resp.ok) { try { await cache.put(url, resp.clone()); } catch(_){} }
+        else resp = null;
+      }
+      if (resp) {
+        const code = await resp.text();
+        const blob = new Blob([code], { type:'text/javascript' });
+        const blobUrl = URL.createObjectURL(blob);
+        try { return await import(blobUrl); }
+        finally { setTimeout(() => URL.revokeObjectURL(blobUrl), 60000); }
+      }
+    }
+  } catch(_) {}
+  return await import(url);
+}
+
+const loadedLibs = { zstd:false, lame:false, zip:false, vorbis:false };
+
+let zstdMod = null;
+async function ensureZstd(silent) {
+  if (zstdMod && zstdMod.compress) { loadedLibs.zstd = true; return zstdMod; }
+  if (!silent && !loadedLibs.zstd) overlay('正在下载压缩库…');
+  const cdns = [
+    'https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js',
+    'https://unpkg.com/@bokuweb/zstd-wasm/dist/web/index.js',
+    'https://esm.sh/@bokuweb/zstd-wasm'
+  ];
+  let err;
+  for (const url of cdns) {
+    try {
+      const mod = await loadMod(url, 'zstd-cache-v1');
+      if (typeof mod.init === 'function') await mod.init();
+      if (typeof mod.compress !== 'function') throw new Error('no compress');
+      zstdMod = mod; loadedLibs.zstd = true;
+      return mod;
+    } catch(e){ err = e; }
+  }
+  throw err || new Error('无法加载 zstd');
+}
+
+let lameMod = null;
+async function ensureLame(silent) {
+  if (lameMod) { loadedLibs.lame = true; return lameMod; }
+  if (!silent && !loadedLibs.lame) overlay('正在下载音频库…');
+  const cdns = [
+    'https://cdn.jsdelivr.net/npm/@breezystack/lamejs@1.2.7/+esm',
+    'https://esm.sh/@breezystack/lamejs@1.2.7'
+  ];
+  let err;
+  for (const url of cdns) {
+    try {
+      const mod = await loadMod(url, 'lamejs-cache-v1');
+      const M = mod.default || mod;
+      if (typeof M.Mp3Encoder !== 'function') throw new Error('no Mp3Encoder');
+      lameMod = M; loadedLibs.lame = true;
+      return M;
+    } catch(e){ err = e; }
+  }
+  throw err || new Error('无法加载 lamejs');
+}
+
+let zipMod = null;
+async function ensureZip(silent) {
+  if (zipMod) { loadedLibs.zip = true; return zipMod; }
+  if (!silent && !loadedLibs.zip) overlay('正在下载打包库…');
+  const cdns = [
+    'https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.45/+esm',
+    'https://esm.sh/@zip.js/zip.js@2.7.45'
+  ];
+  let err;
+  for (const url of cdns) {
+    try {
+      const mod = await loadMod(url, 'zipjs-cache-v1');
+      if (!mod.ZipReader || !mod.ZipWriter) throw new Error('no Zip');
+      zipMod = mod; loadedLibs.zip = true;
+      return mod;
+    } catch(e){ err = e; }
+  }
+  throw err || new Error('无法加载 zip.js');
+}
+
+let vorbisMod = null;
+async function ensureVorbis(silent) {
+  if (vorbisMod) { loadedLibs.vorbis = true; return vorbisMod; }
+  if (!silent && !loadedLibs.vorbis) overlay('正在下载音频编码库…');
+  const cdns = [
+    'https://cdn.jsdelivr.net/npm/libvorbis.js@1.3.7/lib/libvorbis.js',
+    'https://unpkg.com/libvorbis.js@1.3.7/lib/libvorbis.js'
+  ];
+  let err;
+  for (const url of cdns) {
+    try {
+      await loadScriptOnce(url);
+      if (typeof window.LibVorbisVorbisEncoder !== 'function') throw new Error('no encoder');
+      vorbisMod = window.LibVorbisVorbisEncoder;
+      loadedLibs.vorbis = true;
+      return vorbisMod;
+    } catch(e){ err = e; }
+  }
+  throw err || new Error('无法加载 vorbis 编码库');
+}
+function loadScriptOnce(url) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error('script load fail'));
+    document.head.appendChild(s);
+  });
+}
+
+/* ============================================================
+   加密/解密
+   ============================================================ */
+function encryptBlock(v, o) {
+  let t;
+  t=v[o+3];v[o+3]=v[o+5];v[o+5]=t;
+  v[o+4]=(v[o+4]+v[o+0])&0xFF; v[o+5]=(v[o+5]+v[o+1])&0xFF;
+  v[o+6]=(v[o+6]+v[o+2])&0xFF; v[o+7]=(v[o+7]+v[o+3])&0xFF;
+  v[o+2]=(v[o+2]+v[o+0])&0xFF; v[o+3]=(v[o+3]+v[o+1])&0xFF;
+  v[o+6]=(v[o+6]+v[o+4])&0xFF; v[o+7]=(v[o+7]+v[o+5])&0xFF;
+  v[o+1]=(v[o+1]+v[o+0])&0xFF; v[o+3]=(v[o+3]+v[o+2])&0xFF;
+  v[o+5]=(v[o+5]+v[o+4])&0xFF; v[o+7]=(v[o+7]+v[o+6])&0xFF;
+  t=v[o+1];v[o+1]=v[o+4];v[o+4]=t;
+  t=v[o+3];v[o+3]=v[o+6];v[o+6]=t;
+  t=v[o+1];v[o+1]=v[o+4];v[o+4]=t;
+  t=v[o+2];v[o+2]=v[o+6];v[o+6]=t;
+}
+function decryptBlock(v, o) {
+  let t;
+  t=v[o+1];v[o+1]=v[o+4];v[o+4]=t;
+  t=v[o+2];v[o+2]=v[o+6];v[o+6]=t;
+  t=v[o+1];v[o+1]=v[o+4];v[o+4]=t;
+  t=v[o+3];v[o+3]=v[o+6];v[o+6]=t;
+  v[o+1]=(v[o+1]-v[o+0])&0xFF; v[o+3]=(v[o+3]-v[o+2])&0xFF;
+  v[o+5]=(v[o+5]-v[o+4])&0xFF; v[o+7]=(v[o+7]-v[o+6])&0xFF;
+  v[o+2]=(v[o+2]-v[o+0])&0xFF; v[o+3]=(v[o+3]-v[o+1])&0xFF;
+  v[o+6]=(v[o+6]-v[o+4])&0xFF; v[o+7]=(v[o+7]-v[o+5])&0xFF;
+  v[o+4]=(v[o+4]-v[o+0])&0xFF; v[o+5]=(v[o+5]-v[o+1])&0xFF;
+  v[o+6]=(v[o+6]-v[o+2])&0xFF; v[o+7]=(v[o+7]-v[o+3])&0xFF;
+  t=v[o+3];v[o+3]=v[o+5];v[o+5]=t;
+}
+function phiraEncrypt(raw) {
+  const compressed = new Uint8Array(zstdMod.compress(raw, 3));
+  const L = compressed.length;
+  let N = (L % 8 === 0) ? L + 8 : Math.ceil(L/8)*8;
+  const lastByte = 8 - (N - L);
+  const D = new Uint8Array(N);
+  D.set(compressed, 0);
+  D[N-1] = lastByte;
+  for (let i = 0; i < N; i += 8) encryptBlock(D, i);
+  return D;
+}
+function phiraDecrypt(raw) {
+  const D = new Uint8Array(raw);
+  for (let i = 0; i < D.length; i += 8) decryptBlock(D, i);
+  const lastByte = D[D.length - 1];
+  const newSize = D.length + lastByte - 8;
+  return new Uint8Array(zstdMod.decompress(D.slice(0, newSize)));
+}
+
+/* ============================================================
+   缓存
+   ============================================================ */
+const cache = new Map();
+function cacheSet(path, blob, meta) {
+  const old = cache.get(path);
+  if (old && old._url) URL.revokeObjectURL(old._url);
+  cache.set(path, { blob, ...meta });
+}
+function cacheDelete(path) {
+  const v = cache.get(path);
+  if (v && v._url) URL.revokeObjectURL(v._url);
+  cache.delete(path);
+}
+function cacheClear() {
+  for (const v of cache.values()) if (v._url) URL.revokeObjectURL(v._url);
+  cache.clear();
+}
+function cacheGetUrl(path) {
+  const v = cache.get(path);
+  if (!v) return null;
+  if (!v._url) v._url = URL.createObjectURL(v.blob);
+  return v._url;
+}
+function makeCharDesc(fileName) {
+  const id = stripExt(fileName);
+  const name = CHAR_NAMES[id] || id;
+  return `角色 ${name} 立绘`;
+}
+function isSamePath(p1, p2) { return p1.toLowerCase() === p2.toLowerCase(); }
+function findExistingPath(path) {
+  for (const k of cache.keys()) if (isSamePath(k, path)) return k;
+  return null;
+}
+
+function setBoxView(boxEl, viewName) {
+  boxEl.querySelectorAll(':scope > .box-view').forEach(v => {
+    v.hidden = v.dataset.view !== viewName;
+  });
+}
+function setBottomView(viewName) {
+  document.querySelectorAll('#bottomBar > .bottom-body').forEach(v => {
+    v.hidden = v.dataset.view !== viewName;
+  });
+}
+
+function bindDrop(dropEl, inputEl, handler) {
+  ['dragenter','dragover'].forEach(t => dropEl.addEventListener(t, e => {
+    e.preventDefault(); e.stopPropagation(); dropEl.classList.add('over');
+  }));
+  ['dragleave','drop'].forEach(t => dropEl.addEventListener(t, e => {
+    e.preventDefault(); e.stopPropagation();
+    if (t === 'dragleave' && dropEl.contains(e.relatedTarget)) return;
+    dropEl.classList.remove('over');
+  }));
+  dropEl.addEventListener('drop', e => {
+    const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handler(f);
+  });
+  dropEl.addEventListener('click', () => inputEl.click());
+  dropEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); inputEl.click(); }
+  });
+  inputEl.addEventListener('change', () => {
+    const f = inputEl.files && inputEl.files[0];
+    if (f) handler(f);
+    inputEl.value = '';
+  });
+}
+['dragover','drop'].forEach(t => window.addEventListener(t, e => e.preventDefault(), false));
+
+async function convertToPng(file) {
+  const bmp = await createImageBitmap(file);
+  const c = document.createElement('canvas');
+  c.width = bmp.width; c.height = bmp.height;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(bmp, 0, 0);
+  if (bmp.close) bmp.close();
+  return new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('png失败')), 'image/png'));
+}
+
+function bindPointer(stageEl, isActive, getState, setXY, onUpdate, localFn) {
+  const ptrs = new Map();
+  let lastDist = 0, lastMidX = 0, lastMidY = 0;
+  stageEl.addEventListener('pointerdown', e => {
+    if (!isActive()) return;
+    try { stageEl.setPointerCapture(e.pointerId); } catch(_){}
+    ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    stageEl.classList.add('dragging');
+    if (ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()];
+      lastDist = Math.hypot(a.x-b.x, a.y-b.y);
+      lastMidX = (a.x+b.x)/2; lastMidY = (a.y+b.y)/2;
+    }
+  });
+  stageEl.addEventListener('pointermove', e => {
+    if (!isActive()) return;
+    const prev = ptrs.get(e.pointerId);
+    if (!prev) return;
+    ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});
+    if (ptrs.size === 1) {
+      const s = getState();
+      setXY(s.x + e.clientX - prev.x, s.y + e.clientY - prev.y);
+      onUpdate();
+    } else if (ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()];
+      const dist = Math.hypot(a.x-b.x, a.y-b.y);
+      const midX = (a.x+b.x)/2, midY = (a.y+b.y)/2;
+      if (lastDist > 0 && dist > 0) {
+        const p = localFn(midX, midY);
+        const s = getState();
+        const nS = clamp(s.scale * (dist/lastDist), MIN_SCALE, MAX_SCALE);
+        const k = nS/s.scale;
+        setXY(p.x - (p.x - s.x)*k, p.y - (p.y - s.y)*k, nS);
+      }
+      const s = getState();
+      setXY(s.x + midX - lastMidX, s.y + midY - lastMidY);
+      onUpdate();
+      lastDist = dist; lastMidX = midX; lastMidY = midY;
+    }
+  });
+  const release = e => {
+    if (!ptrs.has(e.pointerId)) return;
+    ptrs.delete(e.pointerId);
+    try { stageEl.releasePointerCapture(e.pointerId); } catch(_){}
+    if (ptrs.size < 2) lastDist = 0;
+    if (ptrs.size === 0) stageEl.classList.remove('dragging');
+  };
+  stageEl.addEventListener('pointerup', release);
+  stageEl.addEventListener('pointercancel', release);
+  stageEl.addEventListener('wheel', e => {
+    if (!isActive()) return;
+    e.preventDefault();
+    const p = localFn(e.clientX, e.clientY);
+    const s = getState();
+    const nS = clamp(s.scale * Math.exp(-e.deltaY*0.0016), MIN_SCALE, MAX_SCALE);
+    const k = nS/s.scale;
+    setXY(p.x - (p.x - s.x)*k, p.y - (p.y - s.y)*k, nS);
+    onUpdate();   // ★ 让滚轮缩放也实时重绘
+  }, { passive: false });
+  stageEl.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+}
+
+/* ============================================================
+   框1
+   ============================================================ */
+const box1 = $('box1');
+const stage = $('stage'), cropImg = $('cropImg'), cropFrame = $('cropFrame');
+const stageHint = $('stageHint'), sizeTag1 = $('sizeTag1');
+
+let b1 = {
+  hasImage:false, natW:0, natH:0, x:0, y:0, scale:1,
+  S:0.4, fx:0, fy:0, fw:0, fh:0, name:'',
+  curW:1000, curH:1100,
+  imgUrl:null, previewBlob:null, previewUrl:null,
+  encryptedBlob:null, encryptedName:'', audioUrl:null,
+  id:'shee', custom:false,
+};
+
+function b1Measure(preserve) {
+  const sw = stage.clientWidth, sh = stage.clientHeight;
+  if (sw < 10 || sh < 10) return;
+  const padX = Math.min(50, sw*0.08), padY = Math.min(50, sh*0.08);
+  let nS = Math.min((sw-padX*2)/b1.curW, (sh-padY*2)/b1.curH);
+  nS = clamp(nS, 0.04, 1.6);
+  const nFW = b1.curW*nS, nFH = b1.curH*nS;
+  const nFX = (sw-nFW)/2, nFY = (sh-nFH)/2;
+  if (preserve && b1.hasImage && b1.S > 0) {
+    const k = nS/b1.S;
+    b1.x = nFX + (b1.x - b1.fx)*k;
+    b1.y = nFY + (b1.y - b1.fy)*k;
+    b1.scale *= k;
+  }
+  b1.S = nS; b1.fw = nFW; b1.fh = nFH; b1.fx = nFX; b1.fy = nFY;
+  cropFrame.style.left = b1.fx+'px'; cropFrame.style.top = b1.fy+'px';
+  cropFrame.style.width = b1.fw+'px'; cropFrame.style.height = b1.fh+'px';
+  sizeTag1.textContent = b1.curW + ' × ' + b1.curH;
+  if (b1.hasImage) b1Apply();
+}
+function b1Apply() {
+  cropImg.style.width = b1.natW+'px'; cropImg.style.height = b1.natH+'px';
+  cropImg.style.transform = `translate(${b1.x}px,${b1.y}px) scale(${b1.scale})`;
+}
+function b1Fit() {
+  if (!b1.hasImage) return;
+  // ★ cover：填满整个裁剪窗，多出部分溢出
+  b1.scale = clamp(Math.max(b1.fw/b1.natW, b1.fh/b1.natH), MIN_SCALE, MAX_SCALE);
+  b1.x = b1.fx + (b1.fw - b1.natW*b1.scale)/2;
+  b1.y = b1.fy + (b1.fh - b1.natH*b1.scale)/2;
+  b1Apply();
+}
+function b1Hint() {
+  stageHint.classList.remove('fade');
+  clearTimeout(b1._hintT);
+  b1._hintT = setTimeout(() => stageHint.classList.add('fade'), 2600);
+}
+bindPointer(stage, () => b1.hasImage, () => b1,
+  (x,y,sc) => { b1.x=x; b1.y=y; if(sc) b1.scale=sc; },
+  () => b1Apply(),
+  (cx,cy) => { const r = stage.getBoundingClientRect(); return {x:cx-r.left, y:cy-r.top}; });
+
+async function b1HandleFile(file) {
+  const name = (file.name||'').toLowerCase();
+  const ext = extOf(name);
+  const mime = file.type || '';
+  const isImg = IMG_EXT.includes(ext) || IMG_MIME.includes(mime);
+  const isAud = AUD_EXT.includes(ext) || AUD_MIME.includes(mime);
+
+  if (isImg) {
+    let pngBlob = file;
+    try {
+      if (!(ext === 'png' && (!mime || mime === 'image/png'))) pngBlob = await convertToPng(file);
+    } catch(e){ alert('图片处理失败：'+(e.message||e)); return; }
+    if (b1.imgUrl) URL.revokeObjectURL(b1.imgUrl);
+    b1.imgUrl = URL.createObjectURL(pngBlob);
+    b1.name = file.name;
+    b1.hasImage = false;
+    b1.curW = 1000; b1.curH = 1100;
+    $('sizeSel').value = '1000x1100';
+    $('charSel').value = 'shee';
+    $('charId').value = 'shee';
+    $('charName').value = '夕';
+    $('charWarn').hidden = true;
+    b1.id = 'shee'; b1.custom = false;
+    cropImg.onload = () => {
+      b1.natW = cropImg.naturalWidth; b1.natH = cropImg.naturalHeight;
+      if (!b1.natW || !b1.natH) { alert('尺寸无效'); return; }
+      b1.hasImage = true;
+      setBoxView(box1, 'crop');
+      requestAnimationFrame(() => requestAnimationFrame(() => { b1Measure(false); b1Fit(); b1Hint(); }));
+    };
+    cropImg.onerror = () => alert('图片加载失败');
+    cropImg.src = b1.imgUrl;
+  } else if (isAud) {
+    const isMp3 = ext === 'mp3' || mime === 'audio/mpeg' || mime === 'audio/mp3';
+    let mp3Blob = file;
+    if (!isMp3) {
+      overlay(loadedLibs.lame ? '正在转换音频…' : '正在下载音频库…');
+      try {
+        await ensureLame(loadedLibs.lame);
+        overlay('正在转换音频…');
+        mp3Blob = await convertToMp3(file);
+      }
+      catch(e){ hideOverlay(); alert('音频转换失败：'+(e.message||e)); return; }
+      hideOverlay();
+    }
+    b1.encryptedBlob = mp3Blob;
+    b1.encryptedName = 'bgm';
+    if (b1.audioUrl) URL.revokeObjectURL(b1.audioUrl);
+    b1.audioUrl = URL.createObjectURL(mp3Blob);
+    $('audioName').textContent = file.name;
+    $('audioPlayer').src = b1.audioUrl;
+    setBoxView(box1, 'audio');
+  } else {
+    alert('请导入图片或音频文件');
+  }
+}
+
+$('charSel').onchange = () => {
+  const v = $('charSel').value;
+  b1.id = v; b1.custom = false;
+  $('charId').value = v;
+  $('charName').value = CHAR_NAMES[v] || '';
+  $('charWarn').hidden = true;
+};
+$('charId').oninput = () => {
+  let v = filterCN($('charId').value);
+  if (v !== $('charId').value) $('charId').value = v;
+  b1.id = v;
+  if (CHAR_NAMES[v]) {
+    b1.custom = false;
+    $('charName').value = CHAR_NAMES[v];
+    $('charSel').value = v;
+    $('charWarn').hidden = true;
+  } else {
+    b1.custom = true;
+    $('charName').value = '自定义';
+    $('charWarn').hidden = false;
+  }
+};
+$('sizeSel').onchange = () => {
+  const sz = sizeOf($('sizeSel').value);
+  b1.curW = sz[0]; b1.curH = sz[1];
+  b1Measure(true); b1Fit();
+};
+
+function b1ToPreview() {
+  if (!b1.hasImage) return;
+  const id = b1.id;
+  if (!id) { alert('请输入 id'); return; }
+  if (!CHAR_NAMES[id] && utf8Len(id) !== 4) { alert('自定义 id 必须为 4 字节'); return; }
+  const sx = (b1.fx - b1.x)/b1.scale;
+  const sy = (b1.fy - b1.y)/b1.scale;
+  const sw = b1.fw/b1.scale, sh = b1.fh/b1.scale;
+  const c1 = document.createElement('canvas');
+  c1.width = b1.curW; c1.height = b1.curH;
+  const cx1 = c1.getContext('2d');
+  cx1.imageSmoothingEnabled = true; cx1.imageSmoothingQuality = 'high';
+  cx1.drawImage(cropImg, sx, sy, sw, sh, 0, 0, b1.curW, b1.curH);
+  const OW = b1.curW + BORDER*2, OH = b1.curH + BORDER*2;
+  const c2 = document.createElement('canvas');
+  c2.width = OW; c2.height = OH;
+  const cx2 = c2.getContext('2d');
+  cx2.clearRect(0, 0, OW, OH);
+  cx2.drawImage(c1, BORDER, BORDER);
+  c2.toBlob(blob => {
+    if (!blob) { alert('生成预览失败'); return; }
+    if (b1.previewUrl) URL.revokeObjectURL(b1.previewUrl);
+    b1.previewBlob = blob;
+    b1.previewUrl = URL.createObjectURL(blob);
+    $('previewImg').src = b1.previewUrl;
+    setBoxView(box1, 'preview');
+  }, 'image/png');
+}
+
+async function runEncrypt(sourceBlob, outName, btn) {
+  overlay(loadedLibs.zstd ? '正在加密…' : '正在下载压缩库…');
+  if (btn) btn.disabled = true;
+  try {
+    await ensureZstd(loadedLibs.zstd);
+    overlay('正在加密…');
+    await new Promise(r => setTimeout(r, 20));
+    const raw = new Uint8Array(await sourceBlob.arrayBuffer());
+    const enc = phiraEncrypt(raw);
+    b1.encryptedBlob = new Blob([enc], { type:'application/octet-stream' });
+    b1.encryptedName = outName;
+    const doneEl = $('donePreview');
+    doneEl.innerHTML = '';
+    const viewUrl = URL.createObjectURL(sourceBlob);
+    if (outName === 'bgm') {
+      const au = document.createElement('audio');
+      au.controls = true; au.src = viewUrl;
+      doneEl.appendChild(au);
+    } else {
+      const img = document.createElement('img');
+      img.src = viewUrl;
+      doneEl.appendChild(img);
+    }
+    hideOverlay();
+    setBoxView(box1, 'done');
+  } catch(e) {
+    hideOverlay();
+    alert('加密失败：' + (e.message||e));
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+bindDrop($('drop1'), $('file1'), b1HandleFile);
+$('btnBackCrop').onclick = () => {
+  b1.hasImage = false;
+  cropImg.removeAttribute('src'); cropImg.style.transform = '';
+  if (b1.imgUrl) { URL.revokeObjectURL(b1.imgUrl); b1.imgUrl = null; }
+  setBoxView(box1, 'import');
+};
+$('btnResetCrop').onclick = () => { if (b1.hasImage) { b1Fit(); b1Hint(); } };
+$('btnToPreview').onclick = b1ToPreview;
+$('btnBackPreview').onclick = () => {
+  if (b1.previewUrl) { URL.revokeObjectURL(b1.previewUrl); b1.previewUrl = null; }
+  b1.previewBlob = null;
+  setBoxView(box1, 'crop');
+  requestAnimationFrame(() => b1Measure(true));
+};
+$('btnNext').onclick = async () => {
+  if (!b1.previewBlob) return;
+  await runEncrypt(b1.previewBlob, b1.id + '.char', $('btnNext'));
+};
+$('btnBackAudio').onclick = () => {
+  try { $('audioPlayer').pause(); } catch(_){}
+  $('audioPlayer').removeAttribute('src'); try { $('audioPlayer').load(); } catch(_){}
+  if (b1.audioUrl) { URL.revokeObjectURL(b1.audioUrl); b1.audioUrl = null; }
+  b1.encryptedBlob = null;
+  setBoxView(box1, 'import');
+};
+$('btnEncryptAudio').onclick = async () => {
+  if (!b1.encryptedBlob) return;
+  await runEncrypt(b1.encryptedBlob, 'bgm', $('btnEncryptAudio'));
+};
+$('btnDoneDelete').onclick = () => {
+  if (!confirm('确定要删除此文件吗？')) return;
+  b1.encryptedBlob = null; b1.encryptedName = '';
+  if (b1.imgUrl) { URL.revokeObjectURL(b1.imgUrl); b1.imgUrl = null; }
+  if (b1.previewUrl) { URL.revokeObjectURL(b1.previewUrl); b1.previewUrl = null; }
+  if (b1.audioUrl) { URL.revokeObjectURL(b1.audioUrl); b1.audioUrl = null; }
+  b1.hasImage = false;
+  cropImg.removeAttribute('src'); cropImg.style.transform = '';
+  $('donePreview').innerHTML = '';
+  setBoxView(box1, 'import');
+};
+$('btnDoneAdd').onclick = () => {
+  const path = 'assets/res/' + b1.encryptedName;
+  const existing = findExistingPath(path);
+  if (existing && !confirm(`已存在 ${b1.encryptedName}，是否替换？`)) return;
+  const kind = b1.encryptedName === 'bgm' ? 'audio' : 'image';
+  const desc = kind === 'audio' ? '背景音乐' : makeCharDesc(b1.encryptedName);
+  cacheSet(path, b1.encryptedBlob, {
+    name: b1.encryptedName, type: kind, desc, encrypted: true,
+  });
+  alert('已加入压缩包');
+  renderCards();
+  setBottomView('cards');
+  setBoxView(box1, 'import');
+  b1.encryptedBlob = null;
+  $('donePreview').innerHTML = '';
+};
+$('btnDoneDownload').onclick = () => {
+  if (!b1.encryptedBlob) return;
+  download(b1.encryptedBlob, b1.encryptedName);
+  setBoxView(box1, 'import');
+  b1.encryptedBlob = null;
+  $('donePreview').innerHTML = '';
+};
+
+/* ============================================================
+   音频转码
+   ============================================================ */
+async function convertToMp3(file) {
+  const lame = await ensureLame(true);
+  const ab = await file.arrayBuffer();
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const actx = new AC();
+  let buf;
+  try { buf = await actx.decodeAudioData(ab.slice(0)); }
+  finally { try { actx.close(); } catch(_){} }
+  const chs = buf.numberOfChannels, sr = buf.sampleRate;
+  const enc = new lame.Mp3Encoder(chs, sr, 128);
+  const left = buf.getChannelData(0);
+  const right = chs > 1 ? buf.getChannelData(1) : null;
+  const l16 = new Int16Array(left.length);
+  for (let i = 0; i < left.length; i++) {
+    const s = Math.max(-1, Math.min(1, left[i]));
+    l16[i] = s < 0 ? s*0x8000 : s*0x7FFF;
+  }
+  let r16 = null;
+  if (right) {
+    r16 = new Int16Array(right.length);
+    for (let i = 0; i < right.length; i++) {
+      const s = Math.max(-1, Math.min(1, right[i]));
+      r16[i] = s < 0 ? s*0x8000 : s*0x7FFF;
+    }
+  }
+  const BLK = 1152;
+  const chunks = [];
+  for (let i = 0; i < l16.length; i += BLK) {
+    const l = l16.subarray(i, i+BLK);
+    let out = r16 ? enc.encodeBuffer(l, r16.subarray(i, i+BLK)) : enc.encodeBuffer(l);
+    if (out && out.length) chunks.push(new Uint8Array(out));
+  }
+  const tail = enc.flush();
+  if (tail && tail.length) chunks.push(new Uint8Array(tail));
+  return new Blob(chunks, { type:'audio/mpeg' });
+}
+
+async function convertToOgg(file) {
+  const Encoder = await ensureVorbis(loadedLibs.vorbis);
+  overlay('正在转换音频…');
+  const ab = await file.arrayBuffer();
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const actx = new AC();
+  let buf;
+  try { buf = await actx.decodeAudioData(ab.slice(0)); }
+  finally { try { actx.close(); } catch(_){} }
+  const chs = Math.min(buf.numberOfChannels, 2);
+  const sr = buf.sampleRate;
+  const encoder = new Encoder(sr, chs, 0.4);
+  const len = buf.length;
+  const data = new Int16Array(len * chs);
+  for (let c = 0; c < chs; c++) {
+    const ch = buf.getChannelData(c);
+    for (let i = 0; i < len; i++) {
+      const s = Math.max(-1, Math.min(1, ch[i]));
+      data[i*chs + c] = s < 0 ? s*0x8000 : s*0x7FFF;
+    }
+  }
+  const chunks = [];
+  const BLK = 4096;
+  for (let i = 0; i < len; i += BLK) {
+    const n = Math.min(BLK, len - i);
+    const slice = data.subarray(i*chs, (i+n)*chs);
+    const out = encoder.encode(slice.buffer);
+    if (out && out.length) chunks.push(new Uint8Array(out));
+  }
+  const tail = encoder.finish ? encoder.finish() : null;
+  if (tail && tail.length) chunks.push(new Uint8Array(tail));
+  return new Blob(chunks, { type:'audio/ogg' });
+}
+
+/* ============================================================
+   框2
+   ============================================================ */
+const box2 = $('box2');
+const stage2 = $('stage2'), cropImg2 = $('cropImg2'), cropFrame2 = $('cropFrame2'), stageHint2 = $('stageHint2');
+const sizeTag2 = $('sizeTag2');
+
+let b2 = {
+  hasImage:false, natW:0, natH:0, x:0, y:0, scale:1,
+  S:0.4, fx:0, fy:0, fw:0, fh:0,
+  imgUrl:null, previewBlob:null, previewUrl:null,
+  curW:128, curH:128,
+  selectedId:'', selectedDesc:'',
+  audBlob:null, audUrl:null, audName:'', audSelectedId:'', audSelectedDesc:'',
+};
+
+function b2Measure(preserve) {
+  const sw = stage2.clientWidth, sh = stage2.clientHeight;
+  if (sw < 10 || sh < 10) return;
+  const padX = Math.min(50, sw*0.08), padY = Math.min(50, sh*0.08);
+  let nS = Math.min((sw-padX*2)/b2.curW, (sh-padY*2)/b2.curH);
+  nS = clamp(nS, 0.04, 1.6);
+  const nFW = b2.curW*nS, nFH = b2.curH*nS;
+  const nFX = (sw-nFW)/2, nFY = (sh-nFH)/2;
+  if (preserve && b2.hasImage && b2.S > 0) {
+    const k = nS/b2.S;
+    b2.x = nFX + (b2.x - b2.fx)*k;
+    b2.y = nFY + (b2.y - b2.fy)*k;
+    b2.scale *= k;
+  }
+  b2.S = nS; b2.fw = nFW; b2.fh = nFH; b2.fx = nFX; b2.fy = nFY;
+  cropFrame2.style.left = b2.fx+'px'; cropFrame2.style.top = b2.fy+'px';
+  cropFrame2.style.width = b2.fw+'px'; cropFrame2.style.height = b2.fh+'px';
+  sizeTag2.textContent = b2.curW + ' × ' + b2.curH;
+  if (b2.hasImage) b2Apply();
+}
+function b2Apply() {
+  cropImg2.style.width = b2.natW+'px'; cropImg2.style.height = b2.natH+'px';
+  cropImg2.style.transform = `translate(${b2.x}px,${b2.y}px) scale(${b2.scale})`;
+}
+function b2Fit() {
+  if (!b2.hasImage) return;
+  // ★ cover
+  b2.scale = clamp(Math.max(b2.fw/b2.natW, b2.fh/b2.natH), MIN_SCALE, MAX_SCALE);
+  b2.x = b2.fx + (b2.fw - b2.natW*b2.scale)/2;
+  b2.y = b2.fy + (b2.fh - b2.natH*b2.scale)/2;
+  b2Apply();
+}
+bindPointer(stage2, () => b2.hasImage, () => b2,
+  (x,y,sc) => { b2.x=x; b2.y=y; if(sc) b2.scale=sc; },
+  () => b2Apply(),
+  (cx,cy) => { const r = stage2.getBoundingClientRect(); return {x:cx-r.left, y:cy-r.top}; });
+
+async function b2HandleFile(file) {
+  const name = (file.name||'').toLowerCase();
+  const ext = extOf(name);
+  const mime = file.type || '';
+  const isImg = IMG_EXT.includes(ext) || IMG_MIME.includes(mime);
+  const isAud = AUD_EXT.includes(ext) || AUD_MIME.includes(mime);
+
+  if (isImg) {
+    let pngBlob = file;
+    try {
+      if (!(ext === 'png' && (!mime || mime === 'image/png'))) pngBlob = await convertToPng(file);
+    } catch(e){ alert('图片处理失败：'+(e.message||e)); return; }
+    if (b2.imgUrl) URL.revokeObjectURL(b2.imgUrl);
+    b2.imgUrl = URL.createObjectURL(pngBlob);
+    b2.hasImage = false;
+    b2.selectedId = ''; b2.selectedDesc = '';
+    $('uiId').value = ''; $('uiDesc').value = '';
+    $('uiSize').value = '128x';
+    b2.curW = 128; b2.curH = 128;
+    cropImg2.onload = () => {
+      b2.natW = cropImg2.naturalWidth; b2.natH = cropImg2.naturalHeight;
+      if (!b2.natW || !b2.natH) { alert('尺寸无效'); return; }
+      b2.hasImage = true;
+      setBoxView(box2, 'crop');
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        b2Measure(false); b2Fit();
+        stageHint2.classList.remove('fade');
+        setTimeout(() => stageHint2.classList.add('fade'), 2600);
+      }));
+    };
+    cropImg2.onerror = () => alert('图片加载失败');
+    cropImg2.src = b2.imgUrl;
+  } else if (isAud) {
+    const isOgg = ext === 'ogg' || mime === 'audio/ogg';
+    let oggBlob = file;
+    if (!isOgg) {
+      overlay(loadedLibs.vorbis ? '正在转换音频…' : '正在下载音频编码库…');
+      try { oggBlob = await convertToOgg(file); }
+      catch(e){ hideOverlay(); alert('音频转换失败：'+(e.message||e)); return; }
+      hideOverlay();
+    }
+    if (b2.audUrl) URL.revokeObjectURL(b2.audUrl);
+    b2.audBlob = oggBlob;
+    b2.audUrl = URL.createObjectURL(oggBlob);
+    b2.audName = file.name;
+    b2.audSelectedId = ''; b2.audSelectedDesc = '';
+    $('audId').value = ''; $('audDesc').value = '';
+    $('audName').textContent = file.name;
+    $('audPlayer').src = b2.audUrl;
+    setBoxView(box2, 'audio');
+  } else {
+    alert('请导入图片或音频文件');
+  }
+}
+
+$('uiSize').onchange = () => {
+  const sz = sizeOf($('uiSize').value);
+  b2.curW = sz[0]; b2.curH = sz[1];
+  b2Measure(true); b2Fit();
+};
+$('uiId').oninput = () => {
+  let v = filterCN($('uiId').value);
+  if (v !== $('uiId').value) $('uiId').value = v;
+  if (!v) { $('uiDesc').value = ''; b2.selectedDesc = ''; return; }
+  const found = findById(v);
+  if (found) {
+    $('uiDesc').value = found.desc;
+    b2.selectedDesc = found.desc;
+    if (found.size && $('uiSize').value !== found.size) {
+      $('uiSize').value = found.size;
+      const parts = sizeOf(found.size);
+      b2.curW = parts[0]; b2.curH = parts[1];
+      b2Measure(true); b2Fit();
+    }
+  } else {
+    $('uiDesc').value = '未知';
+    b2.selectedDesc = '未知';
+  }
+};
+$('audId').oninput = () => {
+  let v = filterCN($('audId').value);
+  if (v !== $('audId').value) $('audId').value = v;
+  if (!v) { $('audDesc').value = ''; b2.audSelectedDesc = ''; return; }
+  const found = findById(v);
+  $('audDesc').value = found ? found.desc : '未知';
+  b2.audSelectedDesc = found ? found.desc : '未知';
+};
+
+/* ===== 替换UI 全屏列表 ===== */
+let uiListTarget = 'b2img';
+function openUiList(mode) {
+  uiListTarget = mode;
+  $('uiListView').hidden = false;
+  $('uiListTitle').textContent =
+    mode === 'b2aud' ? '选择要替换的音频' :
+    mode === 'b3aud' ? '选择要替换的音频' :
+    mode === 'b3img' ? '选择要替换的文件' :
+    mode === 'b3font' ? '选择要替换的字体' :
+    '选择要替换的 UI';
+  let filterGroups = null;
+  if (mode === 'b3font') filterGroups = ['font'];
+  else if (mode === 'b2aud' || mode === 'b3aud') filterGroups = ['snd'];
+  renderUiList('', filterGroups);
+  setTimeout(() => { $('uiSearchInput').value = ''; $('uiSearchInput').focus(); }, 30);
+}
+function closeUiList() { $('uiListView').hidden = true; }
+
+function renderUiList(filter, filterGroups) {
+  const groupsEl = $('uiListGroups');
+  const f = (filter || '').trim().toLowerCase();
+  groupsEl.innerHTML = '';
+  const byGroup = { common: [], main: [], play: [], rank: [], mod: [], font: [], snd: [] };
+  for (const [fileName, row] of Object.entries(ASSET_TABLE)) {
+    const id = stripExt(fileName);
+    const g = row.group;
+    if (!byGroup[g]) byGroup[g] = [];
+    byGroup[g].push({ fileName, id, desc: row.desc, size: row.size, group: g });
+  }
+  byGroup.common = byGroup.main.filter(x => COMMON_IDS.includes(x.id));
+
+  const allowedGroups = filterGroups || ['common','main','play','rank','mod'];
+
+  const makeItem = it => {
+    const el = document.createElement('div');
+    el.classList.add('uilist-item');
+    el.innerHTML = `<span>${it.desc}</span><span class="item-id">${it.id}</span>` +
+      (uiListTarget === 'b3img' ? '' : `<span class="item-size">${it.size}</span>`);
+    el.onclick = () => {
+      if (uiListTarget === 'b2img') {
+        b2.selectedId = it.id; b2.selectedDesc = it.desc;
+        $('uiId').value = it.id; $('uiDesc').value = it.desc;
+        $('uiSize').value = it.size;
+        const parts = sizeOf(it.size);
+        b2.curW = parts[0]; b2.curH = parts[1];
+        b2Measure(true); b2Fit();
+      } else if (uiListTarget === 'b2aud' || uiListTarget === 'b3aud') {
+        if (uiListTarget === 'b2aud') {
+          b2.audSelectedId = it.id; b2.audSelectedDesc = it.desc;
+          $('audId').value = it.id; $('audDesc').value = it.desc;
+        } else {
+          b3.selectedId = it.id; b3.selectedDesc = it.desc;
+          $('aud3Id').value = it.id; $('aud3Desc').value = it.desc;
+        }
+      } else if (uiListTarget === 'b3img') {
+        b3.selectedId = it.id; b3.selectedDesc = it.desc;
+        $('img3Id').value = it.id; $('img3Desc').value = it.desc;
+        if (isJpgId(it.id)) $('img3Fmt').value = 'jpg';
+        else $('img3Fmt').value = 'png';
+      } else if (uiListTarget === 'b3font') {
+        b3.selectedId = it.id; b3.selectedDesc = it.desc;
+        $('font3Id').value = it.id; $('font3Desc').value = it.desc;
+      }
+      closeUiList();
+    };
+    return el;
+  };
+
+  if (f) {
+    const all = [];
+    for (const g of allowedGroups) {
+      for (const it of (byGroup[g]||[])) {
+        if (it.desc.toLowerCase().includes(f) || it.id.toLowerCase().includes(f)) all.push(it);
+      }
+    }
+    const grp = document.createElement('div');
+    grp.className = 'uilist-group';
+    grp.innerHTML = `<div class="uilist-group-head">搜索结果（${all.length}）</div>`;
+    const items = document.createElement('div');
+    items.className = 'uilist-items';
+    for (const it of all) items.appendChild(makeItem(it));
+    grp.appendChild(items);
+    groupsEl.appendChild(grp);
+  } else {
+    for (const g of allowedGroups) {
+      const list = byGroup[g] || [];
+      if (!list.length) continue;
+      const grp = document.createElement('div');
+      grp.className = 'uilist-group' + (g === 'common' ? '' : ' collapsed');
+      const head = document.createElement('div');
+      head.className = 'uilist-group-head';
+      head.innerHTML = `<span class="arrow">▼</span><span>${GROUP_NAMES[g]}</span>`;
+      head.onclick = () => grp.classList.toggle('collapsed');
+      grp.appendChild(head);
+      const items = document.createElement('div');
+      items.className = 'uilist-items';
+      for (const it of list) items.appendChild(makeItem(it));
+      grp.appendChild(items);
+      groupsEl.appendChild(grp);
+    }
+  }
+}
+
+$('btnOpenUiList').onclick = () => openUiList('b2img');
+$('btnOpenAudioList').onclick = () => openUiList('b2aud');
+$('btnOpenImgList').onclick = () => openUiList('b3img');
+$('btnOpenAudList').onclick = () => openUiList('b3aud');
+$('btnOpenFontList').onclick = () => openUiList('b3font');
+$('btnCloseUiList').onclick = closeUiList;
+$('uiSearchInput').oninput = () => {
+  let fg = null;
+  if (uiListTarget === 'b3font') fg = ['font'];
+  else if (uiListTarget === 'b2aud' || uiListTarget === 'b3aud') fg = ['snd'];
+  renderUiList($('uiSearchInput').value, fg);
+};
+
+$('btnBackCrop2').onclick = () => {
+  b2.hasImage = false;
+  cropImg2.removeAttribute('src'); cropImg2.style.transform = '';
+  if (b2.imgUrl) { URL.revokeObjectURL(b2.imgUrl); b2.imgUrl = null; }
+  setBoxView(box2, 'import');
+};
+$('btnResetCrop2').onclick = () => { if (b2.hasImage) b2Fit(); };
+$('btnToPreview2').onclick = () => {
+  if (!b2.hasImage) return;
+  const sx = (b2.fx - b2.x)/b2.scale;
+  const sy = (b2.fy - b2.y)/b2.scale;
+  const sw = b2.fw/b2.scale;
+  const sh = b2.fh/b2.scale;
+  const c = document.createElement('canvas');
+  c.width = b2.curW; c.height = b2.curH;
+  const ctx = c.getContext('2d');
+  ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+  const isJpg = isJpgId(b2.selectedId);
+  if (isJpg) { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, b2.curW, b2.curH); }
+  ctx.drawImage(cropImg2, sx, sy, sw, sh, 0, 0, b2.curW, b2.curH);
+  c.toBlob(blob => {
+    if (!blob) { alert('生成预览失败'); return; }
+    if (b2.previewUrl) URL.revokeObjectURL(b2.previewUrl);
+    b2.previewBlob = blob;
+    b2.previewUrl = URL.createObjectURL(blob);
+    $('previewImg2').src = b2.previewUrl;
+    setBoxView(box2, 'preview');
+  }, isJpg ? 'image/jpeg' : 'image/png', 0.92);
+};
+$('btnBackPreview2').onclick = () => {
+  if (b2.previewUrl) { URL.revokeObjectURL(b2.previewUrl); b2.previewUrl = null; }
+  b2.previewBlob = null;
+  setBoxView(box2, 'crop');
+  requestAnimationFrame(() => b2Measure(true));
+};
+$('btnDelete2').onclick = () => {
+  if (!confirm('确定要删除此文件吗？')) return;
+  b2.previewBlob = null;
+  b2.hasImage = false;
+  cropImg2.removeAttribute('src'); cropImg2.style.transform = '';
+  if (b2.imgUrl) { URL.revokeObjectURL(b2.imgUrl); b2.imgUrl = null; }
+  setBoxView(box2, 'import');
+};
+$('btnAdd2').onclick = () => {
+  if (!b2.previewBlob) return;
+  const id = $('uiId').value.trim() || 'unknown';
+  const isJpg = isJpgId(id);
+  const ext = isJpg ? '.jpg' : '.png';
+  const fileName = id + ext;
+  const found = findById(id);
+  let path = found ? found.path : 'assets/' + fileName;
+  const existing = findExistingPath(path);
+  if (existing && !confirm(`已存在 ${fileName}，是否替换？`)) return;
+  cacheSet(path, b2.previewBlob, {
+    name: fileName, type: 'image',
+    desc: b2.selectedDesc || '未知',
+    encrypted: false,
+  });
+  alert('已加入压缩包');
+  renderCards();
+  setBottomView('cards');
+  setBoxView(box2, 'import');
+  b2.previewBlob = null;
+};
+$('btnExport2').onclick = () => {
+  if (!b2.previewBlob) return;
+  const id = $('uiId').value.trim() || 'unknown';
+  const isJpg = isJpgId(id);
+  const ext = isJpg ? '.jpg' : '.png';
+  download(b2.previewBlob, id + ext);
+  setBoxView(box2, 'import');
+  b2.previewBlob = null;
+};
+
+$('btnBackAudio2').onclick = () => {
+  try { $('audPlayer').pause(); } catch(_){}
+  $('audPlayer').removeAttribute('src'); try { $('audPlayer').load(); } catch(_){}
+  if (b2.audUrl) { URL.revokeObjectURL(b2.audUrl); b2.audUrl = null; }
+  b2.audBlob = null;
+  setBoxView(box2, 'import');
+};
+$('btnDeleteAudio2').onclick = () => {
+  if (!confirm('确定要删除此文件吗？')) return;
+  try { $('audPlayer').pause(); } catch(_){}
+  $('audPlayer').removeAttribute('src'); try { $('audPlayer').load(); } catch(_){}
+  if (b2.audUrl) { URL.revokeObjectURL(b2.audUrl); b2.audUrl = null; }
+  b2.audBlob = null;
+  setBoxView(box2, 'import');
+};
+$('btnAddAudio2').onclick = () => {
+  if (!b2.audBlob) return;
+  const id = $('audId').value.trim() || 'unknown';
+  const fileName = id + '.ogg';
+  const found = findById(id);
+  let path = found ? found.path : 'assets/' + fileName;
+  const existing = findExistingPath(path);
+  if (existing && !confirm(`已存在 ${fileName}，是否替换？`)) return;
+  cacheSet(path, b2.audBlob, {
+    name: fileName, type: 'audio',
+    desc: b2.audSelectedDesc || '未知',
+    encrypted: false,
+  });
+  alert('已加入压缩包');
+  renderCards();
+  setBottomView('cards');
+  setBoxView(box2, 'import');
+  b2.audBlob = null;
+};
+$('btnExportAudio2').onclick = () => {
+  if (!b2.audBlob) return;
+  const id = $('audId').value.trim() || 'unknown';
+  download(b2.audBlob, id + '.ogg');
+  setBoxView(box2, 'import');
+  b2.audBlob = null;
+};
+
+bindDrop($('drop2'), $('file2'), b2HandleFile);
+
+/* ============================================================
+   框3
+   ============================================================ */
+const box3 = $('box3');
+
+let b3 = {
+  imgBlob:null, imgUrl:null, imgName:'',
+  selectedId:'', selectedDesc:'',
+  audBlob:null, audUrl:null,
+  fontBlob:null, fontUrl:null, fontFamily:'',
+};
+
+async function b3HandleFile(file) {
+  const name = file.name || '';
+  const lower = name.toLowerCase();
+  const ext = extOf(lower);
+  const mime = file.type || '';
+
+  if (lower.endsWith('.char')) return handleCharImport(file);
+  if (lower === 'bgm') {
+    const path = 'assets/res/bgm';
+    const existing = findExistingPath(path);
+    if (existing && !confirm(`已存在 bgm，是否替换？`)) return;
+    cacheSet(path, file, {
+      name: 'bgm', type: 'audio', desc: '背景音乐', encrypted: true,
+    });
+    renderCards();
+    setBottomView('cards');
+    return;
+  }
+  if (ext === 'txt') {
+    const input = prompt('输入文件名（不带 .txt）', name);
+    if (input === null) return;
+    const finalName = input + '.txt';
+    const path = 'assets/' + finalName;
+    const existing = findExistingPath(path);
+    if (existing && !confirm(`已存在 ${finalName}，是否替换？`)) return;
+    cacheSet(path, file, {
+      name: finalName, type: 'other', desc: '', encrypted: false,
+    });
+    renderCards();
+    setBottomView('cards');
+    return;
+  }
+  if (ext === 'ttf') return handleFontImport(file);
+  if (IMG_EXT.includes(ext) || IMG_MIME.includes(mime)) return handleImgImport3(file);
+  if (AUD_EXT.includes(ext) || AUD_MIME.includes(mime)) return handleAudImport3(file);
+  alert('不支持的文件类型');
+}
+
+function handleCharImport(file) {
+  const mask = document.createElement('div');
+  mask.className = 'modal-mask';
+  mask.innerHTML = `
+    <div class="modal" role="dialog" style="max-width:360px">
+      <div class="modal-head"><div class="modal-title">选择角色 id</div></div>
+      <div class="modal-body">
+        <select id="_charSel" style="width:100%">
+          <option value="shee">夕 [shee]</option>
+          <option value="fred">芙莱 [fred]</option>
+          <option value="fred2">芙莱-正装 [fred2]</option>
+          <option value="jed">杰德 [jed]</option>
+          <option value="__custom__">自定义</option>
+        </select>
+        <input type="text" id="_charCustom" class="slim" placeholder="输入 4 字节 id" style="display:none;width:100%;margin-top:10px" autocomplete="off">
+        <div id="_charErr" style="color:#d33;font-size:11px;min-height:14px;margin-top:4px"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn ghost" data-cancel>取消</button>
+        <span class="spacer"></span>
+        <button class="btn primary" data-ok>确认</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(mask);
+  const sel = mask.querySelector('#_charSel');
+  const cus = mask.querySelector('#_charCustom');
+  const err = mask.querySelector('#_charErr');
+  const okBtn = mask.querySelector('[data-ok]');
+  sel.onchange = () => {
+    if (sel.value === '__custom__') {
+      cus.style.display = ''; cus.focus(); validate();
+    } else {
+      cus.style.display = 'none'; cus.value = '';
+      err.textContent = ''; okBtn.disabled = false;
+    }
+  };
+  function validate() {
+    if (sel.value !== '__custom__') { okBtn.disabled = false; err.textContent = ''; return; }
+    const v = cus.value;
+    if (!v) { err.textContent = ''; okBtn.disabled = true; return; }
+    const n = utf8Len(v);
+    if (n === 4) { err.textContent = '✓ 4 字节'; err.style.color = '#1c7a45'; okBtn.disabled = false; }
+    else { err.textContent = `当前 ${n} 字节（要求 4）`; err.style.color = '#d33'; okBtn.disabled = true; }
+  }
+  cus.oninput = () => {
+    let v = filterCN(cus.value);
+    if (v !== cus.value) cus.value = v;
+    validate();
+  };
+  const close = () => mask.remove();
+  mask.addEventListener('click', e => { if (e.target === mask) close(); });
+  mask.querySelector('[data-cancel]').onclick = close;
+  okBtn.onclick = () => {
+    const id = sel.value === '__custom__' ? cus.value : sel.value;
+    if (sel.value === '__custom__' && utf8Len(id) !== 4) { alert('自定义 id 必须为 4 字节'); return; }
+    const fileName = id + '.char';
+    const path = 'assets/res/' + fileName;
+    const existing = findExistingPath(path);
+    if (existing && !confirm(`已存在 ${fileName}，是否替换？`)) return;
+    cacheSet(path, file, {
+      name: fileName, type: 'image', desc: makeCharDesc(fileName), encrypted: true,
+    });
+    close();
+    renderCards();
+    setBottomView('cards');
+  };
+}
+
+async function handleFontImport(file) {
+  const buf = await file.arrayBuffer();
+  const blob = new Blob([buf], { type:'font/ttf' });
+  b3.fontBlob = blob;
+  if (b3.fontUrl) URL.revokeObjectURL(b3.fontUrl);
+  b3.fontUrl = URL.createObjectURL(blob);
+  b3.selectedId = ''; b3.selectedDesc = '';
+  $('font3Id').value = '';
+  $('font3Desc').value = '';
+  const famName = 'previewfont_' + Date.now();
+  try {
+    const ff = new FontFace(famName, buf);
+    await ff.load();
+    document.fonts.add(ff);
+    b3.fontFamily = famName;
+  } catch(e) { b3.fontFamily = ''; }
+  const title = document.title || '预览文本';
+  $('font3Prev').innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'font-size:32px;line-height:1.5;text-align:center;word-break:break-all;color:#2b2f36;';
+  if (b3.fontFamily) wrap.style.fontFamily = `'${b3.fontFamily}', sans-serif`;
+  wrap.textContent = title + ' Aa Bb 123';
+  $('font3Prev').appendChild(wrap);
+  setBoxView(box3, 'font');
+}
+
+async function handleImgImport3(file) {
+  let bmp;
+  try { bmp = await createImageBitmap(file); }
+  catch(e) { alert('图片读取失败：'+(e.message||e)); return; }
+  const c = document.createElement('canvas');
+  c.width = bmp.width; c.height = bmp.height;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(bmp, 0, 0);
+  if (bmp.close) bmp.close();
+  const firstFrameBlob = await new Promise((res, rej) =>
+    c.toBlob(b => b ? res(b) : rej(new Error('帧提取失败')), 'image/png'));
+  if (b3.imgUrl) URL.revokeObjectURL(b3.imgUrl);
+  b3.imgUrl = URL.createObjectURL(firstFrameBlob);
+  b3.imgBlob = firstFrameBlob;
+  b3.imgName = file.name;
+  b3.selectedId = ''; b3.selectedDesc = '';
+  $('img3Id').value = ''; $('img3Desc').value = '';
+  $('img3Fmt').value = 'png';
+  $('img3Prev').src = b3.imgUrl;
+  setBoxView(box3, 'img');
+}
+
+async function handleAudImport3(file) {
+  const ext = extOf(file.name);
+  const mime = file.type || '';
+  const isOgg = ext === 'ogg' || mime === 'audio/ogg';
+  let oggBlob = file;
+  if (!isOgg) {
+    overlay(loadedLibs.vorbis ? '正在转换音频…' : '正在下载音频编码库…');
+    try { oggBlob = await convertToOgg(file); }
+    catch(e){ hideOverlay(); alert('音频转换失败：'+(e.message||e)); return; }
+    hideOverlay();
+  }
+  if (b3.audUrl) URL.revokeObjectURL(b3.audUrl);
+  b3.audBlob = oggBlob;
+  b3.audUrl = URL.createObjectURL(oggBlob);
+  b3.selectedId = ''; b3.selectedDesc = '';
+  $('aud3Id').value = ''; $('aud3Desc').value = '';
+  $('aud3Name').textContent = file.name;
+  $('aud3Player').src = b3.audUrl;
+  setBoxView(box3, 'audio3');
+}
+
+$('img3Id').oninput = () => {
+  let v = filterCN($('img3Id').value);
+  if (v !== $('img3Id').value) $('img3Id').value = v;
+  if (!v) { $('img3Desc').value = ''; b3.selectedDesc = ''; return; }
+  const found = findById(v);
+  if (found) {
+    $('img3Desc').value = found.desc;
+    b3.selectedDesc = found.desc;
+    if (isJpgId(v)) $('img3Fmt').value = 'jpg';
+    else $('img3Fmt').value = 'png';
+  } else {
+    $('img3Desc').value = '未知';
+    b3.selectedDesc = '未知';
+  }
+};
+$('aud3Id').oninput = () => {
+  let v = filterCN($('aud3Id').value);
+  if (v !== $('aud3Id').value) $('aud3Id').value = v;
+  if (!v) { $('aud3Desc').value = ''; b3.selectedDesc = ''; return; }
+  const found = findById(v);
+  $('aud3Desc').value = found ? found.desc : '未知';
+  b3.selectedDesc = found ? found.desc : '未知';
+};
+$('font3Id').oninput = () => {
+  let v = filterCN($('font3Id').value);
+  if (v !== $('font3Id').value) $('font3Id').value = v;
+  if (!v) { $('font3Desc').value = ''; b3.selectedDesc = ''; return; }
+  const found = findById(v);
+  $('font3Desc').value = found ? found.desc : '未知';
+  b3.selectedDesc = found ? found.desc : '未知';
+};
+
+$('btnBackImg3').onclick = () => {
+  if (b3.imgUrl) { URL.revokeObjectURL(b3.imgUrl); b3.imgUrl = null; }
+  b3.imgBlob = null;
+  setBoxView(box3, 'import');
+};
+$('btnDeleteImg3').onclick = () => {
+  if (!confirm('确定要删除此文件吗？')) return;
+  if (b3.imgUrl) { URL.revokeObjectURL(b3.imgUrl); b3.imgUrl = null; }
+  b3.imgBlob = null;
+  setBoxView(box3, 'import');
+};
+$('btnAddImg3').onclick = async () => {
+  if (!b3.imgBlob) return;
+  const id = $('img3Id').value.trim() || 'unknown';
+  const fmt = $('img3Fmt').value;
+  const ext = fmt === 'jpg' ? '.jpg' : '.png';
+  const fileName = id + ext;
+  let outBlob = b3.imgBlob;
+  if (fmt === 'jpg') {
+    const bmp = await createImageBitmap(b3.imgBlob);
+    const c = document.createElement('canvas');
+    c.width = bmp.width; c.height = bmp.height;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(bmp, 0, 0);
+    if (bmp.close) bmp.close();
+    outBlob = await new Promise((res, rej) =>
+      c.toBlob(b => b ? res(b) : rej(new Error('jpg编码失败')), 'image/jpeg', 0.92));
+  }
+  const found = findById(id);
+  let path = found ? found.path : 'assets/' + fileName;
+  const existing = findExistingPath(path);
+  if (existing && !confirm(`已存在 ${fileName}，是否替换？`)) return;
+  cacheSet(path, outBlob, {
+    name: fileName, type: 'image',
+    desc: b3.selectedDesc || '未知',
+    encrypted: false,
+  });
+  alert('已加入 zip');
+  renderCards();
+  setBottomView('cards');
+  setBoxView(box3, 'import');
+  b3.imgBlob = null;
+};
+
+$('btnBackAud3').onclick = () => {
+  try { $('aud3Player').pause(); } catch(_){}
+  $('aud3Player').removeAttribute('src'); try { $('aud3Player').load(); } catch(_){}
+  if (b3.audUrl) { URL.revokeObjectURL(b3.audUrl); b3.audUrl = null; }
+  b3.audBlob = null;
+  setBoxView(box3, 'import');
+};
+$('btnDeleteAud3').onclick = () => {
+  if (!confirm('确定要删除此文件吗？')) return;
+  try { $('aud3Player').pause(); } catch(_){}
+  $('aud3Player').removeAttribute('src'); try { $('aud3Player').load(); } catch(_){}
+  if (b3.audUrl) { URL.revokeObjectURL(b3.audUrl); b3.audUrl = null; }
+  b3.audBlob = null;
+  setBoxView(box3, 'import');
+};
+$('btnAddAud3').onclick = () => {
+  if (!b3.audBlob) return;
+  const id = $('aud3Id').value.trim() || 'unknown';
+  const fileName = id + '.ogg';
+  const found = findById(id);
+  let path = found ? found.path : 'assets/' + fileName;
+  const existing = findExistingPath(path);
+  if (existing && !confirm(`已存在 ${fileName}，是否替换？`)) return;
+  cacheSet(path, b3.audBlob, {
+    name: fileName, type: 'audio',
+    desc: b3.selectedDesc || '未知',
+    encrypted: false,
+  });
+  alert('已加入 zip');
+  renderCards();
+  setBottomView('cards');
+  setBoxView(box3, 'import');
+  b3.audBlob = null;
+};
+
+$('btnBackFont3').onclick = () => {
+  if (b3.fontUrl) { URL.revokeObjectURL(b3.fontUrl); b3.fontUrl = null; }
+  b3.fontBlob = null;
+  setBoxView(box3, 'import');
+};
+$('btnDeleteFont3').onclick = () => {
+  if (!confirm('确定要删除此文件吗？')) return;
+  if (b3.fontUrl) { URL.revokeObjectURL(b3.fontUrl); b3.fontUrl = null; }
+  b3.fontBlob = null;
+  setBoxView(box3, 'import');
+};
+$('btnAddFont3').onclick = () => {
+  if (!b3.fontBlob) return;
+  const id = $('font3Id').value.trim() || 'unknown';
+  const fileName = id + '.ttf';
+  const found = findById(id);
+  let path = found ? found.path : 'assets/' + fileName;
+  const existing = findExistingPath(path);
+  if (existing && !confirm(`已存在 ${fileName}，是否替换？`)) return;
+  cacheSet(path, b3.fontBlob, {
+    name: fileName, type: 'other',
+    desc: b3.selectedDesc || '未知',
+    encrypted: false,
+  });
+  alert('已加入 zip');
+  renderCards();
+  setBottomView('cards');
+  setBoxView(box3, 'import');
+  b3.fontBlob = null;
+};
+
+bindDrop($('drop3'), $('file3'), b3HandleFile);
+
+/* ============================================================
+   框4
+   ============================================================ */
+$('box4').onclick = () => {
+  const mask = document.createElement('div');
+  mask.className = 'modal-mask';
+  mask.innerHTML = `
+    <div class="modal" role="dialog" style="max-width:320px">
+      <div class="modal-head"><div class="modal-title">提示</div></div>
+      <div class="modal-body" style="text-align:center;font-size:13px;color:#5b6472;padding:24px 16px">
+        正在开发中
+      </div>
+      <div class="modal-foot" style="justify-content:center">
+        <button class="btn primary" data-ok>确定</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(mask);
+  mask.addEventListener('click', e => { if (e.target === mask) mask.remove(); });
+  mask.querySelector('[data-ok]').onclick = () => mask.remove();
+};
+
+/* ============================================================
+   底部栏
+   ============================================================ */
+const cardsScroll = $('cardsScroll');
+
+/* ★ 鼠标滚轮横向滚动卡片条 */
+cardsScroll.addEventListener('wheel', e => {
+  if (e.deltaY !== 0) {
+    e.preventDefault();
+    cardsScroll.scrollLeft += e.deltaY;
+  }
+}, { passive: false });
+
+async function renderCards() {
+  cardsScroll.innerHTML = '';
+  if (cache.size === 0) { setBottomView('import'); return; }
+  setBottomView('cards');
+  for (const [path, entry] of cache.entries()) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.title = path;
+    const thumb = document.createElement('div');
+    thumb.className = 'card-thumb';
+    const label = document.createElement('div');
+    label.className = 'card-label';
+    label.textContent = entry.name || stripExt(path);
+    card.appendChild(thumb);
+    card.appendChild(label);
+    card.onclick = () => openDetail(path);
+    cardsScroll.appendChild(card);
+
+    if (entry.type === 'image') {
+      const img = document.createElement('img');
+      thumb.appendChild(img);
+      renderThumb(path, entry, img);
+    } else if (entry.type === 'audio') {
+      thumb.innerHTML = '<span class="icon audio">♪</span>';
+    } else {
+      thumb.innerHTML = '<span class="icon">📄</span>';
+    }
+  }
+}
+
+async function renderThumb(path, entry, img) {
+  try {
+    if (entry.encrypted) {
+      await ensureZstd(true);
+      const raw = new Uint8Array(await entry.blob.arrayBuffer());
+      const dec = phiraDecrypt(raw);
+      const url = URL.createObjectURL(new Blob([dec], {type:'image/png'}));
+      img.onload = () => URL.revokeObjectURL(url);
+      img.src = url;
+    } else {
+      img.src = cacheGetUrl(path);
+    }
+  } catch(e) {
+    img.remove();
+    const icon = document.createElement('span');
+    icon.className = 'icon';
+    icon.textContent = '📄';
+    img.parentNode.appendChild(icon);
+  }
+}
+
+/* 详情 */
+let detailTmpUrl = null;
+function openDetail(path) {
+  const entry = cache.get(path);
+  if (!entry) return;
+  if (detailTmpUrl) { URL.revokeObjectURL(detailTmpUrl); detailTmpUrl = null; }
+
+  $('detailTitle').textContent = '文件详情 · ' + (entry.name || '');
+  $('detailName').textContent = entry.name || '—';
+  $('detailPath').textContent = path;
+  let desc = entry.desc || '—';
+  if (entry.name && entry.name.toLowerCase().endsWith('.char')) desc = makeCharDesc(entry.name);
+  $('detailDesc').textContent = desc;
+  $('detailDim').textContent = '—';
+  $('detailDimRow').hidden = false;
+  $('detailSize').textContent = formatSize(entry.blob.size);
+  $('detailPreview').innerHTML = '<span class="icon">…</span>';
+  $('detailPreview').style.alignItems = '';
+  $('detailView').hidden = false;
+
+  $('btnDetailDelete')._path = path;
+  $('btnDetailDownload')._path = path;
+
+  (async () => {
+    try {
+      let viewBlob, viewType;
+      if (entry.encrypted) {
+        await ensureZstd(true);
+        const raw = new Uint8Array(await entry.blob.arrayBuffer());
+        const dec = phiraDecrypt(raw);
+        viewBlob = new Blob([dec], { type: entry.type === 'audio' ? 'audio/mpeg' : 'image/png' });
+        viewType = entry.type;
+      } else {
+        viewBlob = entry.blob; viewType = entry.type;
+      }
+
+      const name = (entry.name || '').toLowerCase();
+
+      if (viewType === 'image') {
+        const url = URL.createObjectURL(viewBlob);
+        detailTmpUrl = url;
+        const img = document.createElement('img');
+        img.onload = () => {
+          $('detailDimRow').hidden = false;
+          $('detailDim').textContent = img.naturalWidth + ' × ' + img.naturalHeight;
+        };
+        img.src = url;
+        $('detailPreview').innerHTML = '';
+        $('detailPreview').appendChild(img);
+      } else if (viewType === 'audio') {
+        const url = URL.createObjectURL(viewBlob);
+        detailTmpUrl = url;
+        const au = document.createElement('audio');
+        au.controls = true;
+        $('detailPreview').innerHTML = '';
+        $('detailPreview').appendChild(au);
+        au.src = url;
+        au.onloadedmetadata = () => {
+          $('detailDimRow').hidden = false;
+          $('detailDim').textContent = fmtDuration(au.duration);
+        };
+        au.onerror = () => {
+          $('detailDimRow').hidden = false;
+          $('detailDim').textContent = '—';
+        };
+      } else if (name.endsWith('.ttf')) {
+        $('detailDimRow').hidden = true;
+        try {
+          const buf = await viewBlob.arrayBuffer();
+          const famName = 'detailfont_' + Date.now();
+          const ff = new FontFace(famName, buf);
+          await ff.load();
+          document.fonts.add(ff);
+          const wrap = document.createElement('div');
+          wrap.style.cssText = 'font-size:32px;line-height:1.5;text-align:center;word-break:break-all;color:#2b2f36;';
+          wrap.style.fontFamily = `'${famName}', sans-serif`;
+          wrap.textContent = (document.title || '预览文本') + ' Aa Bb 123';
+          $('detailPreview').innerHTML = '';
+          $('detailPreview').appendChild(wrap);
+        } catch(e) {
+          $('detailPreview').innerHTML = '<span class="icon">📄</span>';
+        }
+      } else {
+        $('detailDimRow').hidden = true;
+        if (name.endsWith('.txt') || name.endsWith('.json') || name.endsWith('.xml') ||
+            name.endsWith('.md') || name.endsWith('.log') || name.endsWith('.csv')) {
+          const text = await viewBlob.text();
+          const pre = document.createElement('pre');
+          pre.textContent = text;
+          $('detailPreview').innerHTML = '';
+          $('detailPreview').style.alignItems = 'flex-start';
+          $('detailPreview').appendChild(pre);
+        } else {
+          $('detailPreview').innerHTML = '<span class="icon">📄</span>';
+        }
+      }
+    } catch(e) {
+      $('detailPreview').innerHTML = '<span style="color:#d33;font-size:12px">预览失败</span>';
+    }
+  })();
+}
+function closeDetail() {
+  $('detailView').hidden = true;
+  if (detailTmpUrl) { URL.revokeObjectURL(detailTmpUrl); detailTmpUrl = null; }
+  const au = $('detailPreview').querySelector('audio');
+  if (au) { try { au.pause(); } catch(_){} }
+  $('detailPreview').innerHTML = '';
+  $('detailPreview').style.alignItems = '';
+}
+$('btnCloseDetail').onclick = closeDetail;
+$('btnDetailDelete').onclick = () => {
+  const path = $('btnDetailDelete')._path;
+  if (!path) return;
+  const entry = cache.get(path);
+  if (!confirm(`确定删除 ${entry ? entry.name : ''}？`)) return;
+  cacheDelete(path);
+  closeDetail();
+  if (cache.size === 0) setBottomView('import');
+  else renderCards();
+};
+$('btnDetailDownload').onclick = () => {
+  const path = $('btnDetailDownload')._path;
+  if (!path) return;
+  const entry = cache.get(path);
+  if (!entry) return;
+  if (entry.encrypted) {
+    const mask = document.createElement('div');
+    mask.className = 'modal-mask';
+    mask.innerHTML = `
+      <div class="modal" role="dialog" style="max-width:360px">
+        <div class="modal-head"><div class="modal-title">选择下载方式</div></div>
+        <div class="modal-body" style="text-align:center;color:#5b6472;font-size:13px">该文件为加密资源</div>
+        <div class="modal-foot" style="justify-content:center">
+          <button class="btn ghost" data-enc>下载加密原文</button>
+          <button class="btn primary" data-dec>下载解密原文</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(mask);
+    mask.addEventListener('click', e => { if (e.target === mask) mask.remove(); });
+    mask.querySelector('[data-enc]').onclick = () => { mask.remove(); download(entry.blob, entry.name); };
+    mask.querySelector('[data-dec]').onclick = async () => {
+      mask.remove();
+      try {
+        await ensureZstd(true);
+        const raw = new Uint8Array(await entry.blob.arrayBuffer());
+        const dec = phiraDecrypt(raw);
+        const isAudio = entry.type === 'audio';
+        const name = stripExt(entry.name) + (isAudio ? '.mp3' : '.png');
+        download(new Blob([dec], { type: isAudio ? 'audio/mpeg' : 'image/png' }), name);
+      } catch(e) { alert('解密失败：' + (e.message||e)); }
+    };
+  } else {
+    download(entry.blob, entry.name || 'file');
+  }
+};
+
+function formatSize(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+
+/* ============================================================
+   导出
+   ============================================================ */
+$('exportCard').onclick = () => openExportDialog();
+
+function openExportDialog() {
+  const mask = document.createElement('div');
+  mask.className = 'modal-mask';
+  mask.innerHTML = `
+    <div class="modal" role="dialog" style="max-width:400px">
+      <div class="modal-head"><div class="modal-title">请自行为安装包替换文件</div></div>
+      <div class="modal-body" style="text-align:center;color:#5b6472;font-size:13px;padding:24px 16px">选择导出方式</div>
+      <div class="modal-foot" style="justify-content:center">
+        <button class="btn ghost" data-apk>安装包打包</button>
+        <button class="btn primary" data-zip>直接导出 ZIP</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(mask);
+  mask.addEventListener('click', e => { if (e.target === mask) mask.remove(); });
+  mask.querySelector('[data-zip]').onclick = () => { mask.remove(); exportZipFlow(); };
+  mask.querySelector('[data-apk]').onclick = () => { mask.remove(); openPackageImport(); };
+}
+
+async function exportZipFlow() {
+  overlay(loadedLibs.zip ? '正在打包 ZIP…' : '正在下载打包库…');
+  try {
+    await ensureZip(loadedLibs.zip);
+    overlay('正在打包 ZIP…');
+    const blob = await buildZip(cache);
+    hideOverlay();
+    const name = await promptName('导出 ZIP', '');
+    if (name === null) return;
+    const finalName = name.trim() ? name.trim() + '.zip' : '_.zip';
+    download(blob, finalName);
+  } catch(e) { hideOverlay(); alert('打包失败：' + (e.message||e)); }
+}
+
+function promptName(title, def) {
+  return new Promise(resolve => {
+    const mask = document.createElement('div');
+    mask.className = 'modal-mask';
+    mask.innerHTML = `
+      <div class="modal" role="dialog" style="max-width:360px">
+        <div class="modal-head"><div class="modal-title">${title}</div></div>
+        <div class="modal-body">
+          <input type="text" class="slim" style="width:100%" placeholder="文件名（可留空）" value="${def}">
+        </div>
+        <div class="modal-foot">
+          <button class="btn ghost" data-cancel>取消</button>
+          <span class="spacer"></span>
+          <button class="btn primary" data-ok>确定</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(mask);
+    const input = mask.querySelector('input');
+    setTimeout(() => input.focus(), 30);
+    const ok = () => { mask.remove(); resolve(input.value); };
+    const cancel = () => { mask.remove(); resolve(null); };
+    mask.querySelector('[data-ok]').onclick = ok;
+    mask.querySelector('[data-cancel]').onclick = cancel;
+    mask.addEventListener('click', e => { if (e.target === mask) cancel(); });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') ok(); });
+  });
+}
+
+async function buildZip(map) {
+  const { ZipWriter, BlobWriter, Uint8ArrayReader } = await ensureZip(true);
+  const writer = new ZipWriter(new BlobWriter('application/zip'));
+  let i = 0, total = map.size;
+  for (const [path, entry] of map.entries()) {
+    const data = new Uint8Array(await entry.blob.arrayBuffer());
+    await writer.add(path, new Uint8ArrayReader(data), { level: 1 });
+    i++;
+    if (i % 5 === 0 || i === total) overlay(`正在打包 ZIP… ${i} / ${total}`);
+  }
+  return await writer.close();
+}
+
+/* 安装包替换 */
+function openPackageImport() {
+  const mask = document.createElement('div');
+  mask.className = 'modal-mask';
+  mask.innerHTML = `
+    <div class="modal" role="dialog" style="max-width:400px">
+      <div class="modal-head">
+        <div class="modal-title">导入安装包</div>
+        <span class="spacer"></span>
+        <button class="btn ghost" data-close>关闭</button>
+      </div>
+      <div class="modal-body" style="text-align:center">
+        <div class="dropzone" style="padding:20px;font-size:12px">
+          <div>拖入 .apk / .ipa / .zip</div>
+          <div class="sub">或点击选择单个文件</div>
+        </div>
+        <input type="file" accept=".apk,.ipa,.zip" hidden>
+        <div style="font-size:11.5px;color:#8b93a1;margin-top:8px">
+          没有安装包？前往 <a href="https://phira.domcken.top" target="_blank" rel="noopener" style="color:#4f8cff;text-decoration:underline">phira.domcken.top</a> 下载
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(mask);
+  const dz = mask.querySelector('.dropzone');
+  const inp = mask.querySelector('input');
+  ['dragenter','dragover'].forEach(t => dz.addEventListener(t, e => {
+    e.preventDefault(); e.stopPropagation(); dz.classList.add('over');
+  }));
+  ['dragleave','drop'].forEach(t => dz.addEventListener(t, e => {
+    e.preventDefault(); e.stopPropagation();
+    if (t === 'dragleave' && dz.contains(e.relatedTarget)) return;
+    dz.classList.remove('over');
+  }));
+  dz.addEventListener('click', () => inp.click());
+  dz.addEventListener('drop', e => {
+    const f = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) handlePackage(f);
+  });
+  inp.addEventListener('change', () => {
+    const f = inp.files && inp.files[0];
+    if (f) handlePackage(f);
+  });
+  mask.addEventListener('click', e => { if (e.target === mask) mask.remove(); });
+  mask.querySelector('[data-close]').onclick = () => mask.remove();
+
+  async function handlePackage(file) {
+    mask.remove();
+    const ext = extOf(file.name || '');
+    if (!['apk','ipa','zip'].includes(ext)) { alert('请导入 .apk / .ipa / .zip 文件'); return; }
+    overlay(loadedLibs.zip ? '正在准备…' : '正在下载打包库…');
+    try {
+      const resultBlob = await replaceInPackage(file, ext);
+      hideOverlay();
+      if (ext === 'apk') {
+        await showSignNotice('修改后的安装包需重新签名才能安装，请使用 <b>MT 管理器</b> 等工具处理签名。');
+      } else if (ext === 'ipa') {
+        await showSignNotice('修改后的安装包需重新签名才能安装，请使用 <b>爱思助手</b> 等工具处理签名。');
+      }
+      const base = stripExt(file.name || 'package');
+      const name = await promptName('导出安装包', base);
+      if (name === null) return;
+      const finalName = name.trim() ? name.trim() + '.' + ext : '_' + '.' + ext;
+      download(resultBlob, finalName);
+      showDoneBar();
+    } catch(e) {
+      hideOverlay();
+      console.error(e);
+      alert('替换失败：' + (e.message||e));
+    }
+  }
+}
+
+function showSignNotice(html) {
+  return new Promise(resolve => {
+    const mask = document.createElement('div');
+    mask.className = 'modal-mask';
+    mask.innerHTML = `
+      <div class="modal" role="dialog" style="max-width:400px">
+        <div class="modal-head"><div class="modal-title">⚠️ 签名提示</div></div>
+        <div class="modal-body" style="font-size:13px;line-height:1.6;color:#5b6472">${html}</div>
+        <div class="modal-foot" style="justify-content:center">
+          <button class="btn primary" data-ok>确认</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(mask);
+    mask.querySelector('[data-ok]').onclick = () => { mask.remove(); resolve(); };
+  });
+}
+
+async function replaceInPackage(file, ext) {
+  const { ZipReader, BlobReader, ZipWriter, BlobWriter, Uint8ArrayReader, Uint8ArrayWriter } = await ensureZip(true);
+  overlay('正在读取安装包…');
+  const reader = new ZipReader(new BlobReader(file));
+  const entries = await reader.getEntries();
+
+  const prefix = ext === 'ipa' ? 'Payload/Phira.app/' : '';
+  const fileEntries = entries.filter(e => !e.directory);
+  const dirEntries = entries.filter(e => e.directory);
+  const total = fileEntries.length;
+
+  const replaceMap = new Map();
+  const existingPaths = new Set(entries.map(e => e.filename));
+  for (const [cacheKey, entry] of cache.entries()) {
+    const target = prefix + cacheKey;
+    if (existingPaths.has(target)) replaceMap.set(target, entry);
+  }
+  const toAdd = [];
+  for (const [cacheKey, entry] of cache.entries()) {
+    const target = prefix + cacheKey;
+    if (!existingPaths.has(target)) toAdd.push([target, entry]);
+  }
+
+  const BATCH = 24;
+  const writer = new ZipWriter(new BlobWriter('application/zip'));
+
+  for (let i = 0; i < total; i += BATCH) {
+    const batch = fileEntries.slice(i, i + BATCH);
+    const results = await Promise.all(batch.map(async (e) => {
+      try {
+        if (replaceMap.has(e.filename)) {
+          const entry = replaceMap.get(e.filename);
+          const data = new Uint8Array(await entry.blob.arrayBuffer());
+          return { path: e.filename, data };
+        }
+        const data = await e.getData(new Uint8ArrayWriter());
+        return { path: e.filename, data };
+      } catch(err) {
+        console.warn('条目失败:', e.filename, err);
+        return null;
+      }
+    }));
+    for (const r of results) {
+      if (!r) continue;
+      await writer.add(r.path, new Uint8ArrayReader(r.data), { level: 1 });
+    }
+    overlay(`正在替换文件… ${Math.min(i+BATCH, total)} / ${total}`);
+  }
+
+  if (toAdd.length) {
+    let j = 0;
+    for (const [target, entry] of toAdd) {
+      const data = new Uint8Array(await entry.blob.arrayBuffer());
+      await writer.add(target, new Uint8ArrayReader(data), { level: 1 });
+      j++;
+      overlay(`正在写入新文件… ${j} / ${toAdd.length}`);
+    }
+  }
+  for (const e of dirEntries) {
+    try { await writer.add(e.filename, new Uint8ArrayReader(new Uint8Array(0)), { level: 0 }); } catch(_) {}
+  }
+
+  overlay('正在完成打包…');
+  await reader.close();
+  return await writer.close();
+}
+
+function showDoneBar() {
+  const mask = document.createElement('div');
+  mask.className = 'modal-mask';
+  mask.innerHTML = `
+    <div class="modal" role="dialog" style="max-width:400px">
+      <div class="modal-head"><div class="modal-title">已完成</div></div>
+      <div class="modal-body" style="text-align:center;font-size:13px;color:#5b6472">安装包已下载</div>
+      <div class="modal-foot" style="justify-content:center">
+        <button class="btn primary" data-finish>完成</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(mask);
+  mask.querySelector('[data-finish]').onclick = () => mask.remove();
+}
+
+/* ============================================================
+   zip 导入
+   ============================================================ */
+async function importZip(file) {
+  overlay(loadedLibs.zip ? '正在解压…' : '正在下载打包库…');
+  try {
+    await ensureZip(loadedLibs.zip);
+    overlay('正在解压…');
+    const { ZipReader, BlobReader, Uint8ArrayWriter } = zipMod;
+    const reader = new ZipReader(new BlobReader(file));
+    const entries = await reader.getEntries();
+
+    let hasEncrypted = false;
+    for (const e of entries) {
+      if (e.directory) continue;
+      const fn = e.filename.split('/').pop();
+      if (!isZipWhitelisted(fn)) continue;
+      const lower = fn.toLowerCase();
+      if (lower.endsWith('.char') || lower === 'bgm') { hasEncrypted = true; break; }
+    }
+    if (hasEncrypted && !loadedLibs.zstd) {
+      overlay('正在下载解密库…');
+      await ensureZstd(false);
+      overlay('正在解压…');
+    }
+
+    cacheClear();
+    for (const e of entries) {
+      if (e.directory) continue;
+      const fileName = e.filename.split('/').pop();
+      if (!isZipWhitelisted(fileName)) continue;
+      const match = matchAsset(fileName);
+      const data = await e.getData(new Uint8ArrayWriter());
+      const blobType = match.type === 'audio' ? 'audio/mpeg' :
+                       match.type === 'image' ? 'image/png' : 'application/octet-stream';
+      const blob = new Blob([data], { type: blobType });
+      if (cache.has(match.path)) continue;
+      cacheSet(match.path, blob, {
+        name: fileName, type: match.type,
+        desc: match.desc || '', encrypted: !!match.encrypted,
+      });
+    }
+    await reader.close();
+    hideOverlay();
+    renderCards();
+  } catch(e) {
+    hideOverlay();
+    alert('zip 导入失败：' + (e.message||e));
+  }
+}
+bindDrop($('dropZip'), $('fileZip'), importZip);
+$('importZipBtn').onclick = () => $('fileZip2').click();
+$('fileZip2').addEventListener('change', () => {
+  const f = $('fileZip2').files && $('fileZip2').files[0];
+  if (f) importZip(f);
+  $('fileZip2').value = '';
+});
+
+/* ============================================================
+   尺寸变化
+   ============================================================ */
+let rzT = null;
+window.addEventListener('resize', () => {
+  clearTimeout(rzT);
+  rzT = setTimeout(() => {
+    if (!box1.querySelector('[data-view="crop"]').hidden) b1Measure(true);
+    if (!box2.querySelector('[data-view="crop"]').hidden) b2Measure(true);
+  }, 100);
+});
+window.addEventListener('orientationchange', () => setTimeout(() => {
+  if (!box1.querySelector('[data-view="crop"]').hidden) b1Measure(true);
+  if (!box2.querySelector('[data-view="crop"]').hidden) b2Measure(true);
+}, 220));
+
+setBoxView(box1, 'import');
+setBoxView(box2, 'import');
+setBoxView(box3, 'import');
+setBottomView('import');
+</script>
+</body>
+</html>
