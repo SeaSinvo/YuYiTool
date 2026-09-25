@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YuYiTool-β0.1</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: #000;
+        color: #fff;
+        position: relative;
+    }
+
+    /* ===== 层 0：模糊背景图 ===== */
+    #bgImage {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: blur(30px);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        z-index: 0;
+        pointer-events: none;
+    }
+    #bgImage.show { opacity: 1; }
+
+    /* ===== 层 1：WebGL 网格 ===== */
+    #gl {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* ===== 层 2：内容 ===== */
+    .box-wrap {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .box {
+        background: rgba(38, 46, 62, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 80px 120px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: 8px;
+        color: #9cd8e5;
+    }
+</style>
+</head>
+<body>
+
+<!-- 层 0：背景图 -->
+<img id="bgImage" alt="">
+
+<!-- 层 1：WebGL 网格 -->
+<canvas id="gl"></canvas>
+
+<!-- 层 2：内容 -->
+<div class="box-wrap">
+    <div class="box">测试网页</div>
+</div>
+
+<script>
+/* ============================================================
+ * 1. 背景图加载：IndexedDB 优先 → Gitee API 兜底 → 自动缓存
+ * ============================================================ */
+(function(){
+    var OWNER    = 'seasinvo';
+    var REPO     = 'YuYiTool';
+    var REF      = 'main';
+    var IMG_PATH = '工具箱/background.jpg';
+
+    var DB_NAME    = 'yuyi_cache';
+    var DB_VERSION = 1;
+    var STORE      = 'files';
+    var IMG_KEY    = 'background.jpg';
+
+    var imgEl = document.getElementById('bgImage');
+
+    function openDB() {
+        return new Promise(function(resolve, reject){
+            var req = indexedDB.open(DB_NAME, DB_VERSION);
+            req.onupgradeneeded = function(e){
+                var db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE)) {
+                    db.createObjectStore(STORE);
+                }
+            };
+            req.onsuccess = function(){ resolve(req.result); };
+            req.onerror   = function(){ reject(req.error); };
+        });
+    }
+
+    function idbGet(key) {
+        return openDB().then(function(db){
+            return new Promise(function(resolve, reject){
+                var tx  = db.transaction(STORE, 'readonly');
+                var req = tx.objectStore(STORE).get(key);
+                req.onsuccess = function(){ resolve(req.result); };
+                req.onerror   = function(){ reject(req.error); };
+            });
+        });
+    }
+
+    function idbPut(key, value) {
+        return openDB().then(function(db){
+            return new Promise(function(resolve, reject){
+                var tx  = db.transaction(STORE, 'readwrite');
+                tx.objectStore(STORE).put(value, key);
+                tx.oncomplete = function(){ resolve(true); };
+                tx.onerror    = function(){ reject(tx.error); };
+            });
+        });
+    }
+
+    function base64ToBytes(b64) {
+        var binary = atob(b64.replace(/\n/g, ''));
+        var bytes  = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return bytes;
+    }
+
+    function renderImage(buffer) {
+        var blob = new Blob([buffer], { type: 'image/jpeg' });
+        var url  = URL.createObjectURL(blob);
+        imgEl.onload = function(){
+            imgEl.classList.add('show');
+        };
+        imgEl.src = url;
+    }
+
+    async function fetchFromGitee() {
+        var apiUrl = 'https://gitee.com/api/v5/repos/' + OWNER + '/' + REPO
+                   + '/contents/' + encodeURIComponent(IMG_PATH) + '?ref=' + REF;
+
+        var res = await fetch(apiUrl, { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+
+        var json = await res.json();
+        if (!json.content) throw new Error('返回内容缺少 content 字段');
+
+        var bytes  = base64ToBytes(json.content);
+        var buffer = bytes.buffer;
+
+        idbPut(IMG_KEY, buffer).catch(function(e){
+            console.warn('写入 IndexedDB 失败（不影响显示）：', e);
+        });
+
+        return buffer;
+    }
+
+    async function init() {
+        try {
+            var cached = await idbGet(IMG_KEY);
+            if (cached) {
+                renderImage(cached);
+                return;
+            }
+        } catch (e) {
+            console.warn('IndexedDB 读取失败：', e);
+        }
+
+        try {
+            var buffer = await fetchFromGitee();
+            renderImage(buffer);
+        } catch (e) {
+            console.error('背景图加载失败：', e);
+        }
+    }
+
+    init();
+})();
+
+
+/* ============================================================
+ * 2. WebGL 三角形网格 + 鱼眼 + 扫描亮带
+ * ============================================================ */
+(function(){
+    var canvas = document.getElementById('gl');
+    var gl = canvas.getContext('webgl', {
+        antialias: false,
+        depth: false,
+        alpha: true,
+        premultipliedAlpha: false
+    });
+    if (!gl) { console.error('WebGL 不可用'); return; }
+
+    gl.getExtension('OES_standard_derivatives');
+
+    var VS = [
+        'attribute vec2 a_pos;',
+        'void main() { gl_Position = vec4(a_pos, 0.0, 1.0); }'
+    ].join('\n');
+
+    var FS = [
+        '#extension GL_OES_standard_derivatives : enable',
+        'precision mediump float;',
+        '',
+        'uniform vec2  u_res;',
+        'uniform float u_h;',
+        'uniform float u_lineWidth;',
+        'uniform float u_waveWidth;',
+        'uniform float u_strength;',
+        'uniform float u_yCenter;',
+        '',
+        'const float SQRT3 = 1.7320508;',
+        '',
+        'vec2 fisheye(vec2 p, float k) {',
+        '    float r2 = dot(p, p);',
+        '    return p * (1.0 - k * r2);',
+        '}',
+        '',
+        'void main() {',
+        '    float minRes = min(u_res.x, u_res.y);',
+        '    vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / (minRes * 0.5);',
+        '    vec2 q = fisheye(p, u_strength);',
+        '    vec2 g = q * (minRes / (2.0 * u_h));',
+        '',
+        '    float d1 = abs(g.y - floor(g.y + 0.5));',
+        '    float u  = g.y - SQRT3 * g.x;',
+        '    float d2 = abs(u - 2.0 * floor(u * 0.5 + 0.5));',
+        '    float v  = g.y + SQRT3 * g.x;',
+        '    float d3 = abs(v - 2.0 * floor(v * 0.5 + 0.5));',
+        '    float d  = min(min(d1, d2), d3);',
+        '',
+        '    float aa    = fwidth(d);',
+        '    float halfW = u_lineWidth / (2.0 * u_h);',
+        '    float lineAlpha = 1.0 - smoothstep(halfW, halfW + 2.0 * aa, d);',
+        '',
+        '    float bandAlpha = exp(-pow((p.y - u_yCenter) / u_waveWidth, 2.0));',
+        '',
+        '    float a = lineAlpha * bandAlpha;',
+        '    vec3 col = vec3(0.898, 0.933, 1.0);',
+        '    gl_FragColor = vec4(col * a, a);',
+        '}'
+    ].join('\n');
+
+    function compile(type, src) {
+        var s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+            console.error('Shader 编译失败:', gl.getShaderInfoLog(s));
+            return null;
+        }
+        return s;
+    }
+
+    var vs = compile(gl.VERTEX_SHADER, VS);
+    var fs = compile(gl.FRAGMENT_SHADER, FS);
+    if (!vs || !fs) return;
+
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        console.error('Program 链接失败:', gl.getProgramInfoLog(prog));
+        return;
+    }
+    gl.useProgram(prog);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        -1, -1,   1, -1,  -1, 1,
+        -1,  1,   1, -1,   1, 1
+    ]), gl.STATIC_DRAW);
+
+    var aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.clearColor(0, 0, 0, 0);
+
+    var U = {
+        res:       gl.getUniformLocation(prog, 'u_res'),
+        h:         gl.getUniformLocation(prog, 'u_h'),
+        lineWidth: gl.getUniformLocation(prog, 'u_lineWidth'),
+        waveWidth: gl.getUniformLocation(prog, 'u_waveWidth'),
+        strength:  gl.getUniformLocation(prog, 'u_strength'),
+        yCenter:   gl.getUniformLocation(prog, 'u_yCenter')
+    };
+
+    // ---- 定稿参数 ----
+    var TRI_HEIGHT = 160;
+    var LINE_WIDTH = 4;
+    var PERIOD     = 12;
+    var WAVE_WIDTH = 0.7;
+    var STRENGTH   = 0.05;   // ★ 鱼眼强度
+    var Y_RANGE    = 4;
+
+    function resize() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var w = Math.floor(window.innerWidth  * dpr);
+        var h = Math.floor(window.innerHeight * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+            canvas.width  = w;
+            canvas.height = h;
+            gl.viewport(0, 0, w, h);
+        }
+    }
+
+    var startTime = performance.now();
+
+    function frame() {
+        resize();
+
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        var t = ((performance.now() - startTime) / 1000 / PERIOD) % 2;
+        var tri = t < 1 ? t : 2 - t;
+        var yCenter = -Y_RANGE + 2 * Y_RANGE * tri;
+
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.uniform2f(U.res, canvas.width, canvas.height);
+        gl.uniform1f(U.h,         TRI_HEIGHT * dpr);
+        gl.uniform1f(U.lineWidth, LINE_WIDTH * dpr);
+        gl.uniform1f(U.waveWidth, WAVE_WIDTH);
+        gl.uniform1f(U.strength,  STRENGTH);
+        gl.uniform1f(U.yCenter,   yCenter);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
