@@ -5,18 +5,8 @@
   "4KCCN": [
     "jszip"
   ],
-  "PRSL": [
-    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js",
-    "https://cdn.jsdelivr.net/npm/@breezystack/lamejs@1.2.7/+esm",
-    "https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.45/+esm",
-    "https://cdn.jsdelivr.net/npm/libvorbis.js@1.3.7/lib/libvorbis.js"
-  ],
-  "PRSLN": [
-    "@bokuweb/zstd-wasm",
-    "@breezystack/lamejs",
-    "@zip.js/zip.js",
-    "libvorbis.js"
-  ],
+  "PRSL": [],
+  "PRSLN": [],
   "misc": [
     "文本画生成器",
     "Phira自助加密文件工具"
@@ -24,21 +14,17 @@
   "other0": [
     "https://cdn.jsdelivr.net/npm/omggif@1.0.10/omggif.js",
     "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js",
-    "https://cdn.jsdelivr.net/npm/mp4box@0.5.2/dist/mp4box.all.min.js",
-    "https://unpkg.com/h264-mp4-encoder/embuild/dist/h264-mp4-encoder.web.js"
+    "https://cdn.jsdelivr.net/npm/mp4box@0.5.2/dist/mp4box.all.min.js"
   ],
   "other0N": [
     "omggif",
     "jszip",
-    "mp4box",
-    "h264-mp4-encoder"
+    "mp4box"
   ],
   "other1": [
-    "https://esm.sh/zstdify",
     "https://cdn.jsdelivr.net/npm/fzstd@0.1.1/umd/index.js"
   ],
   "other1N": [
-    "zstdify",
     "fzstd"
   ]
 }
