@@ -34,9 +34,11 @@
     "h264-mp4-encoder"
   ],
   "other1": [
-    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js"
+    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js",
+    "https://cdn.jsdelivr.net/npm/fzstd@0.1.1/+esm"
   ],
   "other1N": [
-    "@bokuweb/zstd-wasm"
+    "@bokuweb/zstd-wasm",
+    "fzstd"
   ]
 }
