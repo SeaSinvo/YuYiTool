@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YuYiTool-β0.2</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #000;
+    color: #e0e0e0;
+    position: relative;
+}
+
+#bgImage {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: blur(30px);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 0;
+    pointer-events: none;
+}
+#bgImage.show { opacity: 1; }
+#gl {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    display: block;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.float-btn {
+    position: fixed;
+    left: 16px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: rgba(38, 46, 62, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #9cd8e5;
+    font-size: 18px;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+.float-btn:hover {
+    background: rgba(48, 58, 78, 0.95);
+    border-color: rgba(156, 216, 229, 0.4);
+}
+.float-btn:active { transform: scale(0.92); }
+#refreshBtn { top: 16px; }
+#backHomeBtn { top: 66px; }
+#menuBtn { top: 116px; }
+
+#pagesContainer {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 24px;
+}
+.app-box {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    height: min(86vh, calc((100vw - 48px) * 16 / 9));
+    background: rgba(38, 46, 62, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+.page { position: absolute; inset: 0; display: none; flex-direction: column; }
+.page.active { display: flex; }
+
+#page-home.active {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+    padding: 8px;
+}
+.row-top { display: flex; gap: 8px; }
+.row-bottom { display: flex; gap: 8px; }
+.quad {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; cursor: pointer; transition: all 0.2s; padding: 16px;
+    position: relative;
+    border: 1px solid rgba(156, 216, 229, 0.2);
+    background: rgba(255, 255, 255, 0.02);
+}
+.quad:hover {
+    border-color: rgba(156, 216, 229, 0.5);
+    background: rgba(156, 216, 229, 0.06);
+}
+.quad:active { background: rgba(156, 216, 229, 0.1); transform: scale(0.98); }
+.quad-top { flex: 1; }
+.quad-bottom-left { flex: 0 0 50%; }
+.quad-bottom-mid { flex: 1; }
+.quad-bottom-right { flex: 1; }
+.quad-icon {
+    max-width: 70%; max-height: 60%; width: 250%; height: 250%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    pointer-events: none;
+}
+.quad-icon-text { font-size: var(--icon-text-size, 56px); line-height: 1; pointer-events: none; }
+.quad-label {
+    font-size: 13px; color: #d0d8e0; letter-spacing: 0.5px;
+    text-align: center; pointer-events: none;
+}
+
+.page-header {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.page-title { font-size: 15px; font-weight: 600; color: #e0e0e0; letter-spacing: 0.5px; }
+.page-header-btns { display: flex; gap: 8px; }
+.page-body {
+    flex: 1; overflow-y: auto; padding: 12px 16px;
+    display: flex; flex-direction: column; gap: 8px;
+}
+.page-body::-webkit-scrollbar { width: 4px; }
+.page-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+.page-footer {
+    flex-shrink: 0;
+    display: flex; justify-content: space-between;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    gap: 8px;
+}
+
+button {
+    padding: 8px 16px;
+    background: #9cd8e5; color: #000;
+    border: none; font-size: 13px; font-family: inherit;
+    font-weight: 500; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 0.3px;
+}
+button:hover { background: #aae6f2; }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+button.secondary {
+    background: transparent; color: #a0a8b0;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+button.secondary:hover {
+    color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.version-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: pointer; transition: all 0.2s; font-size: 13px;
+}
+.version-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(156, 216, 229, 0.3);
+}
+.version-item.selected {
+    background: rgba(156, 216, 229, 0.08);
+    border-color: #9cd8e5;
+}
+.version-item input { accent-color: #9cd8e5; cursor: pointer; }
+.version-item .tag { margin-left: auto; font-size: 11px; color: #6a7a8a; }
+
+.settings-item {
+    display: block; width: 100%; padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    text-align: left; font-size: 14px; cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+.settings-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(156, 216, 229, 0.3);
+    color: #9cd8e5;
+}
+
+.misc-tool-btn {
+    display: block; width: 100%; padding: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    color: #e0e0e0;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    text-align: left; font-size: 14px; cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 6px;
+    font-family: inherit;
+}
+.misc-tool-btn:hover {
+    background: rgba(156, 216, 229, 0.08);
+    border-color: #9cd8e5;
+}
+.misc-tool-btn.selected {
+    background: rgba(156, 216, 229, 0.12);
+    border-color: #9cd8e5;
+}
+
+#toolFullscreen {
+    position: fixed; inset: 0;
+    display: none; z-index: 50; background: #000;
+}
+#toolFullscreen.active { display: block; }
+#toolFrame { width: 100%; height: 100%; border: none; background: #fff; }
+
+.dialog-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+    z-index: 200; padding: 24px;
+}
+.dialog-overlay.active { display: flex; }
+
+.dialog-content {
+    width: var(--app-box-w, 400px);
+    max-width: calc(100vw - 48px);
+    height: var(--app-box-h, 700px);
+    max-height: calc(100vh - 48px);
+    background: rgba(38, 46, 62, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+}
+.dialog-header {
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.dialog-title { font-size: 15px; font-weight: 600; color: #e0e0e0; }
+.dialog-close {
+    background: none; color: #a0a8b0;
+    font-size: 20px; padding: 0 8px;
+    line-height: 1; cursor: pointer;
+    font-family: inherit;
+}
+.dialog-close:hover { color: #ff8a8a; background: none; }
+.dialog-body {
+    flex: 1; overflow-y: auto; padding: 12px 16px;
+}
+.dialog-body::-webkit-scrollbar { width: 4px; }
+.dialog-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+.dialog-log {
+    flex-shrink: 0; max-height: 30%; overflow-y: auto;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    font-family: monospace; font-size: 12px;
+    color: #a0a8b0; white-space: pre-wrap;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    min-height: 60px;
+}
+.dialog-log::-webkit-scrollbar { width: 4px; }
+.dialog-log::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+.dialog-footer {
+    flex-shrink: 0;
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.dialog-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 12.5px; cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 4px;
+}
+.dialog-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(156, 216, 229, 0.3);
+}
+.dialog-item.selected {
+    background: rgba(156, 216, 229, 0.08);
+    border-color: #9cd8e5;
+}
+.dialog-item input { accent-color: #9cd8e5; cursor: pointer; }
+.dialog-item .tag { margin-left: auto; font-size: 10.5px; color: #6a7a8a; }
+.dialog-item.disabled { opacity: 0.4; cursor: not-allowed; }
+.dialog-item.disabled input { cursor: not-allowed; }
+
+/* ★ 消息弹窗：描述在上，按钮在下右 */
+.msg-dialog {
+    width: var(--app-box-w, 400px);
+    max-width: calc(100vw - 48px);
+    background: rgba(38, 46, 62, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: msgIn 0.18s ease-out;
+}
+@keyframes msgIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+.msg-text {
+    font-size: 13.5px;
+    color: #e0e0e0;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.msg-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-self: flex-end;
+}
+.msg-actions button {
+    padding: 6px 18px;
+    font-size: 13px;
+}
+
+.readme-content {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 12.5px; color: #d0d8e0;
+    line-height: 1.7; white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.link-item {
+    display: block; padding: 12px 14px;
+    margin-bottom: 6px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #9cd8e5; text-decoration: none;
+    font-size: 13px; transition: all 0.2s;
+}
+.link-item:hover {
+    background: rgba(156, 216, 229, 0.08);
+    border-color: #9cd8e5;
+}
+.link-item .link-label {
+    color: #a0a8b0; font-size: 11px;
+    display: block; margin-bottom: 3px;
+}
+
+.idb-tree-folder {
+    display: flex; align-items: center; gap: 6px;
+    padding: 4px 8px;
+    font-size: 12.5px; color: #9cd8e5;
+    user-select: none;
+}
+.idb-tree-folder .arrow {
+    display: inline-block; width: 10px;
+    font-size: 9px; color: #6a7a8a;
+    cursor: pointer;
+}
+.idb-tree-folder .folder-name { cursor: pointer; }
+.idb-tree-folder:hover { background: rgba(255,255,255,0.04); }
+.idb-tree-children { padding-left: 18px; }
+.idb-tree-children.hidden { display: none; }
+.idb-tree-leaf {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 8px;
+    font-size: 12px; color: #a0a8b0;
+    cursor: pointer;
+}
+.idb-tree-leaf:hover { background: rgba(255,255,255,0.03); }
+.idb-tree-leaf input { accent-color: #9cd8e5; cursor: pointer; width: 13px; height: 13px; }
+.idb-tree-leaf .leaf-name { flex: 1; word-break: break-all; }
+.idb-tree-leaf .leaf-size { color: #6a7a8a; font-size: 10.5px; }
+.idb-tree-leaf.disabled { opacity: 0.4; cursor: not-allowed; }
+.idb-tree-leaf.disabled input { cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<img id="bgImage" alt="">
+<canvas id="gl"></canvas>
+
+<button class="float-btn" id="refreshBtn" title="刷新">↻</button>
+<button class="float-btn" id="backHomeBtn" title="返回工具箱主页">←</button>
+<button class="float-btn" id="menuBtn" title="菜单">≡</button>
+
+<div id="pagesContainer">
+    <div class="app-box">
+
+        <div class="page active" id="page-home">
+            <div class="row-top">
+                <div class="quad quad-top" id="quad4kcc">
+                    <img class="quad-icon" id="icon4kcc" alt="">
+                    <div class="quad-label">打开4KCC</div>
+                </div>
+            </div>
+            <div class="row-bottom">
+                <div class="quad quad-bottom-left" id="quadPrsl">
+                    <img class="quad-icon" id="iconPrsl" alt="">
+                    <div class="quad-label">打开PRSL</div>
+                </div>
+                <div class="quad quad-bottom-mid" id="quadMisc">
+                    <div class="quad-icon-text">🌐</div>
+                    <div class="quad-label">杂项工具</div>
+                </div>
+                <div class="quad quad-bottom-right" id="quadSettings">
+                    <div class="quad-icon-text">⚙</div>
+                    <div class="quad-label">设置</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page-versions">
+            <div class="page-header">
+                <div class="page-title" id="versionsTitle">版本选择</div>
+                <div class="page-header-btns">
+                    <button id="checkUpdateBtn" class="secondary">检查更新</button>
+                    <button id="getLibBtn" class="secondary">获取Lib</button>
+                </div>
+            </div>
+            <div class="page-body" id="versionsList"></div>
+            <div class="page-footer">
+                <button id="versionsBackBtn" class="secondary">返回</button>
+                <button id="versionsOpenBtn">进入该版本</button>
+            </div>
+        </div>
+
+        <div class="page" id="page-misc">
+            <div class="page-header">
+                <div class="page-title">杂项工具</div>
+                <div class="page-header-btns">
+                    <button id="getMiscBtn" class="secondary">获取杂项工具</button>
+                </div>
+            </div>
+            <div class="page-body" id="miscBody"></div>
+            <div class="page-footer">
+                <button id="miscBackBtn" class="secondary">返回</button>
+            </div>
+        </div>
+
+        <div class="page" id="page-misc-tool">
+            <div class="page-header">
+                <div class="page-title" id="miscToolTitle">工具</div>
+                <div class="page-header-btns">
+                    <button id="miscToolGetLibBtn" class="secondary">获取Lib</button>
+                </div>
+            </div>
+            <div class="page-body" id="miscToolVersionsList"></div>
+            <div class="page-footer">
+                <button id="miscToolBackBtn" class="secondary">返回</button>
+                <button id="miscToolOpenBtn">打开该版本</button>
+            </div>
+        </div>
+
+        <div class="page" id="page-settings">
+            <div class="page-header">
+                <div class="page-title">设置</div>
+            </div>
+            <div class="page-body">
+                <button class="settings-item" id="settingsSource">选择下载源</button>
+                <button class="settings-item" id="settingsIdb">管理 IDB</button>
+                <button class="settings-item" id="settingsLinks">相关链接</button>
+                <button class="settings-item" id="settingsReadme">阅读更新日志</button>
+                <button class="settings-item" id="settingsSnapshot">预览YuYiTool最新快照</button>
+            </div>
+            <div class="page-footer">
+                <button id="settingsBackBtn" class="secondary">返回</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="toolFullscreen">
+    <iframe id="toolFrame"></iframe>
+</div>
+
+<div class="dialog-overlay" id="dlgUpdate">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <div class="dialog-title">可用版本</div>
+            <button class="dialog-close" data-close="dlgUpdate">×</button>
+        </div>
+        <div class="dialog-body" id="dlgUpdateList"></div>
+        <div class="dialog-log" id="dlgUpdateLog"></div>
+        <div class="dialog-footer">
+            <button id="dlgUpdateDownload">下载该版本</button>
+            <button class="secondary" data-close="dlgUpdate">关闭</button>
+        </div>
+    </div>
+</div>
+
+<div class="dialog-overlay" id="dlgLib">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <div class="dialog-title">获取 Lib</div>
+            <button class="dialog-close" data-close="dlgLib">×</button>
+        </div>
+        <div class="dialog-body" id="dlgLibList"></div>
+        <div class="dialog-footer">
+            <button id="dlgLibDownload">下载</button>
+            <button class="secondary" data-close="dlgLib">关闭</button>
+        </div>
+    </div>
+</div>
+
+<div class="dialog-overlay" id="dlgMisc">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <div class="dialog-title" id="dlgMiscTitle">获取杂项工具</div>
+            <button class="dialog-close" data-close="dlgMisc">×</button>
+        </div>
+        <div class="dialog-body" id="dlgMiscBody"></div>
+        <div class="dialog-footer" id="dlgMiscFooter"></div>
+    </div>
+</div>
+
+<div class="dialog-overlay" id="dlgSource">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <div class="dialog-title">选择下载源</div>
+            <button class="dialog-close" data-close="dlgSource">×</button>
+        </div>
+        <div class="dialog-body">
+            <label class="dialog-item" style="cursor:pointer;">
+                <input type="radio" name="sourceRadio" value="gitee">
+                <span>Gitee</span>
+            </label>
+            <label class="dialog-item" style="cursor:pointer;">
+                <input type="radio" name="sourceRadio" value="github">
+                <span>GitHub</span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="dialog-overlay" id="dlgIdb">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <div class="dialog-title">管理 IDB</div>
+            <button class="dialog-close" data-close="dlgIdb">×</button>
+        </div>
+        <div class="dialog-body" id="dlgIdbList"></div>
+        <div class="dialog-footer">
+            <button id="dlgIdbDelete">删除所选</button>
+            <button class="secondary" data-close="dlgIdb">关闭</button>
+        </div>
+    </div>
+</div>
+
+<div class="dialog-overlay" id="dlgLinks">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <div class="dialog-title">相关链接</div>
+            <button class="dialog-close" data-close="dlgLinks">×</button>
+        </div>
+        <div class="dialog-body" id="dlgLinksList"></div>
+        <div class="dialog-footer">
+            <button class="secondary" data-close="dlgLinks">关闭</button>
+        </div>
+    </div>
+</div>
+
+<div class="dialog-overlay" id="dlgReadme">
+    <div class="dialog-content">
+        <div class="dialog-header">
+            <div class="dialog-title">更新日志</div>
+            <button class="dialog-close" data-close="dlgReadme">×</button>
+        </div>
+        <div class="dialog-body">
+            <div class="readme-content" id="dlgReadmeContent"></div>
+        </div>
+        <div class="dialog-footer">
+            <button class="secondary" data-close="dlgReadme">关闭</button>
+        </div>
+    </div>
+</div>
+
+<div class="dialog-overlay" id="dlgMsg">
+    <div class="msg-dialog">
+        <div class="msg-text" id="dlgMsgText"></div>
+        <div class="msg-actions" id="dlgMsgActions"></div>
+    </div>
+</div>
+
+<script>
+/* ============================================================
+ * ★ 最前面：页面导航（避免被后续代码阻断）
+ * ============================================================ */
+var currentLayer = 'home';
+
+function showPage(id) {
+    var pages = document.querySelectorAll('.page');
+    for (var i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('active');
+    }
+    var el = document.getElementById('page-' + id);
+    if (el) el.classList.add('active');
+}
+
+function setLayer(layer) {
+    currentLayer = layer;
+}
+
+/* ============================================================
+ * 配置
+ * ============================================================ */
+var OWNER = 'seasinvo';
+var REPO = 'YuYiTool';
+var REF = 'main';
+var TIMEOUT_MS = 10000;
+
+var GITEE_API_PREFIX = 'https://gitee.com/api/v5/repos/' + OWNER + '/' + REPO + '/contents/';
+var GITHUB_RAW_PREFIX = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/' + REF + '/';
+
+var DB_NAME = 'YuYiTool_Launcher';
+var DB_VER = 1;
+var STORE_FILES = 'files';
+var STORE_META = 'meta';
+var INFO_KEY = 'info.json';
+
+var CURRENT_VERSION = 'β0.2';
+var SNAPSHOT_URL = 'https://www.bilibili.com/video/BV1fEy8BoEbj';
+
+/* ============================================================
+ * 弹窗宽度同步
+ * ============================================================ */
+function syncDialogSize() {
+    var box = document.querySelector('.app-box');
+    if (!box) return;
+    var rect = box.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+        document.documentElement.style.setProperty('--app-box-w', rect.width + 'px');
+        document.documentElement.style.setProperty('--app-box-h', rect.height + 'px');
+        var iconSize = Math.min(56, rect.height * 0.04);
+        document.documentElement.style.setProperty('--icon-text-size', iconSize + 'px');
+    }
+}
+window.addEventListener('resize', syncDialogSize);
+
+/* ============================================================
+ * IndexedDB
+ * ============================================================ */
+function openDB() {
+    return new Promise(function(resolve, reject){
+        var req = indexedDB.open(DB_NAME, DB_VER);
+        req.onupgradeneeded = function(e){
+            var db = e.target.result;
+            if (!db.objectStoreNames.contains(STORE_FILES)) db.createObjectStore(STORE_FILES);
+            if (!db.objectStoreNames.contains(STORE_META)) db.createObjectStore(STORE_META);
+        };
+        req.onsuccess = function(){ resolve(req.result); };
+        req.onerror = function(){ reject(req.error); };
+    });
+}
+function idbGet(store, key) {
+    return openDB().then(function(db){
+        return new Promise(function(resolve, reject){
+            var tx = db.transaction(store, 'readonly');
+            var req = tx.objectStore(store).get(key);
+            req.onsuccess = function(){ resolve(req.result); };
+            req.onerror = function(){ reject(req.error); };
+        });
+    });
+}
+function idbSet(store, key, value) {
+    return openDB().then(function(db){
+        return new Promise(function(resolve, reject){
+            var tx = db.transaction(store, 'readwrite');
+            tx.objectStore(store).put(value, key);
+            tx.oncomplete = function(){ resolve(); };
+            tx.onerror = function(){ reject(tx.error); };
+        });
+    });
+}
+function idbKeys(store) {
+    return openDB().then(function(db){
+        return new Promise(function(resolve, reject){
+            var tx = db.transaction(store, 'readonly');
+            var req = tx.objectStore(store).getAllKeys();
+            req.onsuccess = function(){ resolve(req.result); };
+            req.onerror = function(){ reject(req.error); };
+        });
+    });
+}
+function idbDeleteMany(store, keys) {
+    return openDB().then(function(db){
+        return new Promise(function(resolve, reject){
+            var tx = db.transaction(store, 'readwrite');
+            var s = tx.objectStore(store);
+            keys.forEach(function(k){ s.delete(k); });
+            tx.oncomplete = function(){ resolve(); };
+            tx.onerror = function(){ reject(tx.error); };
+        });
+    });
+}
+
+/* ============================================================
+ * info.json
+ * ============================================================ */
+function getInfo() {
+    return idbGet(STORE_META, INFO_KEY).then(function(info){
+        if (!info) {
+            info = { source: 'gitee' };
+            return idbSet(STORE_META, INFO_KEY, info).then(function(){ return info; });
+        }
+        return info;
+    });
+}
+function saveInfo(info) { return idbSet(STORE_META, INFO_KEY, info); }
+function getSource() {
+    return getInfo().then(function(info){ return info.source || 'gitee'; });
+}
+function getToolCheckTime(toolName) {
+    return getInfo().then(function(info){
+        return (info.tools && info.tools[toolName] && info.tools[toolName].lastCheckTime) || 0;
+    });
+}
+function setToolCheckTime(toolName, time) {
+    return getInfo().then(function(info){
+        if (!info.tools) info.tools = {};
+        if (!info.tools[toolName]) info.tools[toolName] = {};
+        info.tools[toolName].lastCheckTime = time;
+        return saveInfo(info);
+    });
+}
+
+/* ============================================================
+ * 工具函数
+ * ============================================================ */
+function encodePath(p) {
+    return p.split('/').map(encodeURIComponent).join('/');
+}
+function base64DecodeUnicode(b64) {
+    var binary = atob(b64.replace(/\n/g, ''));
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new TextDecoder('utf-8').decode(bytes);
+}
+function parseVersion(v) {
+    var prefix = v[0];
+    var nums = v.slice(1).split('.').map(function(n){ return parseInt(n, 10) || 0; });
+    while (nums.length < 3) nums.push(0);
+    return { prefix: prefix, nums: nums };
+}
+function compareVersion(a, b) {
+    var va = parseVersion(a);
+    var vb = parseVersion(b);
+    for (var i = 0; i < 3; i++) {
+        if (va.nums[i] !== vb.nums[i]) return va.nums[i] - vb.nums[i];
+    }
+    if (va.prefix !== vb.prefix) return va.prefix === 'V' ? 1 : -1;
+    return 0;
+}
+function versionSubDir(v) { return v[0] === 'V' ? 'release' : 'beta'; }
+function toolPath(toolName, version) {
+    return '工具/' + toolName + '/版本/' + versionSubDir(version) + '/' + toolName + '-' + version + '.html';
+}
+function miscToolPath(toolName, version) {
+    return '工具/杂项工具/' + toolName + '/' + toolName + version + '.html';
+}
+function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + 'kb';
+    return (bytes / 1024 / 1024).toFixed(1) + 'mb';
+}
+function getLastSundayMidnight(ts) {
+    var d = new Date(ts);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - d.getDay());
+    return d.getTime();
+}
+function needAutoCheck(lastCheckTime) {
+    if (!lastCheckTime || lastCheckTime === 0) return true;
+    return getLastSundayMidnight(Date.now()) > lastCheckTime;
+}
+function mdToText(md) {
+    return md
+        .replace(/^#{1,6}\s+/gm, '')
+        .replace(/\*\*(.+?)\*\*/g, '$1')
+        .replace(/__(.+?)__/g, '$1')
+        .replace(/\*(.+?)\*/g, '$1')
+        .replace(/_(.+?)_/g, '$1')
+        .replace(/`(.+?)`/g, '$1')
+        .replace(/^\s*[-*+]\s+/gm, '  • ')
+        .replace(/^\s*\d+\.\s+/gm, '  ')
+        .replace(/^\s*>\s*/gm, '')
+        .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+        .replace(/^\s*[-_=]{3,}\s*$/gm, '');
+}
+
+/* ============================================================
+ * 带数据静默超时的 fetch
+ * ============================================================ */
+function fetchWithTimeout(url, timeoutMs) {
+    var controller = new AbortController();
+    var timer = null;
+    var timedOut = false;
+    var resetTimer = function() {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(function(){ timedOut = true; controller.abort(); }, timeoutMs);
+    };
+    resetTimer();
+    return fetch(url, { signal: controller.signal, cache: 'no-store' })
+        .then(function(res){
+            resetTimer();
+            if (!res.body) {
+                return res.arrayBuffer().then(function(buf){
+                    if (timer) clearTimeout(timer);
+                    return { status: res.status, ok: res.ok, buffer: new Uint8Array(buf) };
+                });
+            }
+            var reader = res.body.getReader();
+            var chunks = [];
+            function read() {
+                return reader.read().then(function(r){
+                    if (r.done) {
+                        var total = 0;
+                        for (var i = 0; i < chunks.length; i++) total += chunks[i].length;
+                        var buffer = new Uint8Array(total);
+                        var off = 0;
+                        for (var j = 0; j < chunks.length; j++) { buffer.set(chunks[j], off); off += chunks[j].length; }
+                        if (timer) clearTimeout(timer);
+                        return { status: res.status, ok: res.ok, buffer: buffer };
+                    }
+                    chunks.push(r.value);
+                    resetTimer();
+                    return read();
+                });
+            }
+            return read();
+        })
+        .catch(function(e){
+            if (timer) clearTimeout(timer);
+            if (timedOut) { var err = new Error('TIMEOUT'); err.code = 'TIMEOUT'; throw err; }
+            throw e;
+        });
+}
+
+/* ============================================================
+ * 从仓库拉取
+ * ============================================================ */
+function fetchRepoFile(path) {
+    return getSource().then(function(source){
+        var url = source === 'gitee'
+            ? GITEE_API_PREFIX + encodePath(path) + '?ref=' + REF
+            : GITHUB_RAW_PREFIX + encodePath(path);
+        return fetchWithTimeout(url, TIMEOUT_MS).then(function(result){
+            var text = new TextDecoder('utf-8').decode(result.buffer);
+            if (!result.ok) {
+                if (source === 'gitee') {
+                    if (result.status === 403) throw new Error('服务器限流，请一个小时后再试，或切换github进行下载');
+                    if (result.status === 404) throw new Error('未找到文件，请联系开发者手动更新gitee仓库');
+                }
+                var snippet = text.length > 200 ? text.slice(0, 200) + '...' : text;
+                throw new Error('HTTP ' + result.status + '：' + snippet);
+            }
+            if (source === 'gitee') {
+                var json;
+                try { json = JSON.parse(text); }
+                catch (e) { throw new Error('Gitee 返回内容解析失败：' + e.message); }
+                if (!json.content) throw new Error('Gitee 返回内容缺少 content 字段');
+                return base64DecodeUnicode(json.content);
+            }
+            return text;
+        }).catch(function(e){
+            if (source === 'github' && !(e.message && e.message.indexOf('HTTP') === 0)) {
+                throw new Error('网络连接失败，尝试使用加速器链接或使用gitee');
+            }
+            throw e;
+        });
+    });
+}
+function fetchRepoFileAsArrayBuffer(path) {
+    return getSource().then(function(source){
+        var url = source === 'gitee'
+            ? GITEE_API_PREFIX + encodePath(path) + '?ref=' + REF
+            : GITHUB_RAW_PREFIX + encodePath(path);
+        return fetchWithTimeout(url, TIMEOUT_MS).then(function(result){
+            if (!result.ok) {
+                var text = new TextDecoder('utf-8').decode(result.buffer);
+                if (source === 'gitee') {
+                    if (result.status === 403) throw new Error('服务器限流，请一个小时后再试，或切换github进行下载');
+                    if (result.status === 404) throw new Error('未找到文件，请联系开发者手动更新gitee仓库');
+                }
+                throw new Error('HTTP ' + result.status);
+            }
+            if (source === 'gitee') {
+                var text = new TextDecoder('utf-8').decode(result.buffer);
+                var json;
+                try { json = JSON.parse(text); } catch (e) { throw new Error('Gitee 解析失败'); }
+                if (!json.content) throw new Error('Gitee 缺少 content');
+                var binary = atob(json.content.replace(/\n/g, ''));
+                var bytes = new Uint8Array(binary.length);
+                for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                return bytes.buffer;
+            }
+            return result.buffer.buffer.slice(result.buffer.byteOffset, result.buffer.byteOffset + result.buffer.byteLength);
+        }).catch(function(e){
+            if (source === 'github' && !(e.message && e.message.indexOf('HTTP') === 0)) {
+                throw new Error('网络连接失败，尝试使用加速器链接或使用gitee');
+            }
+            throw e;
+        });
+    });
+}
+function fetchRepoFileByUrl(url) {
+    return fetchWithTimeout(url, TIMEOUT_MS).then(function(result){
+        if (!result.ok) throw new Error('HTTP ' + result.status);
+        return new TextDecoder('utf-8').decode(result.buffer);
+    });
+}
+
+/* ============================================================
+ * 会话缓存
+ * ============================================================ */
+var sessionCache = {
+    toolVersionJson: null,
+    libJson: null,
+    changelogs: {},
+    readme: null,
+    invalidateAll: function() {
+        this.toolVersionJson = null;
+        this.libJson = null;
+        this.changelogs = {};
+        this.readme = null;
+    }
+};
+
+function fetchToolVersionJson(force) {
+    if (!force && sessionCache.toolVersionJson) return Promise.resolve(sessionCache.toolVersionJson);
+    return fetchRepoFile('工具/version.json').then(function(text){
+        var json = JSON.parse(text);
+        sessionCache.toolVersionJson = json;
+        return json;
+    });
+}
+function fetchLibJson(force) {
+    if (!force && sessionCache.libJson) return Promise.resolve(sessionCache.libJson);
+    return fetchRepoFile('工具/Lib.json').then(function(text){
+        var json = JSON.parse(text);
+        sessionCache.libJson = json;
+        return json;
+    });
+}
+function fetchChangelog(path, force) {
+    if (!force && sessionCache.changelogs[path]) return Promise.resolve(sessionCache.changelogs[path]);
+    return fetchRepoFile(path).then(function(text){
+        var lines = text.split('\n');
+        while (lines.length > 0 && lines[lines.length - 1].trim() === '') lines.pop();
+        sessionCache.changelogs[path] = lines;
+        return lines;
+    });
+}
+function fetchReadme(force) {
+    if (!force && sessionCache.readme) return Promise.resolve(sessionCache.readme);
+    return fetchRepoFile('README.md').then(function(text){
+        sessionCache.readme = text;
+        return text;
+    });
+}
+function prefetch() {
+    fetchToolVersionJson().catch(function(e){ console.warn('预取 ver 失败：', e); });
+    fetchLibJson().catch(function(e){ console.warn('预取 lib 失败：', e); });
+}
+
+/* ============================================================
+ * 弹窗管理
+ * ============================================================ */
+var activeDialogId = null;
+
+function openDialog(id) {
+    document.getElementById(id).classList.add('active');
+    activeDialogId = id;
+}
+function closeDialog(id) {
+    document.getElementById(id).classList.remove('active');
+    if (activeDialogId === id) activeDialogId = null;
+}
+document.addEventListener('click', function(e){
+    var closeId = e.target.getAttribute && e.target.getAttribute('data-close');
+    if (closeId) closeDialog(closeId);
+    if (e.target.classList && e.target.classList.contains('dialog-overlay')) {
+        if (e.target.id !== 'dlgMsg') {
+            e.target.classList.remove('active');
+            if (activeDialogId === e.target.id) activeDialogId = null;
+        }
+    }
+});
+
+function showMsg(text) {
+    return new Promise(function(resolve){
+        document.getElementById('dlgMsgText').textContent = String(text);
+        var actions = document.getElementById('dlgMsgActions');
+        actions.innerHTML = '';
+        var btn = document.createElement('button');
+        btn.textContent = '确定';
+        btn.onclick = function(){ closeDialog('dlgMsg'); resolve(); };
+        actions.appendChild(btn);
+        openDialog('dlgMsg');
+    });
+}
+function msgAlert(text) { return showMsg(text); }
+
+function showConfirm(text) {
+    return new Promise(function(resolve){
+        document.getElementById('dlgMsgText').textContent = String(text);
+        var actions = document.getElementById('dlgMsgActions');
+        actions.innerHTML = '';
+        var cancelBtn = document.createElement('button');
+        cancelBtn.className = 'secondary';
+        cancelBtn.textContent = '取消';
+        cancelBtn.onclick = function(){ closeDialog('dlgMsg'); resolve(false); };
+        var okBtn = document.createElement('button');
+        okBtn.textContent = '确定';
+        okBtn.onclick = function(){ closeDialog('dlgMsg'); resolve(true); };
+        actions.appendChild(cancelBtn);
+        actions.appendChild(okBtn);
+        openDialog('dlgMsg');
+    });
+}
+
+/* ============================================================
+ * 图标
+ * ============================================================ */
+function loadIconToIDB(idbKey, repoPath) {
+    return idbGet(STORE_FILES, idbKey).then(function(buffer){
+        if (buffer) return buffer;
+        return fetchRepoFileAsArrayBuffer(repoPath).then(function(buf){
+            return idbSet(STORE_FILES, idbKey, buf).then(function(){ return buf; });
+        });
+    });
+}
+function renderIcon(idbKey, repoPath, imgEl) {
+    return loadIconToIDB(idbKey, repoPath).then(function(buffer){
+        var blob = new Blob([buffer], { type: 'image/png' });
+        if (imgEl.src && imgEl.src.indexOf('blob:') === 0) URL.revokeObjectURL(imgEl.src);
+        imgEl.src = URL.createObjectURL(blob);
+    }).catch(function(e){
+        console.warn('图标加载失败：', idbKey, e);
+    });
+}
+
+/* ============================================================
+ * 背景轮播
+ * ============================================================ */
+(function backgroundCarousel() {
+    var IMG_PATH = '工具箱/background.jpg';
+    var INIT_KEY = 'background/background.jpg';
+    var PREFIX = 'background/';
+    var PERIOD = 20000;
+    var imgEl = document.getElementById('bgImage');
+    var sleep = function(ms){ return new Promise(function(r){ setTimeout(r, ms); }); };
+
+    var bgList = [];
+    var queue = [];
+    var lastShownKey = null;
+
+    function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+    }
+    function refillQueue() {
+        var next = shuffle(bgList);
+        if (next.length > 1 && lastShownKey && next[0].key === lastShownKey) {
+            for (var i = 1; i < next.length; i++) {
+                if (next[i].key !== lastShownKey) {
+                    var t = next[0]; next[0] = next[i]; next[i] = t;
+                    break;
+                }
+            }
+        }
+        queue = next;
+    }
+    function loadAll() {
+        return idbKeys(STORE_FILES).then(function(keys){
+            var filtered = keys.filter(function(k){ return typeof k === 'string' && k.indexOf(PREFIX) === 0; });
+            var list = [];
+            return filtered.reduce(function(chain, key){
+                return chain.then(function(){
+                    return idbGet(STORE_FILES, key).then(function(buffer){
+                        if (!buffer) return;
+                        var blob = new Blob([buffer]);
+                        list.push({ key: key, url: URL.createObjectURL(blob) });
+                    });
+                });
+            }, Promise.resolve()).then(function(){ return list; });
+        });
+    }
+    function showImage(item) {
+        imgEl.classList.remove('show');
+        return sleep(520).then(function(){
+            imgEl.src = item.url;
+            return imgEl.decode().catch(function(){}).then(function(){
+                imgEl.classList.add('show');
+                lastShownKey = item.key;
+            });
+        });
+    }
+    function tick() {
+        if (queue.length === 0) refillQueue();
+        var item = queue.shift();
+        if (!item) return Promise.resolve();
+        return showImage(item);
+    }
+    function init() {
+        idbKeys(STORE_FILES).then(function(keys){
+            if (keys.indexOf(INIT_KEY) === -1) {
+                return fetchRepoFileAsArrayBuffer(IMG_PATH).then(function(buffer){
+                    return idbSet(STORE_FILES, INIT_KEY, buffer);
+                });
+            }
+        }).catch(function(e){
+            console.warn('初始背景下载失败：', e);
+        }).then(function(){
+            return loadAll();
+        }).then(function(list){
+            bgList = list;
+            if (bgList.length === 0) return;
+            var first = bgList[Math.floor(Math.random() * bgList.length)];
+            return showImage(first).then(function(){
+                refillQueue();
+                if (queue.length > 1 && queue[0].key === lastShownKey) {
+                    for (var i = 1; i < queue.length; i++) {
+                        if (queue[i].key !== lastShownKey) {
+                            var t = queue[0]; queue[0] = queue[i]; queue[i] = t;
+                            break;
+                        }
+                    }
+                }
+                (function loop() {
+                    setTimeout(function(){ tick().then(loop); }, PERIOD);
+                })();
+            });
+        });
+    }
+    init();
+})();
+
+/* ============================================================
+ * WebGL 网格
+ * ============================================================ */
+(function webglGrid() {
+    var canvas = document.getElementById('gl');
+    var gl = canvas.getContext('webgl', { antialias: false, depth: false, alpha: true, premultipliedAlpha: false });
+    if (!gl) return;
+    gl.getExtension('OES_standard_derivatives');
+
+    var VS = 'attribute vec2 a_pos; void main(){gl_Position=vec4(a_pos,0.0,1.0);}';
+    var FS = [
+        '#extension GL_OES_standard_derivatives : enable',
+        'precision mediump float;',
+        'uniform vec2 u_res;',
+        'uniform float u_h, u_lineWidth, u_waveWidth, u_strength, u_yCenter;',
+        'const float SQRT3 = 1.7320508;',
+        'vec2 fisheye(vec2 p, float k) { float r2 = dot(p,p); return p * (1.0 - k * r2); }',
+        'void main() {',
+        '    float minRes = min(u_res.x, u_res.y);',
+        '    vec2 p = (gl_FragCoord.xy - 0.5 * u_res) / (minRes * 0.5);',
+        '    vec2 q = fisheye(p, u_strength);',
+        '    vec2 g = q * (minRes / (2.0 * u_h));',
+        '    float d1 = abs(g.y - floor(g.y + 0.5));',
+        '    float u = g.y - SQRT3 * g.x;',
+        '    float d2 = abs(u - 2.0 * floor(u * 0.5 + 0.5));',
+        '    float v = g.y + SQRT3 * g.x;',
+        '    float d3 = abs(v - 2.0 * floor(v * 0.5 + 0.5));',
+        '    float d = min(min(d1, d2), d3);',
+        '    float aa = fwidth(d);',
+        '    float halfW = u_lineWidth / (2.0 * u_h);',
+        '    float lineAlpha = 1.0 - smoothstep(halfW, halfW + 2.0 * aa, d);',
+        '    float bandAlpha = exp(-pow((p.y - u_yCenter) / u_waveWidth, 2.0));',
+        '    float a = lineAlpha * bandAlpha;',
+        '    vec3 col = vec3(0.898, 0.933, 1.0);',
+        '    gl_FragColor = vec4(col * a, a);',
+        '}'
+    ].join('\n');
+
+    function compile(type, src) {
+        var s = gl.createShader(type);
+        gl.shaderSource(s, src);
+        gl.compileShader(s);
+        if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) return null;
+        return s;
+    }
+    var vs = compile(gl.VERTEX_SHADER, VS);
+    var fs = compile(gl.FRAGMENT_SHADER, FS);
+    if (!vs || !fs) return;
+    var prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    var buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+    var aPos = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.clearColor(0, 0, 0, 0);
+
+    var U = {
+        res: gl.getUniformLocation(prog, 'u_res'),
+        h: gl.getUniformLocation(prog, 'u_h'),
+        lineWidth: gl.getUniformLocation(prog, 'u_lineWidth'),
+        waveWidth: gl.getUniformLocation(prog, 'u_waveWidth'),
+        strength: gl.getUniformLocation(prog, 'u_strength'),
+        yCenter: gl.getUniformLocation(prog, 'u_yCenter')
+    };
+    var TRI_H = 160, LINE_W = 4, PERIOD = 12, WAVE_W = 0.7, STRENGTH = 0.05, Y_RANGE = 4;
+
+    function resize() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var w = Math.floor(window.innerWidth * dpr);
+        var h = Math.floor(window.innerHeight * dpr);
+        if (canvas.width !== w || canvas.height !== h) {
+            canvas.width = w; canvas.height = h;
+            gl.viewport(0, 0, w, h);
+        }
+    }
+    var start = performance.now();
+    function frame() {
+        resize();
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        var t = ((performance.now() - start) / 1000 / PERIOD) % 2;
+        var tri = t < 1 ? t : 2 - t;
+        var yCenter = -Y_RANGE + 2 * Y_RANGE * tri;
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform2f(U.res, canvas.width, canvas.height);
+        gl.uniform1f(U.h, TRI_H * dpr);
+        gl.uniform1f(U.lineWidth, LINE_W * dpr);
+        gl.uniform1f(U.waveWidth, WAVE_W);
+        gl.uniform1f(U.strength, STRENGTH);
+        gl.uniform1f(U.yCenter, yCenter);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+})();
+
+/* ============================================================
+ * 工具全屏
+ * ============================================================ */
+function injectToolShim(html, baseHref) {
+    var shim = '<script>\n(function(){\n  try {\n    var b = document.querySelector("base");\n    if (!b) { b = document.createElement("base"); document.head.insertBefore(b, document.head.firstChild); }\n    b.href = "' + baseHref + '";\n  } catch(e){}\n})();\n<\/script>';
+    var cleaned = html.replace(/<base\s[^>]*>/i, '');
+    if (/<head[^>]*>/i.test(cleaned)) {
+        return cleaned.replace(/<head([^>]*)>/i, '<head$1>' + shim);
+    }
+    return shim + cleaned;
+}
+
+function openToolFromIDB(idbKey, repoDir, toolName) {
+    return idbGet(STORE_FILES, idbKey).then(function(html){
+        if (!html) { return msgAlert('未找到该版本内容'); }
+        return getSource().then(function(source){
+            var baseHref;
+            if (source === 'gitee') {
+                baseHref = 'https://gitee.com/' + OWNER + '/' + REPO + '/raw/' + REF + '/' + encodePath(repoDir);
+            } else {
+                baseHref = 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/' + REF + '/' + encodePath(repoDir);
+            }
+            var injected = injectToolShim(html, baseHref);
+            var blob = new Blob([injected], { type: 'text/html;charset=utf-8' });
+            var url = URL.createObjectURL(blob);
+            var frame = document.getElementById('toolFrame');
+            if (frame.src && frame.src.indexOf('blob:') === 0) URL.revokeObjectURL(frame.src);
+            frame.src = url;
+            document.getElementById('toolFullscreen').classList.add('active');
+            document.getElementById('pagesContainer').style.display = 'none';
+            document.body.classList.add('tool-open');
+            setLayer('tool');
+            window.__currentToolIdbKey = idbKey;
+            window.__currentToolRepoDir = repoDir;
+            window.__currentToolName = toolName;
+        });
+    });
+}
+
+function closeToolFullscreen() {
+    var frame = document.getElementById('toolFrame');
+    if (frame.src && frame.src.indexOf('blob:') === 0) URL.revokeObjectURL(frame.src);
+    frame.src = 'about:blank';
+    document.getElementById('toolFullscreen').classList.remove('active');
+    document.getElementById('pagesContainer').style.display = 'flex';
+    document.body.classList.remove('tool-open');
+}
+
+/* ============================================================
+ * 主页
+ * ============================================================ */
+function refreshHomeIcons() {
+    return Promise.all([
+        renderIcon('icon/4KCC.png', '工具/4KCC/4KCC.png', document.getElementById('icon4kcc')),
+        renderIcon('icon/PRSL.png', '工具/PRSL/PRSL.png', document.getElementById('iconPrsl'))
+    ]);
+}
+
+/* ============================================================
+ * 版本选择
+ * ============================================================ */
+var currentTool = null;
+var versionsSelection = null;
+var localVersions = [];
+
+function gotoVersionPage(toolName) {
+    currentTool = toolName;
+    document.getElementById('versionsTitle').textContent = toolName + '版本选择';
+    return refreshVersionsList().then(function(){
+        showPage('versions');
+        setLayer('versions');
+    });
+}
+
+function refreshVersionsList() {
+    return idbKeys(STORE_FILES).then(function(allKeys){
+        var prefix = currentTool + '/';
+        localVersions = allKeys
+            .filter(function(k){ return typeof k === 'string' && k.indexOf(prefix) === 0 && k.slice(-5) === '.html'; })
+            .map(function(k){ return k.replace(prefix, '').replace(/\.html$/, ''); })
+            .sort(compareVersion)
+            .reverse();
+        var listEl = document.getElementById('versionsList');
+        listEl.innerHTML = '';
+        versionsSelection = null;
+        if (localVersions.length === 0) {
+            listEl.innerHTML = '<div style="color:#888;font-size:13px;">暂无本地版本</div>';
+            document.getElementById('versionsOpenBtn').disabled = true;
+            return;
+        }
+        localVersions.forEach(function(v, i){
+            var item = document.createElement('label');
+            item.className = 'version-item' + (i === 0 ? ' selected' : '');
+            var radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'localVer';
+            radio.value = v;
+            radio.checked = i === 0;
+            radio.onchange = function(){
+                versionsSelection = v;
+                var items = document.querySelectorAll('#versionsList .version-item');
+                for (var j = 0; j < items.length; j++) items[j].classList.remove('selected');
+                item.classList.add('selected');
+                document.getElementById('versionsOpenBtn').disabled = false;
+            };
+            item.appendChild(radio);
+            var span = document.createElement('span');
+            span.textContent = currentTool + '-' + v + '.html';
+            item.appendChild(span);
+            listEl.appendChild(item);
+        });
+        versionsSelection = localVersions[0];
+        document.getElementById('versionsOpenBtn').disabled = false;
+    });
+}
+
+/* ============================================================
+ * 检查更新
+ * ============================================================ */
+var updateSelected = null;
+
+function openCheckUpdate(force) {
+    return fetchToolVersionJson(force).then(function(vjson){
+        var versions = vjson[currentTool] || [];
+        if (versions.length === 0) { return msgAlert('无版本信息'); }
+        return fetchChangelog('工具/' + currentTool + '/版本/更新日志.txt', force).then(function(logs){
+            return idbKeys(STORE_FILES).then(function(allKeys){
+                var downloadedSet = {};
+                allKeys.forEach(function(k){
+                    if (typeof k === 'string' && k.indexOf(currentTool + '/') === 0) {
+                        downloadedSet[k.replace(currentTool + '/', '').replace(/\.html$/, '')] = true;
+                    }
+                });
+                var listEl = document.getElementById('dlgUpdateList');
+                var logEl = document.getElementById('dlgUpdateLog');
+                listEl.innerHTML = '';
+                logEl.textContent = '';
+                updateSelected = null;
+                document.getElementById('dlgUpdateDownload').disabled = true;
+                versions.forEach(function(v, i){
+                    var lineIdx = logs.length - 1 - i;
+                    var log = (lineIdx >= 0) ? logs[lineIdx] : '(无日志)';
+                    var item = document.createElement('label');
+                    item.className = 'dialog-item';
+                    var radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = 'remoteVer';
+                    radio.value = v;
+                    radio.onchange = function(){
+                        updateSelected = v;
+                        logEl.textContent = log;
+                        document.getElementById('dlgUpdateDownload').disabled = false;
+                        var items = document.querySelectorAll('#dlgUpdateList .dialog-item');
+                        for (var j = 0; j < items.length; j++) items[j].classList.remove('selected');
+                        item.classList.add('selected');
+                    };
+                    item.appendChild(radio);
+                    var span = document.createElement('span');
+                    span.textContent = currentTool + '-' + v + '.html';
+                    item.appendChild(span);
+                    if (downloadedSet[v]) {
+                        var tag = document.createElement('span');
+                        tag.className = 'tag';
+                        tag.textContent = '[已下载]';
+                        item.appendChild(tag);
+                    }
+                    listEl.appendChild(item);
+                });
+                if (!document.getElementById('dlgUpdate').classList.contains('active')) {
+                    openDialog('dlgUpdate');
+                }
+            });
+        });
+    }).catch(function(e){
+        return msgAlert(e.message || '检查失败');
+    });
+}
+
+/* ============================================================
+ * 获取 Lib
+ * ============================================================ */
+function openGetLib(toolKey, nameKey, force) {
+    return fetchLibJson(force).then(function(libJson){
+        var urls = libJson[toolKey] || [];
+        var names = libJson[nameKey] || [];
+        if (urls.length === 0) { return msgAlert('该工具无库依赖'); }
+        return idbKeys(STORE_FILES).then(function(allKeys){
+            var downloadedSet = {};
+            allKeys.forEach(function(k){
+                if (typeof k === 'string' && k.indexOf('lib/') === 0) {
+                    downloadedSet[k.replace('lib/', '').replace(/\.js$/, '')] = true;
+                }
+            });
+            var listEl = document.getElementById('dlgLibList');
+            listEl.innerHTML = '';
+
+            var allWrap = document.createElement('label');
+            allWrap.className = 'dialog-item';
+            allWrap.style.background = 'rgba(156, 216, 229, 0.05)';
+            var allCb = document.createElement('input');
+            allCb.type = 'checkbox';
+            allCb.id = 'libSelectAll';
+            allCb.onchange = function(){
+                var cbs = document.querySelectorAll('#dlgLibList input[type="checkbox"]:not(#libSelectAll)');
+                for (var i = 0; i < cbs.length; i++) cbs[i].checked = allCb.checked;
+            };
+            allWrap.appendChild(allCb);
+            var allSpan = document.createElement('span');
+            allSpan.textContent = '全选';
+            allWrap.appendChild(allSpan);
+            listEl.appendChild(allWrap);
+
+            urls.forEach(function(url, i){
+                var name = names[i] || ('lib' + i);
+                var item = document.createElement('label');
+                item.className = 'dialog-item';
+                var cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.value = name;
+                cb.dataset.url = url;
+                item.appendChild(cb);
+                var span = document.createElement('span');
+                span.textContent = name;
+                item.appendChild(span);
+                if (downloadedSet[name]) {
+                    var tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.textContent = '[已下载]';
+                    item.appendChild(tag);
+                }
+                listEl.appendChild(item);
+            });
+            if (!document.getElementById('dlgLib').classList.contains('active')) {
+                openDialog('dlgLib');
+            }
+        });
+    }).catch(function(e){
+        return msgAlert(e.message || '获取失败');
+    });
+}
+
+/* ============================================================
+ * 杂项工具
+ * ============================================================ */
+function gotoMiscPage() {
+    return refreshMiscBody().then(function(){
+        showPage('misc');
+        setLayer('misc');
+    });
+}
+
+function refreshMiscBody() {
+    return idbKeys(STORE_FILES).then(function(allKeys){
+        var toolSet = {};
+        allKeys.forEach(function(k){
+            if (typeof k !== 'string') return;
+            var m = k.match(/^杂项工具\/([^/]+)\//);
+            if (m) toolSet[m[1]] = true;
+        });
+        var bodyEl = document.getElementById('miscBody');
+        bodyEl.innerHTML = '';
+        var names = Object.keys(toolSet);
+        if (names.length === 0) {
+            bodyEl.innerHTML = '<div style="color:#888;font-size:13px;">暂无已下载的杂项工具，请点击右上角"获取杂项工具"</div>';
+            return;
+        }
+        names.forEach(function(toolName){
+            var btn = document.createElement('button');
+            btn.className = 'misc-tool-btn';
+            btn.textContent = toolName;
+            btn.onclick = function(){ gotoMiscToolPage(toolName); };
+            bodyEl.appendChild(btn);
+        });
+    });
+}
+
+var miscToolCurrent = null;
+var miscToolSelection = null;
+
+function gotoMiscToolPage(toolName) {
+    miscToolCurrent = toolName;
+    document.getElementById('miscToolTitle').textContent = toolName;
+    return refreshMiscToolVersions().then(function(){
+        showPage('misc-tool');
+        setLayer('misc-tool');
+    });
+}
+
+function refreshMiscToolVersions() {
+    return idbKeys(STORE_FILES).then(function(allKeys){
+        var prefix = '杂项工具/' + miscToolCurrent + '/';
+        var versions = allKeys
+            .filter(function(k){ return typeof k === 'string' && k.indexOf(prefix) === 0; })
+            .map(function(k){ return k.replace(prefix, '').replace(/\.html$/, ''); })
+            .sort(compareVersion)
+            .reverse();
+        var listEl = document.getElementById('miscToolVersionsList');
+        listEl.innerHTML = '';
+        miscToolSelection = null;
+        if (versions.length === 0) {
+            listEl.innerHTML = '<div style="color:#888;font-size:13px;">暂无本地版本</div>';
+            document.getElementById('miscToolOpenBtn').disabled = true;
+            return;
+        }
+        versions.forEach(function(v, i){
+            var item = document.createElement('label');
+            item.className = 'version-item' + (i === 0 ? ' selected' : '');
+            var radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'miscToolLocalVer';
+            radio.value = v;
+            radio.checked = i === 0;
+            radio.onchange = function(){
+                miscToolSelection = v;
+                var items = document.querySelectorAll('#miscToolVersionsList .version-item');
+                for (var j = 0; j < items.length; j++) items[j].classList.remove('selected');
+                item.classList.add('selected');
+                document.getElementById('miscToolOpenBtn').disabled = false;
+            };
+            item.appendChild(radio);
+            var span = document.createElement('span');
+            span.textContent = miscToolCurrent + v;
+            item.appendChild(span);
+            listEl.appendChild(item);
+        });
+        miscToolSelection = versions[0];
+        document.getElementById('miscToolOpenBtn').disabled = false;
+    });
+}
+
+function openGetMisc(force) {
+    return fetchToolVersionJson(force).then(function(vjson){
+        var misc = vjson.misc || [];
+        if (misc.length === 0) { return msgAlert('无杂项工具'); }
+        renderMiscDlgTools(misc);
+        if (!document.getElementById('dlgMisc').classList.contains('active')) {
+            openDialog('dlgMisc');
+        }
+    }).catch(function(e){
+        return msgAlert(e.message || '获取失败');
+    });
+}
+
+function renderMiscDlgTools(miscList) {
+    document.getElementById('dlgMiscTitle').textContent = '获取杂项工具';
+    var body = document.getElementById('dlgMiscBody');
+    body.innerHTML = '';
+    miscList.forEach(function(toolName, i){
+        var btn = document.createElement('button');
+        btn.className = 'misc-tool-btn';
+        btn.textContent = toolName;
+        btn.onclick = function(){
+            fetchToolVersionJson().then(function(vjson){
+                var otherKey = 'other' + i;
+                var versions = vjson[otherKey] || [];
+                renderMiscDlgVersions(toolName, i, versions);
+            }).catch(function(e){ msgAlert(e.message); });
+        };
+        body.appendChild(btn);
+    });
+    document.getElementById('dlgMiscFooter').innerHTML = '';
+}
+
+function renderMiscDlgVersions(toolName, miscIndex, versions) {
+    document.getElementById('dlgMiscTitle').textContent = toolName;
+    var body = document.getElementById('dlgMiscBody');
+    body.innerHTML = '';
+    var selected = null;
+    versions.forEach(function(v){
+        var item = document.createElement('label');
+        item.className = 'dialog-item';
+        var radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'miscRemoteVer';
+        radio.value = v;
+        radio.onchange = function(){
+            selected = v;
+            var items = document.querySelectorAll('#dlgMiscBody .dialog-item');
+            for (var i = 0; i < items.length; i++) items[i].classList.remove('selected');
+            item.classList.add('selected');
+        };
+        item.appendChild(radio);
+        var span = document.createElement('span');
+        span.textContent = toolName + v;
+        item.appendChild(span);
+        body.appendChild(item);
+    });
+    var footer = document.getElementById('dlgMiscFooter');
+    footer.innerHTML = '';
+    var backBtn = document.createElement('button');
+    backBtn.className = 'secondary';
+    backBtn.textContent = '← 返回';
+    backBtn.onclick = function(){
+        fetchToolVersionJson().then(function(vjson){ renderMiscDlgTools(vjson.misc || []); });
+    };
+    var downloadBtn = document.createElement('button');
+    downloadBtn.textContent = '下载';
+    downloadBtn.onclick = function(){
+        if (!selected) { msgAlert('请选择版本'); return; }
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = '下载中...';
+        var path = miscToolPath(toolName, selected);
+        fetchRepoFile(path).then(function(html){
+            return idbSet(STORE_FILES, '杂项工具/' + toolName + '/' + selected + '.html', html);
+        }).then(function(){
+            return msgAlert('已下载 ' + toolName + selected + '.html');
+        }).then(function(){
+            closeDialog('dlgMisc');
+            return refreshMiscBody();
+        }).catch(function(e){
+            msgAlert(e.message || '下载失败');
+        }).then(function(){
+            downloadBtn.disabled = false;
+            downloadBtn.textContent = '下载';
+        });
+    };
+    footer.appendChild(backBtn);
+    footer.appendChild(downloadBtn);
+}
+
+/* ============================================================
+ * 设置
+ * ============================================================ */
+function gotoSettingsPage() {
+    showPage('settings');
+    setLayer('settings');
+}
+
+function openSourceDialog() {
+    return getInfo().then(function(info){
+        var src = info.source || 'gitee';
+        var radios = document.querySelectorAll('input[name="sourceRadio"]');
+        for (var i = 0; i < radios.length; i++) radios[i].checked = (radios[i].value === src);
+        openDialog('dlgSource');
+    });
+}
+
+function openLinksDialog() {
+    var LINKS = [
+        { label: '作者主页', url: 'https://space.bilibili.com/3546837967440731' },
+        { label: '工具交流群', url: 'https://qm.qq.com/q/9R48DVyDyE' },
+        { label: '工具仓库', url: 'https://github.com/SeaSinvo/YuYiTool' },
+        { label: '工具仓库', url: 'https://gitee.com/seasinvo/YuYiTool' },
+        { label: '提交建议', url: 'https://docs.qq.com/sheet/DTXVMV0FvekdyUExu' },
+        { label: '提交bug', url: 'https://docs.qq.com/sheet/DTU5iRHhLQ3NLTXV0' }
+    ];
+    var listEl = document.getElementById('dlgLinksList');
+    listEl.innerHTML = '';
+    LINKS.forEach(function(item){
+        var a = document.createElement('a');
+        a.className = 'link-item';
+        a.href = item.url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        var label = document.createElement('span');
+        label.className = 'link-label';
+        label.textContent = item.label;
+        a.appendChild(label);
+        var urlSpan = document.createElement('span');
+        urlSpan.textContent = item.url;
+        a.appendChild(urlSpan);
+        listEl.appendChild(a);
+    });
+    openDialog('dlgLinks');
+}
+
+function openReadmeDialog(force) {
+    var contentEl = document.getElementById('dlgReadmeContent');
+    contentEl.textContent = '加载中...';
+    openDialog('dlgReadme');
+    return fetchReadme(force).then(function(md){
+        contentEl.textContent = mdToText(md);
+    }).catch(function(e){
+        contentEl.textContent = '加载失败：' + (e.message || '未知错误');
+    });
+}
+
+/* ============================================================
+ * IDB 管理
+ * ============================================================ */
+function buildTree(keys) {
+    var root = { children: {}, leaves: [] };
+    for (var ki = 0; ki < keys.length; ki++) {
+        var key = keys[ki];
+        var parts = String(key).split('/');
+        var node = root;
+        for (var i = 0; i < parts.length - 1; i++) {
+            var part = parts[i];
+            if (!node.children[part]) node.children[part] = { children: {}, leaves: [] };
+            node = node.children[part];
+        }
+        node.leaves.push({ name: parts[parts.length - 1], fullKey: String(key) });
+    }
+    return root;
+}
+
+function renderTreeNode(node, container, storeName, currentBoxKey) {
+    var folderNames = Object.keys(node.children);
+    var _loop = function(fi) {
+        var folderName = folderNames[fi];
+        var child = node.children[folderName];
+        var folderEl = document.createElement('div');
+        folderEl.className = 'idb-tree-folder';
+        var arrow = document.createElement('span');
+        arrow.className = 'arrow';
+        arrow.textContent = '▼';
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'folder-name';
+        nameSpan.textContent = '📁 ' + folderName;
+        folderEl.appendChild(arrow);
+        folderEl.appendChild(nameSpan);
+
+        var childrenEl = document.createElement('div');
+        childrenEl.className = 'idb-tree-children';
+        renderTreeNode(child, childrenEl, storeName, currentBoxKey);
+
+        folderEl.onclick = function(){
+            childrenEl.classList.toggle('hidden');
+            arrow.textContent = childrenEl.classList.contains('hidden') ? '▶' : '▼';
+        };
+
+        container.appendChild(folderEl);
+        container.appendChild(childrenEl);
+    };
+    for (var fi = 0; fi < folderNames.length; fi++) _loop(fi);
+
+    node.leaves.forEach(function(leaf){
+        var leafEl = document.createElement('label');
+        leafEl.className = 'idb-tree-leaf';
+        var isCurrentBox = storeName === STORE_FILES && leaf.fullKey === currentBoxKey;
+        if (isCurrentBox) leafEl.classList.add('disabled');
+
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.dataset.store = storeName;
+        cb.dataset.key = leaf.fullKey;
+        if (isCurrentBox) cb.disabled = true;
+
+        var nameSpan = document.createElement('span');
+        nameSpan.className = 'leaf-name';
+        nameSpan.textContent = '📄 ' + leaf.name;
+
+        var sizeSpan = document.createElement('span');
+        sizeSpan.className = 'leaf-size';
+        sizeSpan.textContent = '...';
+
+        leafEl.appendChild(cb);
+        leafEl.appendChild(nameSpan);
+        leafEl.appendChild(sizeSpan);
+        container.appendChild(leafEl);
+
+        idbGet(storeName, leaf.fullKey).then(function(val){
+            var size = 0;
+            if (val instanceof ArrayBuffer) size = val.byteLength;
+            else if (val instanceof Blob) size = val.size;
+            else if (typeof val === 'string') size = new Blob([val]).size;
+            else size = new Blob([JSON.stringify(val)]).size;
+            sizeSpan.textContent = '[' + formatSize(size) + ']';
+        }).catch(function(){
+            sizeSpan.textContent = '[-]';
+        });
+    });
+}
+
+function openIdbDialog() {
+    return openDB().then(function(db){
+        var stores = Array.from(db.objectStoreNames);
+        var body = document.getElementById('dlgIdbList');
+        body.innerHTML = '';
+        var currentBoxKey = 'YuYiTool-' + CURRENT_VERSION + '.html';
+        return stores.reduce(function(chain, storeName){
+            return chain.then(function(){
+                return idbKeys(storeName).then(function(keys){
+                    var storeTitle = document.createElement('div');
+                    storeTitle.style.cssText = 'font-size:11px;color:#6a7a8a;letter-spacing:2px;margin:10px 0 4px;text-transform:uppercase;';
+                    storeTitle.textContent = storeName;
+                    body.appendChild(storeTitle);
+                    var tree = buildTree(keys);
+                    renderTreeNode(tree, body, storeName, currentBoxKey);
+                });
+            });
+        }, Promise.resolve()).then(function(){
+            openDialog('dlgIdb');
+        });
+    });
+}
+
+/* ============================================================
+ * 刷新
+ * ============================================================ */
+function refreshActiveDialog() {
+    switch (activeDialogId) {
+        case 'dlgUpdate':
+            sessionCache.invalidateAll();
+            return openCheckUpdate(true);
+        case 'dlgLib':
+            sessionCache.libJson = null;
+            return openGetLib(currentTool, currentTool + 'N', true);
+        case 'dlgMisc':
+            sessionCache.toolVersionJson = null;
+            return openGetMisc(true);
+        case 'dlgReadme':
+            sessionCache.readme = null;
+            return openReadmeDialog(true);
+        case 'dlgIdb':
+            return openIdbDialog();
+        case 'dlgSource':
+        case 'dlgLinks':
+        case 'dlgMsg':
+            closeDialog(activeDialogId);
+            return Promise.resolve();
+    }
+    return Promise.resolve();
+}
+
+function refreshCurrentLayer() {
+    if (activeDialogId) return refreshActiveDialog();
+    sessionCache.invalidateAll();
+    prefetch();
+    switch (currentLayer) {
+        case 'home': return refreshHomeIcons();
+        case 'versions': return refreshVersionsList();
+        case 'misc': return refreshMiscBody();
+        case 'misc-tool': return refreshMiscToolVersions();
+        case 'settings': return Promise.resolve();
+        case 'tool':
+            if (window.__currentToolIdbKey && window.__currentToolRepoDir) {
+                return openToolFromIDB(window.__currentToolIdbKey, window.__currentToolRepoDir, window.__currentToolName);
+            }
+            return Promise.resolve();
+    }
+    return Promise.resolve();
+}
+
+/* ============================================================
+ * 菜单
+ * ============================================================ */
+function handleMenuClick() {
+    switch (currentLayer) {
+        case 'home':
+        case 'versions':
+        case 'misc':
+        case 'settings':
+        case 'misc-tool':
+            try { parent.postMessage({ type: 'tool-exit' }, '*'); } catch (e) {}
+            break;
+        case 'tool':
+            closeToolFullscreen();
+            if (window.__currentToolName === '4KCC' || window.__currentToolName === 'PRSL') {
+                gotoVersionPage(window.__currentToolName);
+            } else {
+                gotoMiscToolPage(window.__currentToolName);
+            }
+            break;
+    }
+}
+
+function handleBackHomeClick() {
+    if (currentLayer === 'tool') closeToolFullscreen();
+    showPage('home');
+    setLayer('home');
+}
+
+/* ============================================================
+ * 事件绑定
+ * ============================================================ */
+document.getElementById('refreshBtn').onclick = function(){ refreshCurrentLayer(); };
+document.getElementById('menuBtn').onclick = handleMenuClick;
+document.getElementById('backHomeBtn').onclick = handleBackHomeClick;
+
+document.getElementById('quad4kcc').onclick = function(){
+    handleToolEntry('4KCC').catch(function(e){ msgAlert(e.message); });
+};
+document.getElementById('quadPrsl').onclick = function(){
+    handleToolEntry('PRSL').catch(function(e){ msgAlert(e.message); });
+};
+document.getElementById('quadMisc').onclick = gotoMiscPage;
+document.getElementById('quadSettings').onclick = gotoSettingsPage;
+
+document.getElementById('versionsBackBtn').onclick = function(){ showPage('home'); setLayer('home'); };
+document.getElementById('versionsOpenBtn').onclick = function(){
+    if (!versionsSelection) return;
+    var idbKey = currentTool + '/' + versionsSelection + '.html';
+    var repoDir = '工具/' + currentTool + '/版本/' + versionSubDir(versionsSelection) + '/';
+    openToolFromIDB(idbKey, repoDir, currentTool);
+};
+document.getElementById('checkUpdateBtn').onclick = function(){ openCheckUpdate(); };
+document.getElementById('getLibBtn').onclick = function(){ openGetLib(currentTool, currentTool + 'N'); };
+
+document.getElementById('miscBackBtn').onclick = function(){ showPage('home'); setLayer('home'); };
+document.getElementById('getMiscBtn').onclick = function(){ openGetMisc(); };
+document.getElementById('miscToolBackBtn').onclick = function(){ showPage('misc'); setLayer('misc'); };
+document.getElementById('miscToolOpenBtn').onclick = function(){
+    if (!miscToolCurrent || !miscToolSelection) return;
+    var idbKey = '杂项工具/' + miscToolCurrent + '/' + miscToolSelection + '.html';
+    var repoDir = '工具/杂项工具/' + miscToolCurrent + '/';
+    openToolFromIDB(idbKey, repoDir, miscToolCurrent);
+};
+document.getElementById('miscToolGetLibBtn').onclick = function(){
+    fetchToolVersionJson().then(function(vjson){
+        var misc = vjson.misc || [];
+        var idx = misc.indexOf(miscToolCurrent);
+        if (idx === -1) { msgAlert('未在 misc 中找到该工具'); return; }
+        openGetLib('other' + idx, 'other' + idx + 'N');
+    }).catch(function(e){ msgAlert(e.message); });
+};
+
+document.getElementById('settingsBackBtn').onclick = function(){ showPage('home'); setLayer('home'); };
+document.getElementById('settingsSource').onclick = openSourceDialog;
+document.getElementById('settingsIdb').onclick = openIdbDialog;
+document.getElementById('settingsLinks').onclick = openLinksDialog;
+document.getElementById('settingsReadme').onclick = function(){ openReadmeDialog(); };
+document.getElementById('settingsSnapshot').onclick = function(){
+    window.open(SNAPSHOT_URL, '_blank', 'noopener,noreferrer');
+};
+
+document.querySelectorAll('input[name="sourceRadio"]').forEach(function(r){
+    r.addEventListener('change', function(){
+        if (!r.checked) return;
+        getInfo().then(function(info){
+            info.source = r.value;
+            return saveInfo(info);
+        }).then(function(){
+            sessionCache.invalidateAll();
+            prefetch();
+            closeDialog('dlgSource');
+        });
+    });
+});
+
+document.getElementById('dlgUpdateDownload').onclick = function(){
+    if (!updateSelected) return;
+    var btn = document.getElementById('dlgUpdateDownload');
+    btn.disabled = true;
+    btn.textContent = '下载中...';
+    var path = toolPath(currentTool, updateSelected);
+    fetchRepoFile(path).then(function(html){
+        return idbSet(STORE_FILES, currentTool + '/' + updateSelected + '.html', html);
+    }).then(function(){
+        return msgAlert('已下载 ' + currentTool + '-' + updateSelected + '.html');
+    }).then(function(){
+        closeDialog('dlgUpdate');
+        return refreshVersionsList();
+    }).catch(function(e){
+        msgAlert(e.message || '下载失败');
+    }).then(function(){
+        btn.disabled = false;
+        btn.textContent = '下载该版本';
+    });
+};
+
+document.getElementById('dlgLibDownload').onclick = function(){
+    var cbs = document.querySelectorAll('#dlgLibList input[type="checkbox"]:checked:not(#libSelectAll)');
+    if (cbs.length === 0) { msgAlert('请至少选择一个库'); return; }
+    var btn = document.getElementById('dlgLibDownload');
+    btn.disabled = true;
+    btn.textContent = '下载中...';
+    var ok = 0, fail = 0;
+    var arr = Array.prototype.slice.call(cbs);
+    arr.reduce(function(chain, cb){
+        return chain.then(function(){
+            return fetchRepoFileByUrl(cb.dataset.url).then(function(text){
+                return idbSet(STORE_FILES, 'lib/' + cb.value + '.js', text);
+            }).then(function(){ ok++; }).catch(function(e){
+                console.error('库下载失败：', cb.value, e);
+                fail++;
+            });
+        });
+    }, Promise.resolve()).then(function(){
+        btn.disabled = false;
+        btn.textContent = '下载';
+        return msgAlert('下载完成：成功 ' + ok + ' 个' + (fail ? '，失败 ' + fail + ' 个' : ''));
+    }).then(function(){
+        if (fail === 0) closeDialog('dlgLib');
+    });
+};
+
+document.getElementById('dlgIdbDelete').onclick = function(){
+    var cbs = document.querySelectorAll('#dlgIdbList input[type="checkbox"]:checked:not(:disabled)');
+    if (cbs.length === 0) { msgAlert('未选择任何文件'); return; }
+    var byStore = {};
+    for (var i = 0; i < cbs.length; i++) {
+        var s = cbs[i].dataset.store;
+        var k = cbs[i].dataset.key;
+        if (!byStore[s]) byStore[s] = [];
+        byStore[s].push(k);
+    }
+    var stores = Object.keys(byStore);
+    stores.reduce(function(chain, storeName){
+        return chain.then(function(){
+            return idbDeleteMany(storeName, byStore[storeName]).catch(function(e){
+                console.error('删除失败：', e);
+            });
+        });
+    }, Promise.resolve()).then(function(){
+        return msgAlert('已删除 ' + cbs.length + ' 个文件');
+    }).then(function(){
+        return openIdbDialog();
+    }).then(function(){
+        return refreshHomeIcons();
+    });
+};
+
+/* ============================================================
+ * 工具入口
+ * ============================================================ */
+function handleToolEntry(toolName) {
+    return idbKeys(STORE_FILES).then(function(allKeys){
+        var localVersions = allKeys
+            .filter(function(k){ return typeof k === 'string' && k.indexOf(toolName + '/') === 0; })
+            .map(function(k){ return k.replace(toolName + '/', '').replace(/\.html$/, ''); })
+            .sort(compareVersion);
+        var localLatest = localVersions[localVersions.length - 1];
+
+        return getToolCheckTime(toolName).then(function(lastCheck){
+            var shouldPrompt = needAutoCheck(lastCheck) || !localLatest;
+            if (!shouldPrompt) return { localLatest: localLatest };
+
+            return fetchToolVersionJson().then(function(vjson){
+                var versions = vjson[toolName] || [];
+                var latest = versions[0];
+                if (!latest) return { localLatest: localLatest };
+
+                if (localLatest && compareVersion(latest, localLatest) <= 0) {
+                    return { localLatest: localLatest };
+                }
+
+                return fetchChangelog('工具/' + toolName + '/版本/更新日志.txt').catch(function(){ return []; }).then(function(logs){
+                    var logText = logs.length > 0 ? logs[logs.length - 1] : '(无更新日志)';
+                    var msg = localLatest
+                        ? ('发现 ' + toolName + ' 新版本：' + latest + '\n\n更新日志：\n' + logText + '\n\n是否下载？')
+                        : (toolName + ' 本地无版本，将下载最新版 ' + latest + '\n\n更新日志：\n' + logText + '\n\n是否下载？');
+                    return showConfirm(msg).then(function(yes){
+                        if (!yes) return { localLatest: localLatest };
+                        var path = toolPath(toolName, latest);
+                        return fetchRepoFile(path).then(function(html){
+                            return idbSet(STORE_FILES, toolName + '/' + latest + '.html', html);
+                        }).then(function(){
+                            return { localLatest: latest };
+                        });
+                    });
+                });
+            }).catch(function(e){
+                console.warn('检查更新失败：', e);
+                return { localLatest: localLatest };
+            }).then(function(res){
+                return setToolCheckTime(toolName, Date.now()).then(function(){ return res; });
+            });
+        }).then(function(res){
+            return idbKeys(STORE_FILES).then(function(allKeys2){
+                var localVersions2 = allKeys2
+                    .filter(function(k){ return typeof k === 'string' && k.indexOf(toolName + '/') === 0; })
+                    .map(function(k){ return k.replace(toolName + '/', '').replace(/\.html$/, ''); })
+                    .sort(compareVersion);
+                if (localVersions2.length === 0) {
+                    return msgAlert(toolName + ' 本地无版本，已取消下载。');
+                }
+                var latestLocal = localVersions2[localVersions2.length - 1];
+                var idbKey = toolName + '/' + latestLocal + '.html';
+                var repoDir = '工具/' + toolName + '/版本/' + versionSubDir(latestLocal) + '/';
+                return openToolFromIDB(idbKey, repoDir, toolName);
+            });
+        });
+    });
+}
+
+/* ============================================================
+ * 启动
+ * ============================================================ */
+(function init() {
+    if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist().then(function(granted){
+            console.log('工具箱 IDB 持久化:', granted ? '✅ 已授予' : '❌ 被拒绝');
+        }).catch(function(){});
+    }
+
+    getInfo().then(function(){
+        return refreshHomeIcons();
+    }).then(function(){
+        showPage('home');
+        setLayer('home');
+        document.getElementById('pagesContainer').style.display = 'flex';
+        syncDialogSize();
+        prefetch();
+    }).catch(function(e){
+        console.error('init 失败：', e);
+        showPage('home');
+        setLayer('home');
+        document.getElementById('pagesContainer').style.display = 'flex';
+    });
+})();
+</script>
+
+</body>
+</html>
