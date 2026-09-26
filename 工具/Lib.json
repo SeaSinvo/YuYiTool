@@ -18,7 +18,8 @@
     "libvorbis.js"
   ],
   "misc": [
-    "文本画生成器"
+    "文本画生成器",
+    "Phira自助加密文件工具"
   ],
   "other0": [
     "https://cdn.jsdelivr.net/npm/omggif@1.0.10/omggif.js",
@@ -31,5 +32,11 @@
     "jszip",
     "mp4box",
     "h264-mp4-encoder"
+  ],
+  "other1": [
+    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js"
+  ],
+  "other1N": [
+    "@bokuweb/zstd-wasm"
   ]
 }
