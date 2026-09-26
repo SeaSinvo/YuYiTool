@@ -14,8 +14,8 @@
   "PRSLN": [
     "zstd-wasm",
     "lamejs",
-    "zip.js",
-    "libvorbis.js"
+    "zip",
+    "libvorbis"
   ],
   "misc": [
     "文本画生成器",
