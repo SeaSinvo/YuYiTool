@@ -6,7 +6,7 @@
     "jszip"
   ],
   "PRSL": [
-    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js",
+    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm@0.0.27/dist/web/zstd.js",
     "https://cdn.jsdelivr.net/npm/@breezystack/lamejs@1.2.7/+esm",
     "https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.45/+esm",
     "https://cdn.jsdelivr.net/npm/libvorbis.js@1.3.7/lib/libvorbis.js"
@@ -34,7 +34,7 @@
     "h264-mp4-encoder"
   ],
   "other1": [
-    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js",
+    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm@0.0.27/dist/web/zstd.js",
     "https://cdn.jsdelivr.net/npm/fzstd@0.1.1/+esm"
   ],
   "other1N": [
