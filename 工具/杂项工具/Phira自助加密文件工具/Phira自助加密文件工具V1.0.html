@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-mode="encrypt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phira自助加密文件工具V1.0</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+
+  :root{
+    --bg:#080b11;
+    --fg:#e9eff8;
+    --muted:#8a95a8;
+    --muted-2:#5f6b7d;
+
+    --border:rgba(255,255,255,.075);
+    --border-strong:rgba(255,255,255,.13);
+
+    --accent:#5b8cff;
+    --accent-strong:#3a6ae8;
+    --accent-soft:rgba(91,140,255,.13);
+    --accent-line:rgba(91,140,255,.42);
+    --accent-glow:rgba(91,140,255,.35);
+
+    --ok:#3fd68c;
+    --err:#ff6b6b;
+
+    --glow-a:rgba(91,140,255,.20);
+    --glow-b:rgba(150,102,255,.13);
+
+    --r:18px;
+  }
+
+  :root[data-mode="decrypt"]{
+    --accent:#25c79c;
+    --accent-strong:#12a37b;
+    --accent-soft:rgba(37,199,156,.13);
+    --accent-line:rgba(37,199,156,.42);
+    --accent-glow:rgba(37,199,156,.32);
+    --glow-a:rgba(37,199,156,.17);
+    --glow-b:rgba(56,189,248,.12);
+  }
+
+  html,body{height:100%}
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font:14px/1.65 system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:
+      radial-gradient(900px 520px at 12% -10%, var(--glow-a), transparent 62%),
+      radial-gradient(760px 480px at 90% -6%, var(--glow-b), transparent 58%),
+      radial-gradient(1000px 700px at 50% 115%, rgba(255,255,255,.03), transparent 60%);
+    transition:background .5s ease;
+  }
+
+  .app{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:720px;
+    margin:0 auto;
+    padding:52px 20px 72px;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  .hero{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:18px;
+    margin-bottom:26px;
+  }
+  .hero h1{
+    margin:0 0 5px;
+    font-size:25px;
+    font-weight:700;
+    letter-spacing:-.02em;
+    line-height:1.25;
+  }
+  .hero p{
+    margin:0;
+    color:var(--muted);
+    font-size:13px;
+  }
+  .pill{
+    flex:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:4px;
+    padding:5px 11px;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--ok);
+    background:rgba(63,214,140,.09);
+    border:1px solid rgba(63,214,140,.24);
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .pill i{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--ok);
+    box-shadow:0 0 8px var(--ok);
+  }
+
+  /* ---------- 模式切换 ---------- */
+  .switch{
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    padding:4px;
+    margin:0 auto 22px;
+    width:100%;
+    max-width:300px;
+    background:rgba(255,255,255,.035);
+    border:1px solid var(--border);
+    border-radius:13px;
+    transition:opacity .25s ease;
+  }
+  .switch.disabled{opacity:.5;pointer-events:none}
+
+  .switch-thumb{
+    position:absolute;
+    top:4px;
+    left:4px;
+    bottom:4px;
+    width:calc(50% - 4px);
+    border-radius:10px;
+    background:var(--accent-soft);
+    border:1px solid var(--accent-line);
+    box-shadow:0 6px 18px -10px var(--accent-glow);
+    transition:transform .3s cubic-bezier(.4,.6,.2,1),
+               background .3s ease,
+               border-color .3s ease,
+               box-shadow .3s ease;
+    pointer-events:none;
+  }
+  .switch[data-mode="decrypt"] .switch-thumb{transform:translateX(100%)}
+
+  .switch-btn{
+    position:relative;
+    z-index:1;
+    appearance:none;
+    border:0;
+    background:none;
+    padding:9px 0;
+    border-radius:10px;
+    font:inherit;
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+    cursor:pointer;
+    transition:color .2s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .switch-btn.active{color:var(--fg)}
+  .switch-btn:focus-visible{outline:2px solid var(--accent-line);outline-offset:2px}
+
+  /* ---------- 拖放区 ---------- */
+  .panel{
+    position:relative;
+    background:linear-gradient(180deg,rgba(255,255,255,.038),rgba(255,255,255,.012));
+    border:1px solid var(--border);
+    border-radius:var(--r);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.045) inset,
+      0 24px 48px -34px rgba(0,0,0,.95);
+  }
+
+  .dropzone{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:0;
+    min-height:320px;
+    padding:44px 26px;
+    border:1.5px dashed var(--border-strong);
+    border-radius:var(--r);
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .22s ease,background .22s ease,transform .22s ease;
+  }
+  .dropzone:hover{border-color:var(--accent-line);background:rgba(255,255,255,.022)}
+  .dropzone.over{
+    border-color:var(--accent);
+    background:var(--accent-soft);
+    transform:scale(1.008);
+  }
+  .dropzone[data-state="loading"],
+  .dropzone[data-state="processing"],
+  .dropzone[data-state="done"],
+  .dropzone[data-state="error"]{cursor:default}
+  .dropzone[data-state="loading"]:hover,
+  .dropzone[data-state="processing"]:hover,
+  .dropzone[data-state="done"]:hover,
+  .dropzone[data-state="error"]:hover{border-color:var(--border-strong);background:none}
+
+  .dz-ring{
+    position:relative;
+    display:grid;
+    place-items:center;
+    width:66px;height:66px;
+    margin-bottom:18px;
+    border-radius:22px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+    color:var(--accent);
+    transition:color .3s ease,background .3s ease,border-color .3s ease,transform .3s ease;
+  }
+  .dz-ring > *{grid-area:1/1}
+  .dropzone.over .dz-ring{transform:translateY(-3px) scale(1.05)}
+
+  .dropzone[data-state="done"] .dz-ring{
+    color:var(--ok);
+    background:rgba(63,214,140,.09);
+    border-color:rgba(63,214,140,.3);
+  }
+  .dropzone[data-state="error"] .dz-ring{
+    color:var(--err);
+    background:rgba(255,107,107,.09);
+    border-color:rgba(255,107,107,.3);
+  }
+
+  .dz-mark{display:none;width:28px;height:28px}
+  .dropzone[data-state="ready"] .dz-mark.upload{display:block}
+  .dropzone[data-state="done"] .dz-mark.check{display:block}
+  .dropzone[data-state="error"] .dz-mark.warn{display:block}
+
+  .dz-spinner{
+    display:none;
+    width:26px;height:26px;
+    border-radius:50%;
+    border:2.5px solid rgba(255,255,255,.14);
+    border-top-color:var(--accent);
+    animation:spin .7s linear infinite;
+  }
+  .dropzone[data-state="loading"] .dz-spinner,
+  .dropzone[data-state="processing"] .dz-spinner{display:block}
+
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .dz-title{
+    margin:0 0 6px;
+    font-size:16px;
+    font-weight:600;
+    color:var(--fg);
+  }
+  .dz-sub{
+    margin:0 0 22px;
+    font-size:12.5px;
+    color:var(--muted);
+    max-width:420px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .dz-sub:empty{display:none}
+
+  .dz-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  .btn{
+    appearance:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    padding:9px 20px;
+    border-radius:10px;
+    border:1px solid var(--border-strong);
+    background:rgba(255,255,255,.05);
+    color:var(--fg);
+    font:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .18s ease,border-color .18s ease,
+               transform .1s ease,opacity .18s ease,box-shadow .18s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .btn:hover{background:rgba(255,255,255,.09)}
+  .btn:active{transform:translateY(1px)}
+  .btn:focus-visible{outline:2px solid var(--accent-line);outline-offset:2px}
+  .btn:disabled{opacity:.42;cursor:not-allowed;transform:none;box-shadow:none}
+  .btn:disabled:hover{background:rgba(255,255,255,.05)}
+
+  .btn.primary{
+    border-color:transparent;
+    background:linear-gradient(180deg,var(--accent),var(--accent-strong));
+    color:#fff;
+    box-shadow:0 8px 22px -12px var(--accent-glow);
+  }
+  .btn.primary:hover{filter:brightness(1.07)}
+  .btn.primary:disabled:hover{filter:none}
+
+  .foot{
+    margin:22px 0 0;
+    text-align:center;
+    font-size:12px;
+    color:var(--muted-2);
+  }
+
+  /* ---------- Toast ---------- */
+  .toast-wrap{
+    position:fixed;
+    left:50%;
+    bottom:30px;
+    transform:translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    z-index:99;
+    pointer-events:none;
+    width:max-content;
+    max-width:92vw;
+  }
+  .toast{
+    padding:10px 18px;
+    font-size:13px;
+    color:var(--fg);
+    background:rgba(28,34,45,.96);
+    border:1px solid var(--border-strong);
+    border-radius:11px;
+    box-shadow:0 18px 44px -22px rgba(0,0,0,.95);
+    animation:toastIn .26s cubic-bezier(.4,.6,.2,1);
+    text-align:center;
+  }
+  .toast.err{
+    border-color:rgba(255,107,107,.42);
+    color:#ffc9c9;
+  }
+  .toast.out{
+    opacity:0;
+    transform:translateY(8px);
+    transition:opacity .3s ease,transform .3s ease;
+  }
+  @keyframes toastIn{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:none}
+  }
+
+  @media (max-width:560px){
+    .app{padding:32px 14px 56px}
+    .hero h1{font-size:21px}
+    .hero p{font-size:12px}
+    .dropzone{min-height:280px;padding:34px 18px}
+    .dz-title{font-size:15px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+<main class="app">
+
+  <header class="hero">
+    <div>
+      <h1>Phira 自助加密文件工具</h1>
+      <p>加密 · 解密 · 全部在浏览器本地完成，文件不会上传</p>
+    </div>
+    <span class="pill"><i></i>本地处理</span>
+  </header>
+
+  <div class="switch disabled" id="modeSwitch" data-mode="encrypt" role="tablist" aria-label="模式切换">
+    <span class="switch-thumb" aria-hidden="true"></span>
+    <button class="switch-btn active" type="button" role="tab"
+            data-mode="encrypt" aria-selected="true">加密</button>
+    <button class="switch-btn" type="button" role="tab"
+            data-mode="decrypt" aria-selected="false">解密</button>
+  </div>
+
+  <section class="panel dropzone" id="drop" data-state="loading">
+    <div class="dz-ring">
+      <span class="dz-spinner"></span>
+      <svg class="dz-mark upload" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 16V4"/>
+        <path d="m7 9 5-5 5 5"/>
+        <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+      </svg>
+      <svg class="dz-mark check" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m4 12.5 5 5L20 6.5"/>
+      </svg>
+      <svg class="dz-mark warn" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 7.5v5.5"/>
+        <path d="M12 16.5h.01"/>
+      </svg>
+    </div>
+
+    <p class="dz-title" id="dzTitle">正在加载模块…</p>
+    <p class="dz-sub" id="dzSub">首次加载需要从 CDN 获取 zstdify 与 fzstd</p>
+
+    <div class="dz-actions">
+      <button class="btn primary" id="pickBtn" type="button" disabled>选择文件</button>
+      <button class="btn" id="retryBtn" type="button" hidden>重新加载</button>
+    </div>
+
+    <input type="file" id="fileInput" multiple hidden>
+  </section>
+
+  <p class="foot">处理完成后自动下载，不会保存到本地列表</p>
+
+</main>
+
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<script type="module">
+/* =========================================================================
+ * 0. 工具函数
+ * ========================================================================= */
+const $ = (id) => document.getElementById(id);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const nextFrame = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
+
+/* =========================================================================
+ * 1. 依赖加载
+ *
+ *  压缩：zstdify（纯 TypeScript，零依赖，无 WASM，支持 compress/decompress）
+ *  解压：fzstd（纯 JavaScript，8kB，UMD 全局变量）
+ *
+ *  两者都不需要额外的 .wasm 文件，满足「纯本地 + 单 JS 链接」要求。
+ * ========================================================================= */
+
+const ZSTDIFY_URL = 'https://esm.sh/zstdify';
+
+const FZSTD_URLS = [
+  'https://cdn.jsdelivr.net/npm/fzstd@0.1.1/umd/index.js',
+  'https://unpkg.com/fzstd/umd/index.js',
+];
+
+let zstdifyMod = null;   // { compress, decompress }
+let fzstdMod = null;     // { decompress, Decompress }
+
+/** 加载 zstdify（ESM） */
+async function ensureCompress() {
+  if (zstdifyMod) return zstdifyMod;
+
+  const mod = await import(/* @vite-ignore */ ZSTDIFY_URL);
+  if (typeof mod.compress !== 'function') {
+    throw new Error('zstdify 缺少 compress 接口');
+  }
+  zstdifyMod = mod;
+  return mod;
+}
+
+/** 加载 fzstd（UMD，依次尝试多个 CDN） */
+async function ensureDecompress() {
+  if (fzstdMod) return fzstdMod;
+
+  let lastErr = null;
+  for (const url of FZSTD_URLS) {
+    try {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = url;
+        s.async = true;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error(`加载失败: ${url}`));
+        document.head.appendChild(s);
+      });
+
+      if (window.fzstd && typeof window.fzstd.decompress === 'function') {
+        fzstdMod = window.fzstd;
+        return fzstdMod;
+      }
+      lastErr = new Error(`fzstd 未挂载到全局: ${url}`);
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error('fzstd 加载失败');
+}
+
+/* =========================================================================
+ * 2. 8 字节块变换
+ * ========================================================================= */
+function decryptBlock(v, o) {
+  let t;
+
+  t = v[o + 1]; v[o + 1] = v[o + 4]; v[o + 4] = t;
+  t = v[o + 2]; v[o + 2] = v[o + 6]; v[o + 6] = t;
+
+  t = v[o + 1]; v[o + 1] = v[o + 4]; v[o + 4] = t;
+  t = v[o + 3]; v[o + 3] = v[o + 6]; v[o + 6] = t;
+
+  v[o + 1] = (v[o + 1] - v[o + 0]) & 0xFF;
+  v[o + 3] = (v[o + 3] - v[o + 2]) & 0xFF;
+  v[o + 5] = (v[o + 5] - v[o + 4]) & 0xFF;
+  v[o + 7] = (v[o + 7] - v[o + 6]) & 0xFF;
+
+  v[o + 2] = (v[o + 2] - v[o + 0]) & 0xFF;
+  v[o + 3] = (v[o + 3] - v[o + 1]) & 0xFF;
+  v[o + 6] = (v[o + 6] - v[o + 4]) & 0xFF;
+  v[o + 7] = (v[o + 7] - v[o + 5]) & 0xFF;
+
+  v[o + 4] = (v[o + 4] - v[o + 0]) & 0xFF;
+  v[o + 5] = (v[o + 5] - v[o + 1]) & 0xFF;
+  v[o + 6] = (v[o + 6] - v[o + 2]) & 0xFF;
+  v[o + 7] = (v[o + 7] - v[o + 3]) & 0xFF;
+
+  t = v[o + 3]; v[o + 3] = v[o + 5]; v[o + 5] = t;
+}
+
+function encryptBlock(v, o) {
+  let t;
+
+  t = v[o + 3]; v[o + 3] = v[o + 5]; v[o + 5] = t;
+
+  v[o + 4] = (v[o + 4] + v[o + 0]) & 0xFF;
+  v[o + 5] = (v[o + 5] + v[o + 1]) & 0xFF;
+  v[o + 6] = (v[o + 6] + v[o + 2]) & 0xFF;
+  v[o + 7] = (v[o + 7] + v[o + 3]) & 0xFF;
+
+  v[o + 2] = (v[o + 2] + v[o + 0]) & 0xFF;
+  v[o + 3] = (v[o + 3] + v[o + 1]) & 0xFF;
+  v[o + 6] = (v[o + 6] + v[o + 4]) & 0xFF;
+  v[o + 7] = (v[o + 7] + v[o + 5]) & 0xFF;
+
+  v[o + 1] = (v[o + 1] + v[o + 0]) & 0xFF;
+  v[o + 3] = (v[o + 3] + v[o + 2]) & 0xFF;
+  v[o + 5] = (v[o + 5] + v[o + 4]) & 0xFF;
+  v[o + 7] = (v[o + 7] + v[o + 6]) & 0xFF;
+
+  t = v[o + 1]; v[o + 1] = v[o + 4]; v[o + 4] = t;
+  t = v[o + 3]; v[o + 3] = v[o + 6]; v[o + 6] = t;
+
+  t = v[o + 1]; v[o + 1] = v[o + 4]; v[o + 4] = t;
+  t = v[o + 2]; v[o + 2] = v[o + 6]; v[o + 6] = t;
+}
+
+/* =========================================================================
+ * 3. 加解密流程
+ * ========================================================================= */
+
+/**
+ * 原始文件 → zstdify 压缩 → 构造中间数据 D → 逐块逆变换 → 加密文件
+ *
+ * 填充规则：
+ *   L = 压缩帧长度
+ *   L % 8 == 0 → N = L + 8,        末字节 = 0
+ *   否则        → N = ceil(L/8)*8, 末字节 = L % 8
+ */
+function phiraEncrypt(raw) {
+  const compressed = new Uint8Array(zstdifyMod.compress(raw));
+  const L = compressed.length;
+
+  const N = (L % 8 === 0) ? L + 8 : Math.ceil(L / 8) * 8;
+  const lastByte = 8 - (N - L);
+
+  const D = new Uint8Array(N);
+  D.set(compressed, 0);
+  D[N - 1] = lastByte;
+
+  for (let i = 0; i < N; i += 8) encryptBlock(D, i);
+  return D;
+}
+
+/**
+ * 加密文件 → 逐块正向变换 → 还原填充 → fzstd 解压 → 原始文件
+ */
+function phiraDecrypt(data) {
+  const buf = data.slice();
+  const n = buf.length - (buf.length % 8);
+  if (n < 8) throw new Error('文件过小，不是有效的加密资源');
+
+  for (let i = 0; i < n; i += 8) decryptBlock(buf, i);
+
+  const lastByte = buf[n - 1];
+  const newSize = n + lastByte - 8;
+  if (newSize <= 0 || newSize > n) throw new Error('数据长度异常，无法解析');
+
+  const frame = buf.subarray(0, newSize);
+  if (frame.length < 4 ||
+      frame[0] !== 0x28 || frame[1] !== 0xB5 ||
+      frame[2] !== 0x2F || frame[3] !== 0xFD) {
+    throw new Error('zstd 魔数不匹配，可能不是 Phira 加密资源');
+  }
+
+  // fzstd 流式解压：兼容无 content size 的帧
+  const chunks = [];
+  const d = new fzstdMod.Decompress((c) => chunks.push(c.slice()));
+  d.push(frame, true);
+
+  let total = 0;
+  for (const c of chunks) total += c.length;
+  const out = new Uint8Array(total);
+  let off = 0;
+  for (const c of chunks) { out.set(c, off); off += c.length; }
+  return out;
+}
+
+/* =========================================================================
+ * 4. 输出文件名规则
+ *
+ *  加密：
+ *    .png  → 同名 .char
+ *    .mp3  → 固定为 bgm（无后缀）
+ *
+ *  解密：
+ *    .char → 同名 .png
+ *    无扩展名且文件名匹配 bgm → bgm.mp3
+ *    其他 → 原名 + .decrypted
+ * ========================================================================= */
+
+function encryptOutputName(name) {
+  const lower = name.toLowerCase();
+  if (lower.endsWith('.png')) {
+    return name.slice(0, -4) + '.char';
+  }
+  if (lower.endsWith('.mp3')) {
+    return 'bgm';
+  }
+  return name + '.encrypted';
+}
+
+function decryptOutputName(name) {
+  const lower = name.toLowerCase();
+
+  if (lower.endsWith('.char')) {
+    return name.slice(0, -5) + '.png';
+  }
+
+  if (!name.includes('.') && lower === 'bgm') {
+    return name + '.mp3';
+  }
+
+  return name + '.decrypted';
+}
+
+/* =========================================================================
+ * 5. DOM 与状态
+ * ========================================================================= */
+const root = document.documentElement;
+const dropEl = $('drop');
+const dzTitle = $('dzTitle');
+const dzSub = $('dzSub');
+const pickBtn = $('pickBtn');
+const retryBtn = $('retryBtn');
+const fileInput = $('fileInput');
+const switchEl = $('modeSwitch');
+const switchBtns = [...switchEl.querySelectorAll('.switch-btn')];
+const toastWrap = $('toastWrap');
+
+const state = {
+  mode: 'encrypt',
+  ready: false,
+  processing: false,
+};
+
+/* =========================================================================
+ * 6. Toast
+ * ========================================================================= */
+function toast(msg, isErr = false) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (isErr ? ' err' : '');
+  el.textContent = msg;
+  toastWrap.appendChild(el);
+
+  setTimeout(() => {
+    el.classList.add('out');
+    setTimeout(() => el.remove(), 320);
+  }, 2800);
+}
+
+/* =========================================================================
+ * 7. 拖放区状态渲染
+ * ========================================================================= */
+function readyTitle() {
+  return state.mode === 'encrypt'
+    ? '拖入需要加密的 PNG / MP3 文件'
+    : '拖入需要解密的文件';
+}
+
+function readySub() {
+  return state.mode === 'encrypt'
+    ? 'PNG 输出为 .char · MP3 输出为 bgm（无后缀）'
+    : '.char 输出为 .png · bgm 输出为 bgm.mp3 · 其他输出 .decrypted';
+}
+
+function renderDrop(st, title, sub) {
+  dropEl.dataset.state = st;
+  dzTitle.textContent = title;
+  dzSub.textContent = sub || '';
+
+  if (st === 'error') {
+    pickBtn.hidden = true;
+    retryBtn.hidden = false;
+  } else {
+    pickBtn.hidden = false;
+    retryBtn.hidden = true;
+    pickBtn.disabled = st !== 'ready';
+  }
+}
+
+/* =========================================================================
+ * 8. 启动：加载依赖
+ * ========================================================================= */
+async function boot() {
+  state.ready = false;
+  switchEl.classList.add('disabled');
+  renderDrop('loading', '正在加载模块…', '首次加载需要从 CDN 获取 zstdify 与 fzstd');
+
+  try {
+    await Promise.all([ensureCompress(), ensureDecompress()]);
+    state.ready = true;
+    switchEl.classList.remove('disabled');
+    renderDrop('ready', readyTitle(), readySub());
+  } catch (e) {
+    renderDrop('error', '模块加载失败', e?.message || String(e));
+  }
+}
+
+retryBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  boot();
+});
+
+/* =========================================================================
+ * 9. 模式切换
+ * ========================================================================= */
+function setMode(mode) {
+  if (mode === state.mode) return;
+  state.mode = mode;
+
+  root.dataset.mode = mode;
+  switchEl.dataset.mode = mode;
+  switchBtns.forEach((b) => {
+    const on = b.dataset.mode === mode;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', String(on));
+  });
+
+  if (state.ready && !state.processing) {
+    renderDrop('ready', readyTitle(), readySub());
+  }
+}
+
+switchBtns.forEach((b) => b.addEventListener('click', () => {
+  if (state.processing) { toast('正在处理中，请稍候', true); return; }
+  setMode(b.dataset.mode);
+}));
+
+/* =========================================================================
+ * 10. 下载
+ * ========================================================================= */
+function download(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+/* =========================================================================
+ * 11. 文件过滤与处理队列
+ * ========================================================================= */
+function isAccepted(file) {
+  if (state.mode === 'decrypt') return true;
+  const ext = file.name.split('.').pop().toLowerCase();
+  return ext === 'png' || ext === 'mp3';
+}
+
+async function processOne(file) {
+  const isEncrypt = state.mode === 'encrypt';
+  const buf = new Uint8Array(await file.arrayBuffer());
+  const out = isEncrypt ? phiraEncrypt(buf) : phiraDecrypt(buf);
+  const outName = isEncrypt
+    ? encryptOutputName(file.name)
+    : decryptOutputName(file.name);
+  download(new Blob([out], { type: 'application/octet-stream' }), outName);
+}
+
+const queue = [];
+
+async function enqueue(files) {
+  if (!state.ready) return;
+
+  const accepted = [];
+  let skipped = 0;
+
+  for (const f of files) {
+    if (isAccepted(f)) accepted.push(f);
+    else skipped++;
+  }
+
+  if (!accepted.length) {
+    if (skipped) toast('加密模式仅支持 PNG 和 MP3 文件', true);
+    return;
+  }
+  if (skipped) toast(`已跳过 ${skipped} 个不支持的文件`);
+
+  queue.push(...accepted);
+  if (state.processing) return;
+
+  state.processing = true;
+  switchEl.classList.add('disabled');
+
+  let ok = 0;
+  let fail = 0;
+  let done = 0;
+
+  while (queue.length) {
+    const file = queue.shift();
+    done++;
+
+    renderDrop(
+      'processing',
+      state.mode === 'encrypt' ? '正在加密…' : '正在解密…',
+      `${done} / ${done + queue.length} · ${file.name}`
+    );
+    await nextFrame();
+
+    try {
+      await processOne(file);
+      ok++;
+    } catch (err) {
+      fail++;
+      toast(`${file.name}：${err?.message || err}`, true);
+    }
+
+    await sleep(70);
+  }
+
+  state.processing = false;
+
+  if (state.ready) {
+    switchEl.classList.remove('disabled');
+    const label = fail
+      ? `完成 · 成功 ${ok} / 失败 ${fail}`
+      : `完成 ${ok} 个文件`;
+    renderDrop('done', label, fail ? '鼠标悬停可查看失败文件' : '');
+
+    setTimeout(() => {
+      if (state.ready && !state.processing && !queue.length) {
+        renderDrop('ready', readyTitle(), readySub());
+      }
+    }, 1800);
+  }
+}
+
+/* =========================================================================
+ * 12. 事件绑定
+ * ========================================================================= */
+['dragenter', 'dragover'].forEach((ev) =>
+  dropEl.addEventListener(ev, (e) => {
+    e.preventDefault();
+    if (!state.ready || state.processing) return;
+    dropEl.classList.add('over');
+  })
+);
+
+['dragleave', 'drop'].forEach((ev) =>
+  dropEl.addEventListener(ev, (e) => {
+    e.preventDefault();
+    if (ev === 'dragleave' && dropEl.contains(e.relatedTarget)) return;
+    dropEl.classList.remove('over');
+  })
+);
+
+dropEl.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropEl.classList.remove('over');
+  if (!state.ready || state.processing) return;
+
+  const dt = e.dataTransfer;
+  if (dt?.files?.length) enqueue([...dt.files]);
+});
+
+dropEl.addEventListener('click', (e) => {
+  if (e.target.closest('button')) return;
+  if (!state.ready || state.processing) return;
+  fileInput.click();
+});
+
+pickBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!state.ready || state.processing) return;
+  fileInput.click();
+});
+
+fileInput.addEventListener('change', () => {
+  const files = [...fileInput.files];
+  fileInput.value = '';
+  if (files.length) enqueue(files);
+});
+
+/* 启动 */
+boot();
+</script>
+</body>
+</html>
