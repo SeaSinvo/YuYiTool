@@ -38,7 +38,7 @@
     "https://cdn.jsdelivr.net/npm/fzstd@0.1.1/+esm"
   ],
   "other1N": [
-    "@bokuweb/zstd-wasm (esm.sh)",
-    "fzstd (jsdelivr +esm)"
+    "zstd-wasm",
+    "fzstd"
   ]
 }
