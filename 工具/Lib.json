@@ -6,16 +6,16 @@
     "jszip"
   ],
   "PRSL": [
-    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm@0.0.27/dist/web/zstd.js",
+    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm/dist/web/index.js",
     "https://cdn.jsdelivr.net/npm/@breezystack/lamejs@1.2.7/+esm",
     "https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.7.45/+esm",
     "https://cdn.jsdelivr.net/npm/libvorbis.js@1.3.7/lib/libvorbis.js"
   ],
   "PRSLN": [
-    "zstd-wasm",
-    "lamejs",
-    "zip",
-    "libvorbis"
+    "@bokuweb/zstd-wasm",
+    "@breezystack/lamejs",
+    "@zip.js/zip.js",
+    "libvorbis.js"
   ],
   "misc": [
     "文本画生成器",
@@ -34,11 +34,11 @@
     "h264-mp4-encoder"
   ],
   "other1": [
-    "https://cdn.jsdelivr.net/npm/@bokuweb/zstd-wasm@0.0.27/dist/web/zstd.js",
+    "https://esm.sh/@bokuweb/zstd-wasm",
     "https://cdn.jsdelivr.net/npm/fzstd@0.1.1/+esm"
   ],
   "other1N": [
-    "zstd-wasm",
-    "fzstd"
+    "@bokuweb/zstd-wasm (esm.sh)",
+    "fzstd (jsdelivr +esm)"
   ]
 }
