@@ -2,16 +2,17 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Launcher-β0.1</title>
 </head>
 <body>
 
-<!-- 工具视图（全屏） -->
+<!-- 工具视图（全屏 iframe） -->
 <div id="view-tool" style="position:fixed;inset:0;display:none;">
     <iframe id="toolFrame" style="width:100%;height:100%;border:none;display:block;background:#fff;"></iframe>
 </div>
 
-<!-- 启动器界面 -->
+<!-- 启动器主界面 -->
 <div id="view-list" style="display:none;padding:24px;font-family:system-ui,sans-serif;">
     <h1 id="launcherTitle"></h1>
 
@@ -31,7 +32,7 @@
         <div style="margin-top:12px;">
             <button id="downloadBtn" disabled>下载该版本</button>
         </div>
-        <div id="changelogDisplay" style="margin-top:12px;padding:12px;background:#f5f5f5;white-space:pre-wrap;font-family:monospace;min-height:60px;border:1px solid #ddd;"></div>
+        <pre id="changelogDisplay" style="margin-top:12px;padding:12px;background:#f5f5f5;white-space:pre-wrap;min-height:60px;border:1px solid #ddd;font-family:monospace;font-size:12px;"></pre>
     </fieldset>
 
     <fieldset style="margin:16px 0;">
@@ -46,61 +47,66 @@
  * 配置
  * ============================================================ */
 const OWNER = 'seasinvo';
-const REPO  = 'YuYiTool';
-const REF   = 'main';
+const REPO = 'YuYiTool';
+const REF = 'main';
 const TIMEOUT_MS = 10000;
 
 const PREFIX = {
-    gitee:  `https://gitee.com/api/v5/repos/${OWNER}/${REPO}/contents/`,
+    gitee: `https://gitee.com/api/v5/repos/${OWNER}/${REPO}/contents/`,
     github: `https://raw.githubusercontent.com/${OWNER}/${REPO}/${REF}/`
 };
 
-/* ============================================================
- * IndexedDB
- * ============================================================ */
 const DB_NAME = 'YuYiTool_Launcher';
-const DB_VER  = 1;
+const DB_VER = 1;
 const STORE_FILES = 'files';
-const STORE_META  = 'meta';
+const STORE_META = 'meta';
 const INFO_KEY = 'info.json';
 
+/* ============================================================
+ * IndexedDB（操作后关闭连接）
+ * ============================================================ */
 function openDB() {
     return new Promise((resolve, reject) => {
         const req = indexedDB.open(DB_NAME, DB_VER);
         req.onupgradeneeded = e => {
             const db = e.target.result;
             if (!db.objectStoreNames.contains(STORE_FILES)) db.createObjectStore(STORE_FILES);
-            if (!db.objectStoreNames.contains(STORE_META))  db.createObjectStore(STORE_META);
+            if (!db.objectStoreNames.contains(STORE_META)) db.createObjectStore(STORE_META);
         };
         req.onsuccess = () => resolve(req.result);
-        req.onerror   = () => reject(req.error);
+        req.onerror = () => reject(req.error);
     });
 }
+
 async function idbGet(store, key) {
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const tx = db.transaction(store, 'readonly');
         const req = tx.objectStore(store).get(key);
         req.onsuccess = () => resolve(req.result);
-        req.onerror   = () => reject(req.error);
+        req.onerror = () => reject(req.error);
+        tx.oncomplete = () => db.close();
     });
 }
+
 async function idbSet(store, key, value) {
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const tx = db.transaction(store, 'readwrite');
         tx.objectStore(store).put(value, key);
-        tx.oncomplete = () => resolve();
-        tx.onerror    = () => reject(tx.error);
+        tx.oncomplete = () => { db.close(); resolve(); };
+        tx.onerror = () => { db.close(); reject(tx.error); };
     });
 }
+
 async function idbKeys(store) {
     const db = await openDB();
     return new Promise((resolve, reject) => {
         const tx = db.transaction(store, 'readonly');
         const req = tx.objectStore(store).getAllKeys();
         req.onsuccess = () => resolve(req.result);
-        req.onerror   = () => reject(req.error);
+        req.onerror = () => reject(req.error);
+        tx.oncomplete = () => db.close();
     });
 }
 
@@ -117,6 +123,7 @@ async function getInfo() {
     if (!info.lastCheckTime) info.lastCheckTime = 0;
     return info;
 }
+
 async function saveInfo(info) {
     await idbSet(STORE_META, INFO_KEY, info);
 }
@@ -127,18 +134,21 @@ async function saveInfo(info) {
 function encodePath(p) {
     return p.split('/').map(encodeURIComponent).join('/');
 }
+
 function base64DecodeUnicode(b64) {
     const binary = atob(b64.replace(/\n/g, ''));
     const bytes = new Uint8Array(binary.length);
     for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
     return new TextDecoder('utf-8').decode(bytes);
 }
+
 function parseVersion(v) {
     const prefix = v[0];
     const nums = v.slice(1).split('.').map(n => parseInt(n, 10) || 0);
     while (nums.length < 3) nums.push(0);
     return { prefix, nums };
 }
+
 function compareVersion(a, b) {
     const va = parseVersion(a);
     const vb = parseVersion(b);
@@ -148,32 +158,38 @@ function compareVersion(a, b) {
     if (va.prefix !== vb.prefix) return va.prefix === 'V' ? 1 : -1;
     return 0;
 }
+
 function versionSubDir(v) {
     return v[0] === 'V' ? 'release' : 'beta';
 }
+
 function toolboxPath(v) {
     return `工具箱/版本/${versionSubDir(v)}/YuYiTool-${v}.html`;
 }
+
 function launcherPath(v) {
     return `工具箱/启动器/版本/${versionSubDir(v)}/Launcher-${v}.html`;
 }
 
+function getLastSundayMidnight(ts) {
+    const d = new Date(ts);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - d.getDay());
+    return d.getTime();
+}
+
 /* ============================================================
- * 带"数据静默超时"的 fetch
+ * 带数据静默超时的 fetch
  * ============================================================ */
-async function fetchWithDataTimeout(url, timeoutMs) {
+async function fetchWithTimeout(url, timeoutMs) {
     const controller = new AbortController();
     let timer = null;
     let timedOut = false;
 
     const resetTimer = () => {
         if (timer) clearTimeout(timer);
-        timer = setTimeout(() => {
-            timedOut = true;
-            controller.abort();
-        }, timeoutMs);
+        timer = setTimeout(() => { timedOut = true; controller.abort(); }, timeoutMs);
     };
-
     resetTimer();
 
     try {
@@ -194,12 +210,8 @@ async function fetchWithDataTimeout(url, timeoutMs) {
             for (const c of chunks) total += c.length;
             buffer = new Uint8Array(total);
             let off = 0;
-            for (const c of chunks) {
-                buffer.set(c, off);
-                off += c.length;
-            }
+            for (const c of chunks) { buffer.set(c, off); off += c.length; }
         }
-
         if (timer) clearTimeout(timer);
         return { status: res.status, ok: res.ok, buffer };
     } catch (e) {
@@ -214,19 +226,18 @@ async function fetchWithDataTimeout(url, timeoutMs) {
 }
 
 /* ============================================================
- * 统一获取文件（带错误分类）
+ * 统一拉取文件（Gitee API / GitHub raw）
  * ============================================================ */
 async function fetchFile(path) {
     const info = await getInfo();
     const source = info.source;
-
     const url = source === 'gitee'
         ? PREFIX.gitee + encodePath(path) + '?ref=' + REF
         : PREFIX.github + encodePath(path);
 
     let result;
     try {
-        result = await fetchWithDataTimeout(url, TIMEOUT_MS);
+        result = await fetchWithTimeout(url, TIMEOUT_MS);
     } catch (e) {
         if (source === 'github') {
             throw new Error('网络连接失败，尝试使用加速器链接或使用gitee');
@@ -267,12 +278,11 @@ async function fetchVersionJson() {
     const text = await fetchFile('工具箱/version.json');
     return JSON.parse(text);
 }
+
 async function fetchChangelog() {
     const text = await fetchFile('工具箱/更新日志.txt');
     let lines = text.split('\n');
-    while (lines.length > 0 && lines[lines.length - 1].trim() === '') {
-        lines.pop();
-    }
+    while (lines.length > 0 && lines[lines.length - 1].trim() === '') lines.pop();
     return lines;
 }
 
@@ -283,6 +293,7 @@ function getSelfVersion() {
     const m = document.title.match(/^Launcher-(.+)$/);
     return m ? m[1] : null;
 }
+
 async function selfCheck() {
     const selfV = getSelfVersion();
     if (!selfV) return;
@@ -315,21 +326,30 @@ async function selfCheck() {
 }
 
 /* ============================================================
- * ★ 自动检查：发现新版 → 弹窗（含更新日志）→ 确认即下载
+ * 本地最新版
  * ============================================================ */
-function getLastSundayMidnight(ts) {
-    const d = new Date(ts);
-    d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() - d.getDay());
-    return d.getTime();
+async function getLatestLocalVersion() {
+    const allKeys = await idbKeys(STORE_FILES);
+    const versions = allKeys
+        .filter(k => /^YuYiTool-.+\.html$/.test(k))
+        .map(k => k.replace(/^YuYiTool-/, '').replace(/\.html$/, ''));
+    if (versions.length === 0) return null;
+    versions.sort(compareVersion);
+    return versions[versions.length - 1];
 }
 
+/* ============================================================
+ * 下载工具箱
+ * ============================================================ */
 async function downloadToolbox(version) {
     const html = await fetchFile(toolboxPath(version));
     const fname = `YuYiTool-${version}.html`;
     await idbSet(STORE_FILES, fname, html);
 }
 
+/* ============================================================
+ * 自动检查（跨周日）
+ * ============================================================ */
 async function maybeAutoCheck() {
     const info = await getInfo();
     const now = Date.now();
@@ -342,31 +362,20 @@ async function maybeAutoCheck() {
     }
     if (!shouldCheck) return;
 
-    // 1. 启动器自检
     await selfCheck();
 
-    // 2. 工具箱版本检查（弹窗）
     try {
         const vjson = await fetchVersionJson();
         const latest = vjson.Toolbox && vjson.Toolbox[0];
         if (latest) {
             const localLatest = await getLatestLocalVersion();
-            // 只在本地有旧版本时才弹窗（本地没版本时 init() 会自动下载最新版）
             if (localLatest && compareVersion(latest, localLatest) > 0) {
-                // 取最新版对应的更新日志（最后一行）
                 let logText = '(无更新日志)';
                 try {
                     const logs = await fetchChangelog();
                     if (logs.length > 0) logText = logs[logs.length - 1];
-                } catch (e) {
-                    console.warn('更新日志拉取失败：', e);
-                }
-
-                const msg =
-                    `发现新版本：YuYiTool-${latest}\n\n` +
-                    `更新日志：\n${logText}\n\n` +
-                    `是否下载？`;
-
+                } catch (e) {}
+                const msg = `发现新版本：YuYiTool-${latest}\n\n更新日志：\n${logText}\n\n是否下载？`;
                 if (confirm(msg)) {
                     try {
                         await downloadToolbox(latest);
@@ -386,59 +395,49 @@ async function maybeAutoCheck() {
 }
 
 /* ============================================================
- * 本地最新版
+ * 渲染工具箱（★ 用 srcdoc，继承父页面 origin）
  * ============================================================ */
-async function getLatestLocalVersion() {
-    const allKeys = await idbKeys(STORE_FILES);
-    const versions = allKeys
-        .filter(k => /^YuYiTool-.+\.html$/.test(k))
-        .map(k => k.replace(/^YuYiTool-/, '').replace(/\.html$/, ''));
-    if (versions.length === 0) return null;
-    versions.sort(compareVersion);
-    return versions[versions.length - 1];
-}
-
-/* ============================================================
- * 渲染工具箱
- * ============================================================ */
-let currentBlobUrl = null;
 let currentVersion = null;
 
 function injectShim(html, baseHref) {
     const shim = `<script>
 (function(){
-  function send(type) {
-    try { parent.postMessage({ type: type }, '*'); } catch(e) {}
-  }
+  try {
+    var b = document.querySelector('base');
+    if (!b) { b = document.createElement('base'); document.head.insertBefore(b, document.head.firstChild); }
+    b.href = '${baseHref}';
+  } catch(e){}
+
+  function send(type) { try { parent.postMessage({type:type}, '*'); } catch(e) {} }
+
   try {
     Object.defineProperty(window.location, 'reload', {
       value: function(){ send('tool-reload'); }, configurable: true
     });
-  } catch(e) {
-    try { window.location.reload = function(){ send('tool-reload'); }; } catch(e2) {}
-  }
+  } catch(e) {}
+
   document.addEventListener('click', function(e){
-    const t = e.target.closest('button, a, [role="button"], input[type="button"], input[type="submit"]');
+    var t = e.target.closest('button, a, [role="button"]');
     if (!t) return;
-    const txt = (t.textContent || t.value || '').trim();
+    var txt = (t.textContent || '').trim();
     if (/刷新|重载|reload|refresh/i.test(txt)) {
       e.preventDefault(); e.stopPropagation();
       send('tool-reload');
     }
   }, true);
+
   document.addEventListener('keydown', function(e){
     if (e.key === 'F5' || (e.ctrlKey && e.key.toLowerCase() === 'r')) {
-      e.preventDefault();
-      send('tool-reload');
+      e.preventDefault(); send('tool-reload');
     }
   }, true);
 })();
 <\/script>`;
     let cleaned = html.replace(/<base\s[^>]*>/i, '');
     if (/<head[^>]*>/i.test(cleaned)) {
-        return cleaned.replace(/<head([^>]*)>/i, `<head$1><base href="${baseHref}">${shim}`);
+        return cleaned.replace(/<head([^>]*)>/i, `<head$1>${shim}`);
     }
-    return `<base href="${baseHref}">${shim}` + cleaned;
+    return shim + cleaned;
 }
 
 async function renderToolbox(version) {
@@ -448,6 +447,7 @@ async function renderToolbox(version) {
         console.warn('未找到版本：', fname);
         return false;
     }
+
     const info = await getInfo();
     const dir = `工具箱/版本/${versionSubDir(version)}/`;
     let baseHref;
@@ -456,20 +456,20 @@ async function renderToolbox(version) {
     } else {
         baseHref = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${REF}/${encodePath(dir)}`;
     }
+
     const injected = injectShim(html, baseHref);
-    const blob = new Blob([injected], { type: 'text/html;charset=utf-8' });
-    if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch(e) {} }
-    currentBlobUrl = URL.createObjectURL(blob);
     currentVersion = version;
 
-    document.getElementById('toolFrame').src = currentBlobUrl;
+    const iframe = document.getElementById('toolFrame');
+    iframe.srcdoc = injected;
+
     document.getElementById('view-tool').style.display = 'block';
     document.getElementById('view-list').style.display = 'none';
     return true;
 }
 
 /* ============================================================
- * 本地版本列表
+ * 版本列表
  * ============================================================ */
 let selectedVersion = null;
 
@@ -482,11 +482,13 @@ async function renderVersionList() {
         .map(k => k.replace(/^YuYiTool-/, '').replace(/\.html$/, ''))
         .sort(compareVersion)
         .reverse();
+
     if (versions.length === 0) {
-        listEl.innerHTML = '<div style="color:#888;">暂无已下载的版本</div>';
+        listEl.innerHTML = '<div>暂无已下载的版本</div>';
         document.getElementById('openBtn').disabled = true;
         return;
     }
+
     versions.forEach((v, i) => {
         const item = document.createElement('label');
         item.style.display = 'block';
@@ -506,10 +508,11 @@ async function renderVersionList() {
     });
     selectedVersion = versions[0];
     document.getElementById('openBtn').disabled = false;
+    document.getElementById('launcherTitle').textContent = document.title;
 }
 
 /* ============================================================
- * 手动"检查更新"：列出版本 + 显示日志
+ * 检查更新
  * ============================================================ */
 let selectedRemoteVersion = null;
 
@@ -532,7 +535,6 @@ async function checkUpdates() {
     versions.forEach((v, i) => {
         const lineIdx = logs.length - 1 - i;
         const log = (lineIdx >= 0 && lineIdx < logs.length) ? logs[lineIdx] : '(无日志)';
-
         const item = document.createElement('label');
         item.style.display = 'block';
         item.style.padding = '4px 0';
@@ -554,45 +556,32 @@ async function checkUpdates() {
 }
 
 /* ============================================================
- * ★ 刷新启动器到干净状态
+ * 视图切换
  * ============================================================ */
-async function refreshLauncher() {
-    // 清空远程区域
+async function showVersionList() {
+    document.getElementById('toolFrame').srcdoc = '';
+    currentVersion = null;
+
+    document.getElementById('view-tool').style.display = 'none';
+    document.getElementById('view-list').style.display = 'block';
+
+    // 回到干净状态
     document.getElementById('remoteSection').style.display = 'none';
     document.getElementById('remoteVersionList').innerHTML = '';
     document.getElementById('changelogDisplay').textContent = '';
     selectedRemoteVersion = null;
     document.getElementById('downloadBtn').disabled = true;
 
-    // 重置按钮状态
     const checkBtn = document.getElementById('checkBtn');
     checkBtn.disabled = false;
     checkBtn.textContent = '检查更新';
 
-    // 重新读取源并勾选
     const info = await getInfo();
     document.querySelectorAll('input[name="source"]').forEach(r => {
         r.checked = (r.value === info.source);
     });
 
-    // 重新渲染本地版本列表
     await renderVersionList();
-}
-
-/* ============================================================
- * 视图切换
- * ============================================================ */
-async function showVersionList() {
-    document.getElementById('toolFrame').src = 'about:blank';
-    if (currentBlobUrl) { try { URL.revokeObjectURL(currentBlobUrl); } catch(e) {} }
-    currentBlobUrl = null;
-    currentVersion = null;
-
-    document.getElementById('view-tool').style.display = 'none';
-    document.getElementById('view-list').style.display = 'block';
-
-    // ★ 回到启动器时，刷新到干净状态
-    await refreshLauncher();
 }
 
 /* ============================================================
