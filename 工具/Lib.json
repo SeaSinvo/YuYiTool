@@ -34,11 +34,11 @@
     "h264-mp4-encoder"
   ],
   "other1": [
-    "https://esm.sh/@bokuweb/zstd-wasm",
-    "https://cdn.jsdelivr.net/npm/fzstd@0.1.1/+esm"
+    "https://esm.sh/zstdify",
+    "https://cdn.jsdelivr.net/npm/fzstd@0.1.1/umd/index.js"
   ],
   "other1N": [
-    "zstd-wasm",
+    "zstdify",
     "fzstd"
   ]
 }
