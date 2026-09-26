@@ -12,9 +12,9 @@
     "https://cdn.jsdelivr.net/npm/libvorbis.js@1.3.7/lib/libvorbis.js"
   ],
   "PRSLN": [
-    "@bokuweb/zstd-wasm",
-    "@breezystack/lamejs",
-    "@zip.js/zip.js",
+    "zstd-wasm",
+    "lamejs",
+    "zip.js",
     "libvorbis.js"
   ],
   "misc": [
@@ -38,7 +38,7 @@
     "https://cdn.jsdelivr.net/npm/fzstd@0.1.1/+esm"
   ],
   "other1N": [
-    "@bokuweb/zstd-wasm",
+    "zstd-wasm",
     "fzstd"
   ]
 }
